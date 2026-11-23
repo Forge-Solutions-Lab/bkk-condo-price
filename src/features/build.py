@@ -28,6 +28,8 @@ ZONE_STAT_COLUMNS = ["median_log_price_per_sqm", "median_area_sqm", "share_new_u
 # Tiers should summarise 38 zones into a few location classes; beyond 8 groups a cluster
 # holds only a handful of zones and stops being a summary.
 K_RANGE = range(2, 9)
+BASE_YEAR = 2026  # year the listings were collected
+NEARBY_LIMIT_KM = 3.0
 
 
 def split_random(listings: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -148,11 +150,51 @@ class ProjectPriceLevels:
         return pd.DataFrame({"project_log_price_per_sqm": level, "has_project_history": has_history.astype(float)})
 
 
+def attach_buildings(listings: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
+    """Add each listing's building data (from its project page) by project name."""
+    table = projects.assign(key=project_key(projects["project_name"])).drop_duplicates("key")
+    columns = ["complete_year", "total_unit", "total_floor", "facility_count", "nearest_rail_km", "nearest_mall_km"]
+    merged = listings.assign(key=project_key(listings["project_name"])).merge(table[["key", *columns]], on="key", how="left")
+    merged["has_building_info"] = merged["key"].isin(table["key"])
+    return merged.drop(columns="key")
+
+
+@dataclass
+class BuildingFeatures:
+    """Building age, size, facilities and distance to rail and malls. A listing whose
+    project page we did not save gets the training median and has_building_info = 0."""
+
+    medians: dict[str, float]
+
+    @staticmethod
+    def raw(listings: pd.DataFrame) -> pd.DataFrame:
+        # the site lists places within about 3 km; no rail station or mall listed means
+        # the nearest one is farther than that, so the gap is capped at 3 km, not imputed
+        return pd.DataFrame({
+            "building_age": (BASE_YEAR - listings["complete_year"]).clip(lower=0),
+            "log_total_unit": np.log(listings["total_unit"].where(listings["total_unit"] > 0)),
+            "total_floor": listings["total_floor"].where(listings["total_floor"] > 0),
+            "facility_count": listings["facility_count"],
+            "rail_km": listings["nearest_rail_km"].where(~listings["has_building_info"], listings["nearest_rail_km"].fillna(NEARBY_LIMIT_KM)),
+            "mall_km": listings["nearest_mall_km"].where(~listings["has_building_info"], listings["nearest_mall_km"].fillna(NEARBY_LIMIT_KM)),
+        }).astype(float)
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame) -> BuildingFeatures:
+        return cls(medians=cls.raw(train).median().to_dict())
+
+    def transform(self, listings: pd.DataFrame) -> pd.DataFrame:
+        frame = self.raw(listings).fillna(self.medians)
+        frame["has_building_info"] = listings["has_building_info"].to_numpy(dtype=float)
+        return frame
+
+
 def feature_frame(
     listings: pd.DataFrame,
     clustering: ZoneClustering,
     use_location: bool = True,
     project_levels: pd.DataFrame | None = None,
+    buildings: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     frame = pd.DataFrame({
         "log_area_sqm": np.log(listings["area_sqm"].to_numpy(dtype=float)),
@@ -168,6 +210,8 @@ def feature_frame(
             frame[f"tier_{tier}"] = (tiers == tier).astype(float)
     if project_levels is not None:
         frame[project_levels.columns] = project_levels.to_numpy()
+    if buildings is not None:
+        frame[buildings.columns] = buildings.to_numpy()
     return frame
 
 
