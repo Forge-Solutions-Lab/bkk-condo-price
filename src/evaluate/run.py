@@ -38,8 +38,11 @@ from src.features.build import (
     attach_buildings,
     choose_zone_clustering,
     feature_frame,
+    fuzzy_zone_memberships,
+    membership_frame,
     split_by_project,
     split_random,
+    zone_statistics,
 )
 from src.models import ffbp
 from src.models import linear_regression as lr
@@ -74,6 +77,8 @@ BUILDING_LR = "Linear Regression + building features"
 BUILDING_KNN = "KNN Regression + building features"
 MAIN_FFBP = "FFBP neural network (K-Means tiers)"
 BUILDING_FFBP = "FFBP neural network + building features"
+FUZZY_LR = "Linear Regression (Fuzzy C-Means memberships)"
+FUZZY_BUILDING_LR = "Linear Regression + building features (Fuzzy C-Means memberships)"
 
 
 def price_metrics(actual: np.ndarray, predicted: np.ndarray) -> dict[str, float]:
@@ -257,6 +262,15 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     forest_building = RandomForestRegressor(n_estimators=300, random_state=SEED, n_jobs=-1).fit(xb_train, y_train_log)
     boosting_building = HistGradientBoostingRegressor(random_state=SEED).fit(xb_train, y_train_log)
     boosting_building_project = HistGradientBoostingRegressor(random_state=SEED).fit(xbp_train, y_train_log)
+    # Fuzzy C-Means with the same number of groups that K-Means chose, so only the
+    # hard-versus-soft assignment differs between the two
+    memberships = fuzzy_zone_memberships(zone_statistics(train), clustering.n_clusters)
+    xf_train = pd.concat([feature_frame(train, clustering, use_location=False), membership_frame(train, memberships)], axis=1)
+    xf_test = pd.concat([feature_frame(test, clustering, use_location=False), membership_frame(test, memberships)], axis=1)
+    xfb_train = pd.concat([xf_train, buildings.transform(train)], axis=1).to_numpy()
+    xfb_test = pd.concat([xf_test, buildings.transform(test)], axis=1).to_numpy()
+    W_fuzzy = lr.fit(xf_train.to_numpy(), y_train_log)
+    W_fuzzy_building = lr.fit(xfb_train, y_train_log)
     network = FittedFfbp.fit(x_train, y_train_log)
     network_building = FittedFfbp.fit(xb_train, y_train_log)
     boosting = HistGradientBoostingRegressor(random_state=SEED).fit(x_train, y_train_log)
@@ -279,7 +293,9 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         "KNN Regression + project price level": knn_project.predict(xp_test),
         "Random Forest + project price level (reference)": np.exp(forest_project.predict(xp_test)),
         "Gradient Boosting + project price level (reference)": np.exp(boosting_project.predict(xp_test)),
+        FUZZY_LR: np.exp(lr.predict(xf_test.to_numpy(), W_fuzzy)),
         BUILDING_LR: np.exp(lr.predict(xb_test, W_building)),
+        FUZZY_BUILDING_LR: np.exp(lr.predict(xfb_test, W_fuzzy_building)),
         BUILDING_KNN: knn_building.predict(xb_test),
         BUILDING_FFBP: network_building.predict(xb_test),
         "Random Forest + building features (reference)": np.exp(forest_building.predict(xb_test)),
@@ -299,6 +315,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         "ffbp": {name: {"hidden": model.setting["H"], "epochs": model.setting["epochs"], "cv_mape_pct": model.cv_mape_pct}
                  for name, model in ((MAIN_FFBP, network), (BUILDING_FFBP, network_building))},
         "buildings": buildings, "building_feature_names": list(xb_train_frame.columns),
+        "memberships": memberships,
         "building_project_feature_names": list(xbp_train_frame.columns),
         "residual_std_log_building": float(np.std(y_train_log - lr.predict(xb_train, W_building))),
         "residual_std_log_building_project": float(np.std(y_train_log - lr.predict(xbp_train, W_building_project))),
@@ -445,6 +462,36 @@ def plot_knn_experiment(random_rows: list[dict[str, object]], project_rows: list
     save_figure(figure, "knn_distance_voting.png")
 
 
+def fuzzy_summary(memberships: pd.DataFrame, clustering: ZoneClustering) -> dict[str, object]:
+    columns = [column for column in memberships.columns if column.startswith("member_")]
+    strongest = memberships[columns].max(axis=1)
+    fuzzy_tier = memberships[columns].to_numpy().argmax(axis=1) + 1
+    kmeans_tier = clustering.tier_of(memberships["zone_no"]).to_numpy()
+    return {
+        "k": len(columns), "m": 2,
+        "zones_same_tier_as_kmeans": int((fuzzy_tier == kmeans_tier).sum()),
+        "zones": len(memberships),
+        # a zone whose largest membership is below 0.6 sits between price levels
+        "zones_between_tiers": memberships.loc[strongest < 0.6, "zone_slug"].tolist(),
+    }
+
+
+def plot_fuzzy_memberships(memberships: pd.DataFrame) -> None:
+    columns = [column for column in memberships.columns if column.startswith("member_")]
+    figure, axes = new_figure(9, max(4, 0.28 * len(memberships)))
+    shades = plt.cm.YlOrBr(np.linspace(0.3, 0.95, len(columns)))
+    left = np.zeros(len(memberships))
+    for column, shade in zip(columns, shades):
+        axes.barh(memberships["zone_slug"], memberships[column], left=left, color=shade, label=column.replace("member_", "tier "))
+        left += memberships[column].to_numpy()
+    style_axes(axes, "Fuzzy C-Means: membership of each zone in each tier")
+    axes.set_xlabel("membership (sums to 1 per zone)")
+    axes.tick_params(axis="y", labelsize=7)
+    axes.legend(facecolor=CHARCOAL, labelcolor=WHITE, edgecolor=CHARCOAL, loc="upper center",
+                bbox_to_anchor=(0.5, -0.06), ncol=len(columns), fontsize=7)
+    save_figure(figure, "fuzzy_memberships.png")
+
+
 def plot_learning_curve(rows: list[dict[str, float]]) -> None:
     table = pd.DataFrame(rows)
     figure, axes = new_figure()
@@ -494,6 +541,7 @@ def main() -> None:
             "knn_random_split": main_run["knn_experiment"],
             "knn_project_split": project_run["knn_experiment"],
         },
+        "fuzzy_cmeans": fuzzy_summary(main_run["memberships"], clustering),
         "ffbp_random_split": main_run["ffbp"],
         "ffbp_project_split": project_run["ffbp"],
         "features": main_run["feature_names"],
@@ -514,6 +562,9 @@ def main() -> None:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     (REPORTS_DIR / "metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True), encoding="utf-8")
     clustering.zone_table.to_csv(REPORTS_DIR / "zone_clusters.csv", index=False)
+    memberships = main_run["memberships"].merge(clustering.zone_table[["zone_no", "tier"]], on="zone_no")
+    memberships.sort_values("median_price_per_sqm").to_csv(REPORTS_DIR / "zone_fuzzy_memberships.csv", index=False)
+    plot_fuzzy_memberships(memberships)
 
     plot_cluster_scan(clustering)
     plot_zone_tiers(clustering)

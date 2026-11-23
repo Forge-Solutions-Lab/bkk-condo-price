@@ -5,6 +5,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.neighbors import KNeighborsRegressor
 
 from src.models import ffbp
+from src.models import fuzzy_cmeans as fcm
 from src.models import kmeans as km
 from src.models import knn_regression as knn
 from src.models import linear_regression as lr
@@ -71,3 +72,20 @@ def test_ffbp_fits_a_smooth_function(data):
     y = (y - y.mean()) / y.std()
     W0, W1 = ffbp.ffbp(X, y, H=8, lr=0.5, epochs=3000)
     assert np.mean((ffbp.predict(X, W0, W1) - y) ** 2) < 0.01
+
+
+def test_fuzzy_cmeans_memberships_sum_to_one_and_find_the_blobs(blobs):
+    C, mu = fcm.fuzzy_cmeans(blobs, 3)
+    np.testing.assert_allclose(mu.sum(axis=1), 1.0)
+    idx = np.argmax(mu, axis=1)
+    for k in range(3):
+        assert len(set(idx[k * 60:(k + 1) * 60])) == 1
+    assert len(set(idx)) == 3
+
+
+def test_fuzzy_cmeans_centres_match_kmeans_on_separated_blobs(blobs):
+    C, _ = fcm.fuzzy_cmeans(blobs, 3)
+    reference = KMeans(n_clusters=3, n_init=10, random_state=3).fit(blobs).cluster_centers_
+    # every fuzzy centre lies close to one K-Means centre
+    for c in C:
+        assert np.min(np.linalg.norm(reference - c, axis=1)) < 0.1
