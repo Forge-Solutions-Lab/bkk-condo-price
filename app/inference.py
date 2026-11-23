@@ -387,9 +387,10 @@ def _json_safe(value: Any) -> Any:
     return value
 
 
-def serialize_metadata(bundle: dict[str, Any], forecast: dict[str, Any] | None) -> dict[str, Any]:
+def list_zones(bundle: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return sorted Bangkok zone metadata rows for dropdowns and API lookups."""
     zones_df = bundle["zone_table"].sort_values("zone_no")
-    zones = [
+    return [
         {
             "zone_no": int(row["zone_no"]),
             "label": zone_label(row),
@@ -398,6 +399,23 @@ def serialize_metadata(bundle: dict[str, Any], forecast: dict[str, Any] | None) 
         }
         for _, row in zones_df.iterrows()
     ]
+
+
+def filter_projects(bundle: dict[str, Any], query: str = "", limit: int = 50) -> list[str]:
+    """Filter known condo project names by case-insensitive substring match."""
+    q = query.strip().lower()
+    cap = max(1, min(int(limit), 200))
+    matches: list[str] = []
+    for name in bundle["project_names"]:
+        if not q or q in name.lower():
+            matches.append(name)
+            if len(matches) >= cap:
+                break
+    return matches
+
+
+def serialize_metadata(bundle: dict[str, Any], forecast: dict[str, Any] | None) -> dict[str, Any]:
+    zones = list_zones(bundle)
     forecast_meta = None
     if forecast:
         years = [int(item["year"]) for item in forecast["forecast"]]

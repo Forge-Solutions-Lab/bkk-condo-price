@@ -8,6 +8,10 @@
     activeOptionIndex: -1,
     // last prediction from the server; the year slider re-reads its forecast series without a new request
     lastPrediction: null,
+    qualityRows: [],
+    qualityQuery: "",
+    qualitySortKey: null,
+    qualitySortDir: "asc",
   };
 
   const els = {
@@ -32,7 +36,9 @@
     yearMinLabel: document.getElementById("year-min-label"),
     yearMaxLabel: document.getElementById("year-max-label"),
     submitBtn: document.getElementById("submit-btn"),
+    resetBtn: document.getElementById("reset-btn"),
     resultsSection: document.getElementById("results-section"),
+    copySummaryBtn: document.getElementById("copy-summary-btn"),
     inputWarnings: document.getElementById("input-warnings"),
     mainModelLabel: document.getElementById("main-model-label"),
     mainPrice: document.getElementById("main-price"),
@@ -52,6 +58,8 @@
     futurePrice: document.getElementById("future-price"),
     futureNote: document.getElementById("future-note"),
     forecastChart: document.getElementById("forecast-chart"),
+    qualityFilter: document.getElementById("quality-filter"),
+    qualityTable: document.getElementById("quality-table"),
     qualityBody: document.getElementById("quality-body"),
   };
 
@@ -222,8 +230,31 @@
   }
 
   function renderQualityTable(rows) {
+    if (Array.isArray(rows)) {
+      state.qualityRows = rows.slice();
+    }
+    const q = (state.qualityQuery || "").trim().toLowerCase();
+    let visible = state.qualityRows.filter((row) => !q || String(row.model).toLowerCase().includes(q));
+    if (state.qualitySortKey) {
+      const key = state.qualitySortKey;
+      const mult = state.qualitySortDir === "asc" ? 1 : -1;
+      visible = visible.slice().sort((a, b) => {
+        if (key === "model") return String(a.model).localeCompare(String(b.model)) * mult;
+        return (Number(a[key]) - Number(b[key])) * mult;
+      });
+    }
     els.qualityBody.innerHTML = "";
-    (rows || []).forEach((row) => {
+    if (!visible.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 6;
+      td.className = "loading-cell";
+      td.textContent = "ไม่พบโมเดลที่ตรงกับคำค้นหา";
+      tr.appendChild(td);
+      els.qualityBody.appendChild(tr);
+      return;
+    }
+    visible.forEach((row) => {
       const tr = document.createElement("tr");
       const cells = [
         { text: row.model, cls: "" },
@@ -243,13 +274,39 @@
     });
   }
 
+  function setupQualityControls() {
+    if (els.qualityFilter) {
+      els.qualityFilter.addEventListener("input", () => {
+        state.qualityQuery = els.qualityFilter.value;
+        renderQualityTable();
+      });
+    }
+    if (els.qualityTable) {
+      const headers = els.qualityTable.querySelectorAll("th.sortable");
+      headers.forEach((th) => {
+        th.addEventListener("click", () => {
+          const key = th.dataset.sortKey;
+          if (state.qualitySortKey === key) {
+            state.qualitySortDir = state.qualitySortDir === "asc" ? "desc" : "asc";
+          } else {
+            state.qualitySortKey = key;
+            state.qualitySortDir = key === "r2" || key === "within_10pct" ? "desc" : "asc";
+          }
+          headers.forEach((h) => h.classList.remove("sort-asc", "sort-desc"));
+          th.classList.add(state.qualitySortDir === "asc" ? "sort-asc" : "sort-desc");
+          renderQualityTable();
+        });
+      });
+    }
+  }
+
   function renderForecastChart(series) {
     els.forecastChart.innerHTML = "";
     if (!series || series.length < 2) return;
 
     const width = 820;
     const height = 280;
-    const pad = { top: 20, right: 24, bottom: 38, left: 78 };
+    const pad = { top: 24, right: 64, bottom: 38, left: 78 };
     const plotW = width - pad.left - pad.right;
     const plotH = height - pad.top - pad.bottom;
 
@@ -304,6 +361,30 @@
       svg.appendChild(label);
     });
 
+    const bandPoints = [
+      ...series.map((d, idx) => `${xOf(idx).toFixed(1)},${yOf(d.high).toFixed(1)}`),
+      ...series.slice().reverse().map((d, rIdx) => {
+        const idx = series.length - 1 - rIdx;
+        return `${xOf(idx).toFixed(1)},${yOf(d.low).toFixed(1)}`;
+      }),
+    ].join(" ");
+    const bandPoly = document.createElementNS(svgNS, "polygon");
+    bandPoly.setAttribute("points", bandPoints);
+    bandPoly.setAttribute("fill", "rgba(255, 192, 0, 0.08)");
+    svg.appendChild(bandPoly);
+
+    const lastIdx = series.length - 1;
+    const lastX = xOf(lastIdx);
+    const guide = document.createElementNS(svgNS, "line");
+    guide.setAttribute("x1", lastX.toFixed(1));
+    guide.setAttribute("x2", lastX.toFixed(1));
+    guide.setAttribute("y1", pad.top);
+    guide.setAttribute("y2", (pad.top + plotH).toFixed(1));
+    guide.setAttribute("stroke", "#917300");
+    guide.setAttribute("stroke-dasharray", "3 3");
+    guide.setAttribute("stroke-width", "1");
+    svg.appendChild(guide);
+
     const lines = [
       { key: "low", color: "#7D7D7D", width: 2 },
       { key: "high", color: "#FFFFFF", width: 2 },
@@ -324,13 +405,26 @@
       const circle = document.createElementNS(svgNS, "circle");
       circle.setAttribute("cx", xOf(idx).toFixed(1));
       circle.setAttribute("cy", yOf(d.price).toFixed(1));
-      circle.setAttribute("r", "4");
+      circle.setAttribute("r", idx === lastIdx ? "5.5" : "4");
       circle.setAttribute("fill", "#FFC000");
+      if (idx === lastIdx) {
+        circle.setAttribute("stroke", "#000000");
+        circle.setAttribute("stroke-width", "1.5");
+      }
       const title = document.createElementNS(svgNS, "title");
       title.textContent = `ปี ${d.year}: ${formatBaht(d.price)} (ช่วง ${formatBaht(d.low)} - ${formatBaht(d.high)})`;
       circle.appendChild(title);
       svg.appendChild(circle);
     });
+
+    const endDatum = series[lastIdx];
+    const endLabel = document.createElementNS(svgNS, "text");
+    endLabel.setAttribute("x", (lastX + 8).toFixed(1));
+    endLabel.setAttribute("y", (yOf(endDatum.price) + 4).toFixed(1));
+    endLabel.setAttribute("fill", "#FFC000");
+    endLabel.setAttribute("font-size", "12");
+    endLabel.textContent = `${(endDatum.price / 1e6).toFixed(2)}M`;
+    svg.appendChild(endLabel);
 
     els.forecastChart.appendChild(svg);
   }
@@ -403,6 +497,7 @@
     }
     els.buildingInfo.textContent = buildingLine;
 
+    const areaSqm = data.price_per_sqm > 0 ? data.price / data.price_per_sqm : Number(els.areaInput.value) || 1;
     els.modelBreakdownBody.innerHTML = "";
     (data.model_breakdown || []).forEach((row) => {
       const tr = document.createElement("tr");
@@ -411,8 +506,12 @@
       const tdPrice = document.createElement("td");
       tdPrice.className = "num";
       tdPrice.textContent = formatNumber(Math.round(row.price), 0);
+      const tdSqm = document.createElement("td");
+      tdSqm.className = "num";
+      tdSqm.textContent = formatNumber(Math.round(row.price / areaSqm), 0);
       tr.appendChild(tdModel);
       tr.appendChild(tdPrice);
+      tr.appendChild(tdSqm);
       els.modelBreakdownBody.appendChild(tr);
     });
 
@@ -479,6 +578,7 @@
       }
 
       renderQualityTable(meta.model_quality);
+      applyQueryParams(meta);
       els.submitBtn.disabled = false;
       showGlobalError("");
     } catch (err) {
@@ -516,6 +616,7 @@
         throw new Error(data.detail || `HTTP ${res.status}`);
       }
       renderPrediction(data);
+      syncUrlParams(payload);
     } catch (err) {
       showGlobalError(`ไม่สามารถประเมินราคาได้: ${err.message}`);
     } finally {
@@ -523,6 +624,164 @@
       els.submitBtn.textContent = "ประเมินราคา";
     }
   }
+
+  const PRESETS = {
+    studio: { area_sqm: 28, bedrooms: 0, bathrooms: 1, floor: 12, complete_year: 2020, rail_km: 0.3, is_new: false },
+    default: { area_sqm: 35, bedrooms: 1, bathrooms: 1, floor: 10, complete_year: 2016, rail_km: 0.5, is_new: false },
+    family: { area_sqm: 65, bedrooms: 2, bathrooms: 2, floor: 24, complete_year: 2019, rail_km: 0.4, is_new: false },
+  };
+
+  function applyPreset(key) {
+    const preset = PRESETS[key];
+    if (!preset) return;
+    els.areaInput.value = String(preset.area_sqm);
+    els.bedroomsSelect.value = String(preset.bedrooms);
+    els.bathroomsSelect.value = String(preset.bathrooms);
+    els.floorInput.value = String(preset.floor);
+    els.completeYearInput.value = String(preset.complete_year);
+    els.railKmInput.value = String(preset.rail_km);
+    els.isNewCheckbox.checked = Boolean(preset.is_new);
+    setSelectedProject(null);
+    markStale();
+  }
+
+  document.querySelectorAll("[data-preset]").forEach((btn) => {
+    btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
+  });
+
+  function applyQueryParams(meta) {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.toString()) return;
+    const clampNum = (key, min, max) => {
+      if (!params.has(key)) return null;
+      const val = Number(params.get(key));
+      if (Number.isNaN(val)) return null;
+      return Math.min(max, Math.max(min, val));
+    };
+    const zone = clampNum("zone", 1, 200);
+    if (zone !== null && (meta.zones || []).some((z) => z.zone_no === zone)) {
+      els.zoneSelect.value = String(zone);
+    }
+    const area = clampNum("area", 15, 500);
+    if (area !== null) els.areaInput.value = String(area);
+    const bed = clampNum("bed", 0, 5);
+    if (bed !== null) els.bedroomsSelect.value = String(Math.round(bed));
+    const bath = clampNum("bath", 1, 5);
+    if (bath !== null) els.bathroomsSelect.value = String(Math.round(bath));
+    const floor = clampNum("floor", 1, 80);
+    if (floor !== null) els.floorInput.value = String(Math.round(floor));
+    const completeYear = clampNum("complete_year", 1980, 2030);
+    if (completeYear !== null) els.completeYearInput.value = String(Math.round(completeYear));
+    const railKm = clampNum("rail_km", 0, 3);
+    if (railKm !== null) els.railKmInput.value = String(railKm);
+    if (params.has("is_new")) {
+      els.isNewCheckbox.checked = params.get("is_new") === "1" || params.get("is_new") === "true";
+    }
+    const minY = Number(els.yearSlider.min || 2026);
+    const maxY = Number(els.yearSlider.max || 2036);
+    const year = clampNum("year", minY, maxY);
+    if (year !== null) {
+      els.yearSlider.value = String(Math.round(year));
+      els.yearValue.textContent = els.yearSlider.value;
+    }
+    const proj = params.get("project");
+    if (proj && state.projects.includes(proj)) {
+      setSelectedProject(proj);
+    }
+  }
+
+  function syncUrlParams(payload) {
+    try {
+      const params = new URLSearchParams();
+      params.set("zone", String(payload.zone_no));
+      params.set("area", String(payload.area_sqm));
+      params.set("bed", String(payload.bedrooms));
+      params.set("bath", String(payload.bathrooms));
+      params.set("floor", String(payload.floor));
+      if (payload.project) {
+        params.set("project", payload.project);
+      } else {
+        params.set("complete_year", String(payload.complete_year));
+        params.set("rail_km", String(payload.rail_km));
+      }
+      if (payload.is_new) params.set("is_new", "1");
+      if (payload.year && payload.year !== 2026) params.set("year", String(payload.year));
+      window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
+    } catch {
+      // Ignore history API restrictions in embedded contexts.
+    }
+  }
+
+  function resetToDefaults() {
+    const d = state.meta?.defaults || {
+      zone_no: 1, area_sqm: 35, bedrooms: 1, bathrooms: 1, floor: 10,
+      complete_year: 2016, rail_km: 0.5, is_new: false, year: 2026,
+    };
+    if (els.zoneSelect.options.length > 0) {
+      els.zoneSelect.value = String(d.zone_no);
+    }
+    els.areaInput.value = String(d.area_sqm);
+    els.bedroomsSelect.value = String(d.bedrooms);
+    els.bathroomsSelect.value = String(d.bathrooms);
+    els.floorInput.value = String(d.floor);
+    els.completeYearInput.value = String(d.complete_year);
+    els.railKmInput.value = String(d.rail_km);
+    els.isNewCheckbox.checked = Boolean(d.is_new);
+    els.yearSlider.value = String(d.year || 2026);
+    els.yearValue.textContent = els.yearSlider.value;
+    setSelectedProject(null);
+    showGlobalError("");
+    if (window.location.search) {
+      try {
+        window.history.replaceState(null, "", window.location.pathname);
+      } catch {
+        // Ignore history restrictions.
+      }
+    }
+    if (state.lastPrediction) {
+      renderFuture(Number(els.yearSlider.value));
+      markStale();
+    }
+  }
+
+  function buildSummaryText() {
+    const data = state.lastPrediction;
+    if (!data) return "";
+    const zoneLabel = els.zoneSelect.options[els.zoneSelect.selectedIndex]?.textContent || "";
+    const bedLabel = els.bedroomsSelect.options[els.bedroomsSelect.selectedIndex]?.textContent || "";
+    const projPart = state.selectedProject ? `โครงการ: ${state.selectedProject}` : `โซน: ${zoneLabel}`;
+    const lines = [
+      "BKK Condo Price — สรุปผลการประเมิน",
+      `${projPart} | ${els.areaInput.value} ตร.ม. | ${bedLabel} | ${els.bathroomsSelect.value} ห้องน้ำ | ชั้น ${els.floorInput.value}`,
+      `ราคาวันนี้ (ปี ${baseYear(data)}): ${formatBaht(data.price)} (${formatNumber(Math.round(data.price_per_sqm), 0)} บาท/ตร.ม.)`,
+      `ช่วง ±20%: ${formatBaht(data.range_low)} - ${formatBaht(data.range_high)}`,
+      `KNN เปรียบเทียบ: ${formatBaht(data.knn)} | ระดับทำเล ${data.tier}/${data.n_clusters}`,
+    ];
+    const sliderYear = Number(els.yearSlider.value || baseYear(data));
+    if (data.forecast_series && sliderYear > data.forecast_series.base_year) {
+      const row = data.forecast_series.years.find((item) => item.year === sliderYear);
+      if (row) {
+        lines.push(`คาดการณ์ปี ${sliderYear}: ${formatBaht(row.price)} (${formatBaht(row.low)} - ${formatBaht(row.high)})`);
+      }
+    }
+    return lines.join("\n");
+  }
+
+  els.copySummaryBtn.addEventListener("click", async () => {
+    const text = buildSummaryText();
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      els.copySummaryBtn.textContent = "คัดลอกแล้ว";
+      setTimeout(() => {
+        els.copySummaryBtn.textContent = "คัดลอกสรุปราคา";
+      }, 1800);
+    } catch {
+      showGlobalError("เบราว์เซอร์ไม่อนุญาตให้คัดลอกอัตโนมัติ");
+    }
+  });
+
+  els.resetBtn.addEventListener("click", resetToDefaults);
 
   els.yearSlider.addEventListener("input", () => {
     els.yearValue.textContent = els.yearSlider.value;
@@ -537,5 +796,6 @@
   });
   els.form.addEventListener("submit", handleSubmit);
   setupCombobox();
+  setupQualityControls();
   loadMetadata();
 })();

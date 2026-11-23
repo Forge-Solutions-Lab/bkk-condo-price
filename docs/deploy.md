@@ -37,3 +37,31 @@
 - ทุกครั้งที่ merge เข้า `main` หน้าเว็บจะอัปเดตเองภายในไม่กี่นาที
 - แอปที่ไม่มีคนเข้าระยะหนึ่งจะหลับ ครั้งแรกที่เปิดอาจต้องกดปุ่มปลุกแล้วรอสักครู่ ควรเปิดทิ้งไว้ก่อนพรีเซนต์
 - ใส่ลิงก์ที่ได้ใน README หัวข้อ "Live demo" ผ่าน PR ถัดไป
+
+---
+
+# Deploy หน้าเว็บขึ้น Vercel (อัปเดตอัตโนมัติจาก `main`)
+
+ลิงก์ใช้งานจริง (Production): **https://bkk-condo-price.vercel.app**
+
+## โครงสร้างไฟล์สำหรับ Vercel
+| ไฟล์ | หน้าที่ |
+|---|---|
+| `public/index.html`, `public/styles.css`, `public/app.js` | หน้าเว็บธีมดำ-ทอง (เสิร์ฟตรงจาก Vercel CDN) |
+| `api/index.py` | FastAPI backend (`/api/health`, `/api/meta`, `/api/zones`, `/api/projects`, `/api/predict`) |
+| `app/inference.py` | ลอจิกประเมินราคา ความน่าเชื่อถือ และคาดการณ์ที่ใช้ร่วมกันระหว่าง Vercel และ Streamlit |
+| `pyproject.toml`, `vercel.json`, `.vercelignore` | กำหนด Python 3.14 (Fluid Compute), dependency เฉพาะ runtime และ cache/security headers |
+
+## การอัปเดตอัตโนมัติ
+- โปรเจกต์ Vercel เชื่อมกับสาขา `main` ของ `Forge-Solutions-Lab/bkk-condo-price` โดยตรง
+- ทุกครั้งที่ push หรือ merge PR เข้า `main` Vercel จะ build ใหม่และอัปเดต https://bkk-condo-price.vercel.app อัตโนมัติภายใน ~30-45 วินาที
+- การอัปเดต `models/model_bundle.pkl`, `reports/forecast.json`, `src/` หรือ `app/inference.py` มีผลกับทั้ง Vercel และ Streamlit พร้อมกัน
+- หากต้องการแก้หน้าตา UI บน Vercel ให้แก้ไฟล์ใน `public/` (ส่วน `app/streamlit_app.py` และ `app/theme.css` ใช้กับหน้า Streamlit)
+
+## รันฝั่ง Vercel ทดสอบบนเครื่อง
+```bash
+pip install fastapi uvicorn
+uvicorn api.index:app --reload --port 8000
+```
+แล้วเปิด http://localhost:8000
+

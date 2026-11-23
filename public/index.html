@@ -24,6 +24,12 @@
     <div id="global-error" class="alert alert-error hidden" role="alert"></div>
 
     <section class="form-card" aria-label="แบบฟอร์มประเมินราคาคอนโด">
+      <div class="preset-bar" aria-label="ตัวอย่างห้องสำหรับทดสอบเร็ว">
+        <span class="micro-label preset-label">ตัวอย่างด่วน:</span>
+        <button type="button" class="btn-chip" data-preset="studio">สตูดิโอ 28 ตร.ม. ใกล้รถไฟฟ้า</button>
+        <button type="button" class="btn-chip" data-preset="default">1 ห้องนอน 35 ตร.ม. (ค่าเริ่มต้น)</button>
+        <button type="button" class="btn-chip" data-preset="family">2 ห้องนอน 65 ตร.ม. ชั้นสูง</button>
+      </div>
       <form id="estimate-form" novalidate>
         <div class="grid-2">
           <div class="field">
@@ -114,13 +120,22 @@
           </div>
         </div>
 
-        <button id="submit-btn" type="submit" class="btn-primary" disabled>
-          ประเมินราคา
-        </button>
+        <div class="form-actions">
+          <button id="submit-btn" type="submit" class="btn-primary" disabled>
+            ประเมินราคา
+          </button>
+          <button id="reset-btn" type="button" class="btn-secondary">
+            รีเซ็ตค่าเริ่มต้น
+          </button>
+        </div>
       </form>
     </section>
 
     <section id="results-section" class="results hidden" aria-live="polite">
+      <div class="results-toolbar">
+        <span class="micro-label">ผลการประเมิน</span>
+        <button id="copy-summary-btn" type="button" class="btn-chip">คัดลอกสรุปราคา</button>
+      </div>
       <div id="stale-note" class="alert alert-warn hidden" role="status">ข้อมูลห้องเปลี่ยนแล้ว กด "ประเมินราคา" อีกครั้งเพื่อคำนวณราคาใหม่</div>
       <div id="input-warnings" class="warnings-stack"></div>
 
@@ -171,6 +186,7 @@
               <tr>
                 <th>โมเดล</th>
                 <th class="num">ราคา (บาท)</th>
+                <th class="num">บาท/ตร.ม.</th>
               </tr>
             </thead>
             <tbody id="model-breakdown-body"></tbody>
@@ -203,17 +219,26 @@
     </section>
 
     <section class="table-section quality-section">
-      <h3>ความแม่นยำบนชุดทดสอบ</h3>
+      <div class="section-header-row">
+        <h3>ความแม่นยำบนชุดทดสอบ</h3>
+        <input
+          id="quality-filter"
+          type="text"
+          class="table-filter-input"
+          placeholder="กรองชื่อโมเดล (เช่น Blend, KNN, FFBP)..."
+          aria-label="กรองชื่อโมเดลในตารางความแม่นยำ"
+        />
+      </div>
       <div class="table-wrap">
-        <table>
+        <table id="quality-table">
           <thead>
             <tr>
-              <th>โมเดล</th>
-              <th class="num">MAPE สุ่มแบ่ง (%)</th>
-              <th class="num">MAPE ตึกที่ไม่เคยเห็น (%)</th>
-              <th class="num">MAE (ล้านบาท)</th>
-              <th class="num">R²</th>
-              <th class="num">คลาดเคลื่อนไม่เกิน 10% (%)</th>
+              <th class="sortable" data-sort-key="model">โมเดล</th>
+              <th class="num sortable" data-sort-key="mape_random_pct">MAPE สุ่มแบ่ง (%)</th>
+              <th class="num sortable" data-sort-key="mape_unseen_pct">MAPE ตึกที่ไม่เคยเห็น (%)</th>
+              <th class="num sortable" data-sort-key="mae_million_thb">MAE (ล้านบาท)</th>
+              <th class="num sortable" data-sort-key="r2">R²</th>
+              <th class="num sortable" data-sort-key="within_10pct">คลาดเคลื่อนไม่เกิน 10% (%)</th>
             </tr>
           </thead>
           <tbody id="quality-body">

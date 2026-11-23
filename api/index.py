@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, Query, Request, Response
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
@@ -17,6 +18,9 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from app.inference import (  # noqa: E402
     BUNDLE_PATH,
+    FORECAST_PATH,
+    filter_projects,
+    list_zones,
     load_bundle_cached,
     load_forecast_cached,
     serialize_metadata,
@@ -30,6 +34,32 @@ app = FastAPI(
     description="Bangkok condo price estimator powered by K-Means, Linear Regression, Boosting/ExtraTrees, and KNN.",
     version="1.0.0",
 )
+
+FIELD_LABELS_TH: dict[str, str] = {
+    "zone_no": "โซน / เขต",
+    "area_sqm": "พื้นที่ (ตร.ม.)",
+    "bedrooms": "ห้องนอน",
+    "bathrooms": "ห้องน้ำ",
+    "floor": "ชั้น",
+    "project": "โครงการ",
+    "complete_year": "ปีที่ตึกสร้างเสร็จ",
+    "rail_km": "ระยะถึงสถานีรถไฟฟ้า",
+    "is_new": "ห้องมือ 1",
+    "year": "ปีที่ต้องการดูราคา",
+}
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(_request: Request, exc: RequestValidationError) -> JSONResponse:
+    parts: list[str] = []
+    for err in exc.errors():
+        loc = [str(item) for item in err.get("loc", ()) if item != "body"]
+        field = loc[-1] if loc else "ข้อมูลนำเข้า"
+        label = FIELD_LABELS_TH.get(field, field)
+        msg = err.get("msg", "ค่าไม่ถูกต้อง")
+        parts.append(f"{label}: {msg}")
+    summary = "ข้อมูลไม่ถูกต้อง — " + "; ".join(parts) if parts else "ข้อมูลนำเข้าไม่ถูกต้อง"
+    return JSONResponse(status_code=422, content={"detail": summary, "errors": exc.errors()})
 
 
 class PredictRequest(BaseModel):
@@ -61,9 +91,14 @@ def _require_bundle() -> dict[str, Any]:
 
 @app.get("/api/health")
 def health() -> dict[str, Any]:
+    bundle_exists = BUNDLE_PATH.exists()
+    bundle_size_mb = round(BUNDLE_PATH.stat().st_size / (1024 * 1024), 2) if bundle_exists else None
     return {
         "status": "ok",
-        "bundle_exists": BUNDLE_PATH.exists(),
+        "bundle_exists": bundle_exists,
+        "bundle_size_mb": bundle_size_mb,
+        "forecast_exists": FORECAST_PATH.exists(),
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
     }
 
 
@@ -71,8 +106,39 @@ def health() -> dict[str, Any]:
 def get_meta(response: Response) -> dict[str, Any]:
     bundle = _require_bundle()
     forecast = load_forecast_cached()
-    response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
+    response.headers["Cache-Control"] = (
+        "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate"
+    )
     return serialize_metadata(bundle, forecast)
+
+
+@app.get("/api/zones")
+def get_zones(response: Response) -> dict[str, Any]:
+    bundle = _require_bundle()
+    zones = list_zones(bundle)
+    response.headers["Cache-Control"] = (
+        "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate"
+    )
+    return {"count": len(zones), "zones": zones}
+
+
+@app.get("/api/projects")
+def get_projects(
+    response: Response,
+    q: str = Query(default="", max_length=120),
+    limit: int = Query(default=50, ge=1, le=200),
+) -> dict[str, Any]:
+    bundle = _require_bundle()
+    matches = filter_projects(bundle, query=q, limit=limit)
+    response.headers["Cache-Control"] = (
+        "public, max-age=0, s-maxage=300, stale-while-revalidate=3600, must-revalidate"
+    )
+    return {
+        "query": q,
+        "count": len(matches),
+        "total_projects": len(bundle["project_names"]),
+        "projects": matches,
+    }
 
 
 @app.post("/api/predict")

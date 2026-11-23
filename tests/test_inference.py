@@ -3,11 +3,19 @@
 from __future__ import annotations
 
 import json
+import math
 
+import numpy as np
+import pandas as pd
 import pytest
 
 from app.inference import (
     BUNDLE_PATH,
+    _json_safe,
+    filter_projects,
+    format_baht,
+    input_warnings,
+    list_zones,
     load_bundle_cached,
     load_forecast_cached,
     serialize_metadata,
@@ -89,3 +97,52 @@ def test_serialize_prediction_known_project_auto_syncs_zone() -> None:
     assert decoded["effective_zone_no"] == expected_zone
     assert any("ปรับใช้โซนจริง" in w for w in decoded["input_warnings"])
     assert decoded["future"] is None
+
+
+
+def test_format_baht_and_json_safe_edges() -> None:
+    assert format_baht(5_743_183.4) == "5,743,183 บาท"
+    cleaned = _json_safe({
+        "nan": float("nan"),
+        "inf": float("inf"),
+        "np_int": np.int64(7),
+        "np_float": np.float64(2.5),
+        "np_bool": np.bool_(True),
+        "nested": [math.nan, np.int32(3)],
+    })
+    assert cleaned == {"nan": None, "inf": None, "np_int": 7, "np_float": 2.5, "np_bool": True, "nested": [None, 3]}
+    json.dumps(cleaned, allow_nan=False)
+
+
+def test_input_warnings_covers_all_guard_branches() -> None:
+    listing = pd.DataFrame([{
+        "zone_no": 5,
+        "requested_zone_no": 1,
+        "area_sqm": 30.0,
+        "bedrooms": 2,
+        "bathrooms": 5,
+        "floor": 10,
+        "is_new_unit": True,
+        "complete_year": 2015,
+    }])
+    warnings = input_warnings(listing, zone_labels={1: "โซนหนึ่ง", 5: "วิทยุ-เพลินจิต"})
+    assert any("ปรับใช้โซนจริง" in w for w in warnings)
+    assert any("พื้นที่น้อยมาก" in w for w in warnings)
+    assert any("ห้องน้ำมากกว่าห้องนอน" in w for w in warnings)
+    assert any("ห้องมือ 1" in w for w in warnings)
+    assert any("Leasehold" in w for w in warnings)
+
+
+def test_filter_projects_and_list_zones_helpers() -> None:
+    fake_bundle = {
+        "project_names": ["Ashton Asoke", "Ideo Q Siam", "Ashton Morph 38"],
+        "zone_table": pd.DataFrame([
+            {"zone_no": 2, "zone_name_th": "สีลม", "district_th": "บางรัก"},
+            {"zone_no": 1, "zone_name_th": "อโศก", "district_th": "วัฒนา"},
+        ]),
+    }
+    assert filter_projects(fake_bundle, "ashton", limit=1) == ["Ashton Asoke"]
+    assert filter_projects(fake_bundle, "ASHTON", limit=10) == ["Ashton Asoke", "Ashton Morph 38"]
+    zones = list_zones(fake_bundle)
+    assert [z["zone_no"] for z in zones] == [1, 2]
+    assert zones[0]["label"] == "อโศก (เขตวัฒนา)"
