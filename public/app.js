@@ -404,6 +404,7 @@
     }
     els.buildingInfo.textContent = buildingLine;
 
+    const areaSqm = data.price_per_sqm > 0 ? data.price / data.price_per_sqm : Number(els.areaInput.value) || 1;
     els.modelBreakdownBody.innerHTML = "";
     (data.model_breakdown || []).forEach((row) => {
       const tr = document.createElement("tr");
@@ -412,8 +413,12 @@
       const tdPrice = document.createElement("td");
       tdPrice.className = "num";
       tdPrice.textContent = formatNumber(Math.round(row.price), 0);
+      const tdSqm = document.createElement("td");
+      tdSqm.className = "num";
+      tdSqm.textContent = formatNumber(Math.round(row.price / areaSqm), 0);
       tr.appendChild(tdModel);
       tr.appendChild(tdPrice);
+      tr.appendChild(tdSqm);
       els.modelBreakdownBody.appendChild(tr);
     });
 
