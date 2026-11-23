@@ -76,7 +76,10 @@ BLEND_WEIGHTS = [0.0, 0.25, 0.35, 0.5, 0.65, 0.75, 1.0]
 # bands of the predicted price, the value the web app knows before the real price
 PRICE_BANDS = [0, 3e6, 5e6, 8e6, 15e6, np.inf]
 PRICE_BAND_LABELS = ["< 3 ล้าน", "3-5 ล้าน", "5-8 ล้าน", "8-15 ล้าน", "> 15 ล้าน"]
-FFBP_SETTINGS = [{"H": H, "epochs": epochs} for H in (4, 8, 16) for epochs in (3000, 10000)]
+# learning rate is chosen by CV together with hidden size and epochs (issue #19); 0.5 was the old fixed value
+FFBP_LEARNING_RATES = (0.1, 0.25, 0.5)
+FFBP_SETTINGS = [{"H": H, "epochs": epochs, "lr": lr}
+                 for H in (4, 8, 16) for epochs in (3000, 10000) for lr in FFBP_LEARNING_RATES]
 GOLD = "#FFC000"
 WHITE = "#FFFFFF"
 ASH = "#7D7D7D"
@@ -224,7 +227,7 @@ class FittedFfbp:
         scaler = Standardizer.fit(features)
         y_mean, y_std = float(log_price.mean()), float(log_price.std())
         W0, W1 = ffbp.ffbp(scaler.transform(features), (log_price - y_mean) / y_std, H=setting["H"],
-                           epochs=setting["epochs"], seed=SEED)
+                           lr=setting["lr"], epochs=setting["epochs"], seed=SEED)
         return W0, W1, scaler, y_mean, y_std
 
     @classmethod
@@ -583,7 +586,8 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame, group_cv: bool = Fal
         "train": train, "test": test, "clustering": clustering, "levels": levels,
         "W": W, "W_project": W_project, "knn": knn, "knn_project": knn_project,
         "W_building": W_building, "W_building_project": W_building_project, "knn_building": knn_building,
-        "ffbp": {name: {"hidden": model.setting["H"], "epochs": model.setting["epochs"], "cv_mape_pct": model.cv_mape_pct}
+        "ffbp": {name: {"hidden": model.setting["H"], "epochs": model.setting["epochs"], "learning_rate": model.setting["lr"],
+                         "cv_mape_pct": model.cv_mape_pct}
                  for name, model in ((MAIN_FFBP, network), (BUILDING_FFBP, network_building), (NEIGHBOUR_FFBP, network_neighbour))},
         "buildings": buildings, "building_feature_names": list(xb_train_frame.columns),
         "memberships": memberships,
