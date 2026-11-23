@@ -32,6 +32,7 @@
     yearMinLabel: document.getElementById("year-min-label"),
     yearMaxLabel: document.getElementById("year-max-label"),
     submitBtn: document.getElementById("submit-btn"),
+    resetBtn: document.getElementById("reset-btn"),
     resultsSection: document.getElementById("results-section"),
     inputWarnings: document.getElementById("input-warnings"),
     mainModelLabel: document.getElementById("main-model-label"),
@@ -547,6 +548,33 @@
   document.querySelectorAll("[data-preset]").forEach((btn) => {
     btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
   });
+
+  function resetToDefaults() {
+    const d = state.meta?.defaults || {
+      zone_no: 1, area_sqm: 35, bedrooms: 1, bathrooms: 1, floor: 10,
+      complete_year: 2016, rail_km: 0.5, is_new: false, year: 2026,
+    };
+    if (els.zoneSelect.options.length > 0) {
+      els.zoneSelect.value = String(d.zone_no);
+    }
+    els.areaInput.value = String(d.area_sqm);
+    els.bedroomsSelect.value = String(d.bedrooms);
+    els.bathroomsSelect.value = String(d.bathrooms);
+    els.floorInput.value = String(d.floor);
+    els.completeYearInput.value = String(d.complete_year);
+    els.railKmInput.value = String(d.rail_km);
+    els.isNewCheckbox.checked = Boolean(d.is_new);
+    els.yearSlider.value = String(d.year || 2026);
+    els.yearValue.textContent = els.yearSlider.value;
+    setSelectedProject(null);
+    showGlobalError("");
+    if (state.lastPrediction) {
+      renderFuture(Number(els.yearSlider.value));
+      markStale();
+    }
+  }
+
+  els.resetBtn.addEventListener("click", resetToDefaults);
 
   els.yearSlider.addEventListener("input", () => {
     els.yearValue.textContent = els.yearSlider.value;

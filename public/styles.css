@@ -308,6 +308,12 @@ input[type="range"] {
   color: var(--ash);
 }
 
+.form-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+}
+
 /* Primary CTA: sharp gold rectangle, colour-only hover. */
 .btn-primary {
   width: 100%;
@@ -322,6 +328,25 @@ input[type="range"] {
   text-transform: uppercase;
   cursor: pointer;
   transition: background-color 0.15s ease;
+}
+
+.btn-secondary {
+  background: var(--iron);
+  color: var(--white);
+  border: 1px solid var(--graphite);
+  border-radius: 0;
+  padding: 16px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--charcoal);
+  border-color: var(--white);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -542,7 +567,8 @@ th.num, td.num {
 
   .grid-2,
   .grid-3,
-  .result-grid {
+  .result-grid,
+  .form-actions {
     grid-template-columns: 1fr;
   }
 }
