@@ -1,176 +1,233 @@
 {
   "group_cv_5fold": {
-    "Balanced Blend (0.4 Ridge + 0.3 HGB + 0.3 ET)": {
-      "mae_thb": 1518888.8169252044,
-      "mape_pct": 18.92085896099647,
-      "median_ape_pct": 14.515956173279438,
-      "mse_thb2": 30117899915597.29,
-      "r2": 0.8181979099058171,
-      "rmse_thb": 5487977.761944493,
-      "within_10pct": 35.56985294117647,
-      "within_20pct": 63.541666666666664
+    "Baseline: Blend LR + GB (main)": {
+      "mae_thb": 1579075.2516911346,
+      "mape_pct": 19.67115040574391,
+      "median_ape_pct": 14.82524781559958,
+      "mse_thb2": 29384321309857.688,
+      "nrmse_pct": 78.33063656142929,
+      "r2": 0.8239716586835408,
+      "rmse_thb": 5420730.698887161,
+      "rmspe_pct": 28.25444645747742,
+      "within_10pct": 35.14285714285714,
+      "within_20pct": 63.33333333333333
     },
-    "Baseline: Blend LR + GB (origin/main PR #8)": {
-      "mae_thb": 1572637.5210731365,
-      "mape_pct": 19.494295160656197,
-      "median_ape_pct": 15.092345424252226,
-      "mse_thb2": 30329483160198.9,
-      "r2": 0.8169207200550878,
-      "rmse_thb": 5507221.001575922,
-      "within_10pct": 34.77328431372549,
-      "within_20pct": 62.591911764705884
+    "Baseline: LR + bld + neigh IDW (main)": {
+      "mae_thb": 1591404.043323607,
+      "mape_pct": 21.31914952347875,
+      "median_ape_pct": 16.30611184944208,
+      "mse_thb2": 23983767636036.684,
+      "nrmse_pct": 70.76728395430077,
+      "r2": 0.8563239630083068,
+      "rmse_thb": 4897322.496633919,
+      "rmspe_pct": 30.207383998192398,
+      "within_10pct": 31.650793650793652,
+      "within_20pct": 58.57142857142858
     },
-    "Baseline: LR + bld + neigh (origin/main)": {
-      "mae_thb": 1637814.5247967292,
-      "mape_pct": 21.382118900297044,
-      "median_ape_pct": 16.867177530465916,
-      "mse_thb2": 24752112596530.87,
-      "r2": 0.8505876632531926,
-      "rmse_thb": 4975149.504942628,
-      "within_10pct": 30.66789215686275,
-      "within_20pct": 58.30269607843137
+    "Baseline: LR + building (main)": {
+      "mae_thb": 1833498.0224418219,
+      "mape_pct": 23.147845881525903,
+      "median_ape_pct": 17.006673068852304,
+      "mse_thb2": 33051396526017.117,
+      "nrmse_pct": 83.07469032074096,
+      "r2": 0.8020038493550099,
+      "rmse_thb": 5749034.399446321,
+      "rmspe_pct": 32.45403972841206,
+      "within_10pct": 29.58730158730159,
+      "within_20pct": 56.34920634920635
     },
-    "Baseline: LR + building (origin/main)": {
-      "mae_thb": 1853527.9092535984,
-      "mape_pct": 23.10649700050518,
-      "median_ape_pct": 18.22488641351051,
-      "mse_thb2": 32326804673953.766,
-      "r2": 0.804864194639693,
-      "rmse_thb": 5685666.598909381,
-      "within_10pct": 27.941176470588236,
-      "within_20pct": 53.49264705882353
+    "V2 CV-RMSPE Optimal Ensemble": {
+      "mae_thb": 1468802.4595590567,
+      "mape_pct": 18.24189004223513,
+      "median_ape_pct": 13.986402233746375,
+      "mse_thb2": 27080561046122.066,
+      "nrmse_pct": 75.19737017857351,
+      "r2": 0.8377724572025832,
+      "rmse_thb": 5203898.6391091505,
+      "rmspe_pct": 26.58409373949377,
+      "within_10pct": 38.19047619047619,
+      "within_20pct": 66.06349206349206
     },
-    "CV-MSE Optimal Blend (Ridge + HGB + ET)": {
-      "mae_thb": 1570176.5455799454,
-      "mape_pct": 21.067450661296846,
-      "median_ape_pct": 16.543082163970517,
-      "mse_thb2": 25353307049881.207,
-      "r2": 0.8469586450122654,
-      "rmse_thb": 5035206.753439347,
-      "within_10pct": 31.311274509803923,
-      "within_20pct": 58.73161764705882
+    "V2 ExtraTrees (brand + comp IDW, bld-w)": {
+      "mae_thb": 1584443.8701977974,
+      "mape_pct": 18.766147607260464,
+      "median_ape_pct": 14.32026226614732,
+      "mse_thb2": 31449961887566.742,
+      "nrmse_pct": 81.037098987016,
+      "r2": 0.8115973288218498,
+      "rmse_thb": 5608026.559099622,
+      "rmspe_pct": 26.72401154268435,
+      "within_10pct": 37.238095238095234,
+      "within_20pct": 64.95238095238095
     },
-    "ExtraTrees (clean IDW, log ppsqm)": {
-      "mae_thb": 1635079.6318732693,
-      "mape_pct": 19.358412419823846,
-      "median_ape_pct": 15.020523865854102,
-      "mse_thb2": 37804254957465.9,
-      "r2": 0.7718004049093283,
-      "rmse_thb": 6148516.484280244,
-      "within_10pct": 34.40563725490196,
-      "within_20pct": 63.541666666666664
+    "V2 HistGB-L2 (brand + comp IDW, bld-w)": {
+      "mae_thb": 1539022.493573972,
+      "mape_pct": 18.61663916071013,
+      "median_ape_pct": 14.553119131529026,
+      "mse_thb2": 32605819850354.285,
+      "nrmse_pct": 82.51281165555795,
+      "r2": 0.8046731001544122,
+      "rmse_thb": 5710150.597869927,
+      "rmspe_pct": 26.95475869913927,
+      "within_10pct": 35.84126984126984,
+      "within_20pct": 65.07936507936508
     },
-    "Pure NumPy Ridge (clean IDW, log ppsqm)": {
-      "mae_thb": 1567292.389687838,
-      "mape_pct": 21.23641814971486,
-      "median_ape_pct": 16.728176737232026,
-      "mse_thb2": 23549020661446.746,
-      "r2": 0.8578499434582103,
-      "rmse_thb": 4852733.318599606,
-      "within_10pct": 30.943627450980394,
-      "within_20pct": 58.486519607843135
+    "V2 HistGB-MAE (brand + comp IDW, bld-w)": {
+      "mae_thb": 1598662.4677814774,
+      "mape_pct": 19.16249028649961,
+      "median_ape_pct": 14.56908025033196,
+      "mse_thb2": 30297810426276.207,
+      "nrmse_pct": 79.53887530784954,
+      "r2": 0.8184993534947242,
+      "rmse_thb": 5504344.686361511,
+      "rmspe_pct": 28.13751417139428,
+      "within_10pct": 35.42857142857142,
+      "within_20pct": 64.19047619047619
     },
-    "Tuned HistGB (clean IDW, log ppsqm)": {
-      "mae_thb": 1569299.7704624936,
-      "mape_pct": 18.832872233240778,
-      "median_ape_pct": 14.75294340212484,
-      "mse_thb2": 35738457769147.164,
-      "r2": 0.7842702732467464,
-      "rmse_thb": 5978165.08379847,
-      "within_10pct": 35.96813725490196,
-      "within_20pct": 62.99019607843137
+    "V2 Pure NumPy Ridge (brand + age-adj IDW)": {
+      "mae_thb": 1439327.5005602504,
+      "mape_pct": 19.07281566837972,
+      "median_ape_pct": 14.60739787503324,
+      "mse_thb2": 21774174106752.758,
+      "nrmse_pct": 67.42868178065403,
+      "r2": 0.8695606506908957,
+      "rmse_thb": 4666280.5430827625,
+      "rmspe_pct": 26.997444530723673,
+      "within_10pct": 36.19047619047619,
+      "within_20pct": 64.5079365079365
+    },
+    "V2 Unseen Ensemble (Ridge + HGB-L2/MAE + ET)": {
+      "mae_thb": 1458803.3585763292,
+      "mape_pct": 18.16118640577473,
+      "median_ape_pct": 13.858901175814232,
+      "mse_thb2": 25876904895830.633,
+      "nrmse_pct": 73.5072183595145,
+      "r2": 0.8449830234571822,
+      "rmse_thb": 5086934.724942972,
+      "rmspe_pct": 26.079156187796382,
+      "within_10pct": 37.77777777777778,
+      "within_20pct": 66.12698412698413
     }
   },
   "project_split": {
-    "Balanced Blend (0.4 Ridge + 0.3 HGB + 0.3 ET)": {
-      "mae_thb": 1653134.0399119344,
-      "mape_pct": 20.61280149202267,
-      "median_ape_pct": 14.432844174155019,
-      "mse_thb2": 21200176876762.758,
-      "r2": 0.7806500362992008,
-      "rmse_thb": 4604364.980837505,
-      "within_10pct": 35.08500772797527,
-      "within_20pct": 64.2967542503864
+    "Baseline: Blend LR + GB (main)": {
+      "mae_thb": 1279189.736653844,
+      "mape_pct": 17.93474519522346,
+      "median_ape_pct": 13.99174143900953,
+      "mse_thb2": 12240320175022.559,
+      "nrmse_pct": 56.95750229231846,
+      "r2": 0.8141187888322323,
+      "rmse_thb": 3498616.8945774212,
+      "rmspe_pct": 24.12798320514439,
+      "within_10pct": 37.4468085106383,
+      "within_20pct": 65.24822695035462
     },
-    "Baseline: Blend LR + GB (origin/main PR #8)": {
-      "mae_thb": 1616095.5798139488,
-      "mape_pct": 20.425810857302153,
-      "median_ape_pct": 14.592133301530982,
-      "mse_thb2": 19225383918702.82,
-      "r2": 0.8010824490184472,
-      "rmse_thb": 4384676.033494701,
-      "within_10pct": 34.003091190108194,
-      "within_20pct": 65.53323029366305
+    "Baseline: LR + bld + neigh IDW (main)": {
+      "mae_thb": 1349596.5429603872,
+      "mape_pct": 19.598960466036573,
+      "median_ape_pct": 15.658084906680536,
+      "mse_thb2": 14490397321294.475,
+      "nrmse_pct": 61.97188327925624,
+      "r2": 0.77994917078389,
+      "rmse_thb": 3806625.450618234,
+      "rmspe_pct": 26.79517035655492,
+      "within_10pct": 35.46099290780142,
+      "within_20pct": 63.829787234042556
     },
-    "Baseline: LR + bld + neigh (origin/main)": {
-      "mae_thb": 1653534.4091696364,
-      "mape_pct": 21.866178094141166,
-      "median_ape_pct": 16.34427652869033,
-      "mse_thb2": 28600582867299.332,
-      "r2": 0.7040809211058918,
-      "rmse_thb": 5347951.277573435,
-      "within_10pct": 31.375579598145286,
-      "within_20pct": 59.969088098918085
+    "Baseline: LR + building (main)": {
+      "mae_thb": 1681649.0450804576,
+      "mape_pct": 22.445118166595634,
+      "median_ape_pct": 17.900005088629165,
+      "mse_thb2": 20575906780187.582,
+      "nrmse_pct": 73.84720101325641,
+      "r2": 0.687534768822393,
+      "rmse_thb": 4536067.325358783,
+      "rmspe_pct": 29.82475893472608,
+      "within_10pct": 27.801418439716315,
+      "within_20pct": 55.0354609929078
     },
-    "Baseline: LR + building (origin/main)": {
-      "mae_thb": 1526014.8320990563,
-      "mape_pct": 23.390807301526774,
-      "median_ape_pct": 18.697492158442024,
-      "mse_thb2": 12195755059587.002,
-      "r2": 0.8738152778075907,
-      "rmse_thb": 3492242.124994629,
-      "within_10pct": 24.72952086553323,
-      "within_20pct": 53.94126738794436
+    "V2 CV-RMSPE Optimal Ensemble": {
+      "mae_thb": 1234785.0749211449,
+      "mape_pct": 17.246260243710886,
+      "median_ape_pct": 13.594126042093329,
+      "mse_thb2": 12185655670202.998,
+      "nrmse_pct": 56.83017565248956,
+      "r2": 0.8149489227027891,
+      "rmse_thb": 3490795.8505479805,
+      "rmspe_pct": 23.257231482470868,
+      "within_10pct": 37.163120567375884,
+      "within_20pct": 67.37588652482269
     },
-    "CV-MSE Optimal Blend (Ridge + HGB + ET)": {
-      "mae_thb": 1717044.8289108225,
-      "mape_pct": 22.674737099802925,
-      "median_ape_pct": 16.81553776684771,
-      "mse_thb2": 31346645314562.215,
-      "r2": 0.6756684837178119,
-      "rmse_thb": 5598807.490400274,
-      "within_10pct": 29.984544049459043,
-      "within_20pct": 57.80525502318392
+    "V2 ExtraTrees (brand + comp IDW, bld-w)": {
+      "mae_thb": 1256692.9234349069,
+      "mape_pct": 17.88069133278515,
+      "median_ape_pct": 13.958567290699403,
+      "mse_thb2": 10470814045565.578,
+      "nrmse_pct": 52.6798792429576,
+      "r2": 0.8409904668446619,
+      "rmse_thb": 3235863.7248137593,
+      "rmspe_pct": 24.08579559184578,
+      "within_10pct": 38.01418439716312,
+      "within_20pct": 63.68794326241135
     },
-    "ExtraTrees (clean IDW, log ppsqm)": {
-      "mae_thb": 1743060.96716316,
-      "mape_pct": 21.700605353791655,
-      "median_ape_pct": 14.877965789152228,
-      "mse_thb2": 19099823856323.32,
-      "r2": 0.8023815700250932,
-      "rmse_thb": 4370334.524532799,
-      "within_10pct": 31.375579598145286,
-      "within_20pct": 62.59659969088099
+    "V2 HistGB-L2 (brand + comp IDW, bld-w)": {
+      "mae_thb": 1277939.756446032,
+      "mape_pct": 17.481430017857516,
+      "median_ape_pct": 13.913465817804354,
+      "mse_thb2": 11702577299518.033,
+      "nrmse_pct": 55.692319575631615,
+      "r2": 0.8222849393549603,
+      "rmse_thb": 3420902.9947541677,
+      "rmspe_pct": 23.33322352842674,
+      "within_10pct": 38.58156028368794,
+      "within_20pct": 63.97163120567376
     },
-    "Pure NumPy Ridge (clean IDW, log ppsqm)": {
-      "mae_thb": 1717044.8289108225,
-      "mape_pct": 22.674737099802925,
-      "median_ape_pct": 16.81553776684771,
-      "mse_thb2": 31346645314562.215,
-      "r2": 0.6756684837178119,
-      "rmse_thb": 5598807.490400274,
-      "within_10pct": 29.984544049459043,
-      "within_20pct": 57.80525502318392
+    "V2 HistGB-MAE (brand + comp IDW, bld-w)": {
+      "mae_thb": 1304572.951651083,
+      "mape_pct": 17.29149067367634,
+      "median_ape_pct": 13.286041937078268,
+      "mse_thb2": 13172208015040.188,
+      "nrmse_pct": 59.085897610288605,
+      "r2": 0.7999671622490925,
+      "rmse_thb": 3629353.66353848,
+      "rmspe_pct": 23.386560478172214,
+      "within_10pct": 37.30496453900709,
+      "within_20pct": 67.94326241134752
     },
-    "Tuned HistGB (clean IDW, log ppsqm)": {
-      "mae_thb": 1777383.9525366912,
-      "mape_pct": 20.880743957902435,
-      "median_ape_pct": 15.23410346955337,
-      "mse_thb2": 24132621226973.883,
-      "r2": 0.7503091780359633,
-      "rmse_thb": 4912496.435314114,
-      "within_10pct": 36.476043276661514,
-      "within_20pct": 60.123647604327665
+    "V2 Pure NumPy Ridge (brand + age-adj IDW)": {
+      "mae_thb": 1260587.3123354323,
+      "mape_pct": 18.098853700854793,
+      "median_ape_pct": 14.536636588571646,
+      "mse_thb2": 12965479611344.77,
+      "nrmse_pct": 58.62040851129113,
+      "r2": 0.8031065348727022,
+      "rmse_thb": 3600760.9767026706,
+      "rmspe_pct": 24.45869487271969,
+      "within_10pct": 36.312056737588655,
+      "within_20pct": 64.39716312056738
+    },
+    "V2 Unseen Ensemble (Ridge + HGB-L2/MAE + ET)": {
+      "mae_thb": 1233668.3989106342,
+      "mape_pct": 17.11182261005372,
+      "median_ape_pct": 13.47161330119253,
+      "mse_thb2": 11970751396105.453,
+      "nrmse_pct": 56.326822573578276,
+      "r2": 0.8182124538999465,
+      "rmse_thb": 3459877.3672061632,
+      "rmspe_pct": 23.043867976673386,
+      "within_10pct": 38.156028368794324,
+      "within_20pct": 68.22695035460993
     }
   },
   "project_split_meta": {
-    "cv_blend_rmse_thb": 4511606.585333723,
+    "cv_blend_rmspe_pct": 26.515781235713938,
     "cv_blend_weights": {
-      "et": 0.0,
-      "hgb": 0.0,
-      "ridge": 1.0
+      "et": 0.1,
+      "hgb_l2": 0.2,
+      "hgb_mae": 0.1,
+      "ridge": 0.6
     },
-    "cv_ridge_rmse_thb": 4511606.585333723,
+    "cv_ridge_log_rmse": 0.24842317063190147,
     "feature_names": [
       "log_area_sqm",
       "bedrooms",
@@ -178,111 +235,152 @@
       "floor",
       "is_new_unit",
       "building_age",
+      "log_age",
       "log_total_unit",
       "total_floor",
       "facility_count",
+      "has_pool",
+      "has_gym",
       "rail_km",
       "mall_km",
       "has_building_info",
       "floor_ratio",
       "log_units_per_floor",
+      "log_units_per_bldg",
       "is_high_rise",
       "is_central_rail",
+      "is_suburban_rail",
       "log_area_per_br",
-      "clean_neigh_idw"
+      "neigh_idw_k5",
+      "neigh_idw_k15",
+      "neigh_age_adj",
+      "neigh_comparable",
+      "neigh_price_std",
+      "district_log_ppsqm",
+      "brand_prem_t1",
+      "brand_prem_t2"
     ],
-    "ridge_lambda": 1.0
+    "ridge_lambda": 0.5
   },
   "random_split": {
-    "Balanced Blend (0.4 Ridge + 0.3 HGB + 0.3 ET)": {
-      "mae_thb": 1235891.5791934563,
-      "mape_pct": 15.495254688502047,
-      "median_ape_pct": 11.027687781606758,
-      "mse_thb2": 14057024285455.047,
-      "r2": 0.8895531981477551,
-      "rmse_thb": 3749269.833641618,
-      "within_10pct": 45.954198473282446,
-      "within_20pct": 73.2824427480916
+    "Baseline: Blend LR + GB (main)": {
+      "mae_thb": 1292462.261345171,
+      "mape_pct": 16.44915112013951,
+      "median_ape_pct": 12.826519877711002,
+      "mse_thb2": 15659342753305.725,
+      "nrmse_pct": 59.674663408920146,
+      "r2": 0.8693897376556441,
+      "rmse_thb": 3957188.743705021,
+      "rmspe_pct": 22.415583658684753,
+      "within_10pct": 39.84126984126984,
+      "within_20pct": 71.26984126984127
     },
-    "Baseline: Blend LR + GB (origin/main PR #8)": {
-      "mae_thb": 1398900.849266316,
-      "mape_pct": 16.312867912404545,
-      "median_ape_pct": 11.792778168530704,
-      "mse_thb2": 18966315073834.848,
-      "r2": 0.8509806342872608,
-      "rmse_thb": 4355033.303412828,
-      "within_10pct": 44.88549618320611,
-      "within_20pct": 72.51908396946564
+    "Baseline: LR + bld + neigh IDW (main)": {
+      "mae_thb": 1677691.5061818832,
+      "mape_pct": 20.6817182637861,
+      "median_ape_pct": 16.756260277308463,
+      "mse_thb2": 32190496095243.246,
+      "nrmse_pct": 85.55926555352276,
+      "r2": 0.7315079434539407,
+      "rmse_thb": 5673666.900272102,
+      "rmspe_pct": 27.556022173128863,
+      "within_10pct": 30.952380952380953,
+      "within_20pct": 57.77777777777777
     },
-    "Baseline: LR + bld + neigh (origin/main)": {
-      "mae_thb": 1675156.657801451,
-      "mape_pct": 20.41921311747505,
-      "median_ape_pct": 15.395874336912009,
-      "mse_thb2": 23291438869140.06,
-      "r2": 0.8169979021594675,
-      "rmse_thb": 4826120.478100402,
-      "within_10pct": 33.12977099236642,
-      "within_20pct": 61.52671755725191
+    "Baseline: LR + building (main)": {
+      "mae_thb": 1779706.276855588,
+      "mape_pct": 23.066694685145116,
+      "median_ape_pct": 17.55968474532808,
+      "mse_thb2": 21180973441121.062,
+      "nrmse_pct": 69.40266876549279,
+      "r2": 0.8233353377957289,
+      "rmse_thb": 4602279.157235147,
+      "rmspe_pct": 31.197678851801054,
+      "within_10pct": 30.0,
+      "within_20pct": 54.6031746031746
     },
-    "Baseline: LR + building (origin/main)": {
-      "mae_thb": 1758970.3576730043,
-      "mape_pct": 21.320574076281567,
-      "median_ape_pct": 15.860001770849985,
-      "mse_thb2": 27039280999600.117,
-      "r2": 0.787550903367218,
-      "rmse_thb": 5199930.864886582,
-      "within_10pct": 32.82442748091603,
-      "within_20pct": 61.06870229007634
+    "V2 CV-RMSPE Optimal Ensemble": {
+      "mae_thb": 1032394.3371256469,
+      "mape_pct": 13.425283226405114,
+      "median_ape_pct": 9.79811290263393,
+      "mse_thb2": 9236738989019.598,
+      "nrmse_pct": 45.831339327037355,
+      "r2": 0.9229589056470768,
+      "rmse_thb": 3039200.386453581,
+      "rmspe_pct": 19.0373522942448,
+      "within_10pct": 50.63492063492063,
+      "within_20pct": 79.36507936507937
     },
-    "CV-MSE Optimal Blend (Ridge + HGB + ET)": {
-      "mae_thb": 1316704.1591761033,
-      "mape_pct": 16.881465144986475,
-      "median_ape_pct": 11.964016566968775,
-      "mse_thb2": 15685685734245.38,
-      "r2": 0.8767567168536978,
-      "rmse_thb": 3960515.841938444,
-      "within_10pct": 42.13740458015267,
-      "within_20pct": 71.14503816793894
+    "V2 ExtraTrees (brand + comp IDW, bld-w)": {
+      "mae_thb": 1043272.8107967395,
+      "mape_pct": 13.37344920939606,
+      "median_ape_pct": 9.889128865537387,
+      "mse_thb2": 9930870059458.29,
+      "nrmse_pct": 47.522235561983166,
+      "r2": 0.917169349684249,
+      "rmse_thb": 3151328.3008055966,
+      "rmspe_pct": 19.217290862284692,
+      "within_10pct": 50.317460317460316,
+      "within_20pct": 79.04761904761905
     },
-    "ExtraTrees (clean IDW, log ppsqm)": {
-      "mae_thb": 1095660.6265359912,
-      "mape_pct": 13.61987069077267,
-      "median_ape_pct": 9.570480464417285,
-      "mse_thb2": 11475471480642.08,
-      "r2": 0.90983659848301,
-      "rmse_thb": 3387546.528188518,
-      "within_10pct": 52.06106870229008,
-      "within_20pct": 80.45801526717557
+    "V2 HistGB-L2 (brand + comp IDW, bld-w)": {
+      "mae_thb": 1095889.0131227137,
+      "mape_pct": 14.723836412967831,
+      "median_ape_pct": 10.689837530788369,
+      "mse_thb2": 8495380750260.982,
+      "nrmse_pct": 43.95361877388624,
+      "r2": 0.9291423704055177,
+      "rmse_thb": 2914683.6449709223,
+      "rmspe_pct": 20.075928156520625,
+      "within_10pct": 46.03174603174603,
+      "within_20pct": 74.92063492063492
     },
-    "Pure NumPy Ridge (clean IDW, log ppsqm)": {
-      "mae_thb": 1592833.708088805,
-      "mape_pct": 20.495456967357743,
-      "median_ape_pct": 15.256874778527187,
-      "mse_thb2": 20432998713913.062,
-      "r2": 0.8394568214171885,
-      "rmse_thb": 4520287.459212419,
-      "within_10pct": 36.33587786259542,
-      "within_20pct": 61.679389312977094
+    "V2 HistGB-MAE (brand + comp IDW, bld-w)": {
+      "mae_thb": 1178258.6885499342,
+      "mape_pct": 15.239305544117013,
+      "median_ape_pct": 11.514369187925263,
+      "mse_thb2": 10201863070223.188,
+      "nrmse_pct": 48.166263597425534,
+      "r2": 0.9149090716644694,
+      "rmse_thb": 3194035.546174023,
+      "rmspe_pct": 21.171093493768115,
+      "within_10pct": 45.23809523809524,
+      "within_20pct": 75.39682539682539
     },
-    "Tuned HistGB (clean IDW, log ppsqm)": {
-      "mae_thb": 1201731.6685891843,
-      "mape_pct": 14.894989514997967,
-      "median_ape_pct": 10.264602045836982,
-      "mse_thb2": 15994642170629.338,
-      "r2": 0.8743292293842778,
-      "rmse_thb": 3999330.215252216,
-      "within_10pct": 49.00763358778626,
-      "within_20pct": 75.72519083969466
+    "V2 Pure NumPy Ridge (brand + age-adj IDW)": {
+      "mae_thb": 1385132.1382411502,
+      "mape_pct": 17.565327463458495,
+      "median_ape_pct": 13.661977084430275,
+      "mse_thb2": 21892700226915.023,
+      "nrmse_pct": 70.55907491486734,
+      "r2": 0.817399020820329,
+      "rmse_thb": 4678963.584696404,
+      "rmspe_pct": 23.593628178562817,
+      "within_10pct": 37.61904761904762,
+      "within_20pct": 67.77777777777779
+    },
+    "V2 Unseen Ensemble (Ridge + HGB-L2/MAE + ET)": {
+      "mae_thb": 1182053.6029130223,
+      "mape_pct": 15.096733250484421,
+      "median_ape_pct": 11.543819051320261,
+      "mse_thb2": 12532129803954.438,
+      "nrmse_pct": 53.3845584886927,
+      "r2": 0.8954729590370277,
+      "rmse_thb": 3540074.830276111,
+      "rmspe_pct": 20.565515215546384,
+      "within_10pct": 43.17460317460318,
+      "within_20pct": 74.12698412698413
     }
   },
   "random_split_meta": {
-    "cv_blend_rmse_thb": 4616029.325137844,
+    "cv_blend_rmspe_pct": 20.34604658029574,
     "cv_blend_weights": {
-      "et": 0.0,
-      "hgb": 0.45,
-      "ridge": 0.55
+      "et": 0.7,
+      "hgb_l2": 0.3,
+      "hgb_mae": 0.0,
+      "ridge": 0.0
     },
-    "cv_ridge_rmse_thb": 4754881.655884352,
+    "cv_ridge_log_rmse": 0.2266207412445534,
     "feature_names": [
       "log_area_sqm",
       "bedrooms",
@@ -290,19 +388,31 @@
       "floor",
       "is_new_unit",
       "building_age",
+      "log_age",
       "log_total_unit",
       "total_floor",
       "facility_count",
+      "has_pool",
+      "has_gym",
       "rail_km",
       "mall_km",
       "has_building_info",
       "floor_ratio",
       "log_units_per_floor",
+      "log_units_per_bldg",
       "is_high_rise",
       "is_central_rail",
+      "is_suburban_rail",
       "log_area_per_br",
-      "clean_neigh_idw"
+      "neigh_idw_k5",
+      "neigh_idw_k15",
+      "neigh_age_adj",
+      "neigh_comparable",
+      "neigh_price_std",
+      "district_log_ppsqm",
+      "brand_prem_t1",
+      "brand_prem_t2"
     ],
-    "ridge_lambda": 1.0
+    "ridge_lambda": 2.0
   }
 }
