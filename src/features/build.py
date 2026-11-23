@@ -191,6 +191,8 @@ class ProjectPriceLevels:
 
     @classmethod
     def fit(cls, train: pd.DataFrame) -> ProjectPriceLevels:
+        # a listing without a project name is not part of any building
+        train = train[project_key(train["project_name"]) != ""]
         log_price_per_sqm = np.log(train["price_per_sqm"])
         keys = project_key(train["project_name"])
         return cls(
@@ -211,6 +213,113 @@ class ProjectPriceLevels:
         has_history = counts > 0
         level = np.where(has_history, sums / np.maximum(counts, 1), fallback)
         return pd.DataFrame({"project_log_price_per_sqm": level, "has_project_history": has_history.astype(float)})
+
+
+# within a building with 3+ listings, a price per sqm this far from the others is treated as a
+# typing error when building the history (a factor of 1.8 either way)
+BUILDING_OUTLIER_FACTOR = 1.8
+# weight of the median in the building level; the rest is the mean
+BUILDING_MEDIAN_WEIGHT = 0.5
+# how many listings' worth of weight the unseen-building estimate gets (chosen by grouped CV in
+# src/evaluate/benchmark.py on the development rows only)
+KNOWN_PRIOR_STRENGTH = 0.5
+
+
+def drop_building_outliers(history: pd.DataFrame) -> pd.DataFrame:
+    keys = project_key(history["project_name"])
+    log_ppsqm = np.log(history["price_per_sqm"])
+    grouped = log_ppsqm.groupby(keys)
+    count = grouped.transform("size")
+    others = (grouped.transform("sum") - log_ppsqm) / (count - 1).clip(lower=1)
+    odd = (keys != "") & (count >= 3) & ((log_ppsqm - others).abs() > np.log(BUILDING_OUTLIER_FACTOR))
+    return history[~odd]
+
+
+@dataclass
+class KnownBuildingPrice:
+    """Price of a unit in a building that already has listings in the data.
+
+    1. Building level: log price per sqm of the building's other listings, half mean and half
+       median so one odd listing moves it less.
+    2. Shrinkage: with few listings the level is noisy, so it is pulled toward the unseen-building
+       estimate for the unit, weighted as if that estimate were `prior_strength` more listings:
+       (n * level + m * prior) / (n + m).
+    3. Within-building adjustment: Linear Regression on how the unit differs from the rest of its
+       building (floor, log area, new unit) explains what is left.
+    The history may include listings from pages beyond the per-zone cap: they only change the
+    level of their own building, not any zone-level statistic, so they cannot tilt one zone."""
+
+    history: pd.DataFrame
+    W_adjust: np.ndarray
+    prior_strength: float = KNOWN_PRIOR_STRENGTH
+    median_weight: float = BUILDING_MEDIAN_WEIGHT
+
+    @staticmethod
+    def make_history(rows: pd.DataFrame) -> pd.DataFrame:
+        rows = drop_building_outliers(rows[project_key(rows["project_name"]) != ""])
+        return pd.DataFrame({
+            "key": project_key(rows["project_name"]).to_numpy(),
+            "listing_id": rows["listing_id"].astype(str).to_numpy(),
+            "log_ppsqm": np.log(rows["price_per_sqm"].to_numpy()),
+            "floor": rows["floor"].to_numpy(dtype=float),
+            "log_area": np.log(rows["area_sqm"].to_numpy()),
+        })
+
+    def building_stats(self, listings: pd.DataFrame, leave_one_out: bool) -> pd.DataFrame:
+        """n, level, mean floor and mean log area of each unit's building; a training unit never
+        sees its own listing."""
+        keys = project_key(listings["project_name"]).to_numpy()
+        # a unit typed into the web app has no listing id
+        ids = (listings["listing_id"].astype(str).to_numpy() if "listing_id" in listings
+               else np.full(len(listings), ""))
+        by_key = {key: (frame["listing_id"].to_numpy(), frame["log_ppsqm"].to_numpy(), frame["floor"].to_numpy(),
+                        frame["log_area"].to_numpy()) for key, frame in self.history.groupby("key")}
+        out = np.full((len(listings), 4), np.nan)
+        out[:, 0] = 0
+        for row, (key, listing_id) in enumerate(zip(keys, ids)):
+            if key not in by_key:
+                continue
+            history_ids, values, floors, log_areas = by_key[key]
+            keep = history_ids != listing_id if leave_one_out else np.ones(len(values), dtype=bool)
+            if not keep.any():
+                continue
+            kept = values[keep]
+            level = (1 - self.median_weight) * kept.mean() + self.median_weight * np.median(kept)
+            out[row] = [keep.sum(), level, np.nanmean(floors[keep]), log_areas[keep].mean()]
+        return pd.DataFrame(out, columns=["n", "level", "mean_floor", "mean_log_area"])
+
+    @staticmethod
+    def adjustment_features(listings: pd.DataFrame, stats: pd.DataFrame) -> np.ndarray:
+        return np.column_stack([
+            listings["floor"].to_numpy(dtype=float) - stats["mean_floor"].to_numpy(),
+            np.log(listings["area_sqm"].to_numpy()) - stats["mean_log_area"].to_numpy(),
+            listings["is_new_unit"].to_numpy(dtype=float),
+        ])
+
+    def base(self, stats: pd.DataFrame, prior_log_ppsqm: np.ndarray) -> np.ndarray:
+        n, m = stats["n"].to_numpy(), self.prior_strength
+        return (n * stats["level"].to_numpy() + m * prior_log_ppsqm) / (n + m)
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame, prior_log_ppsqm: np.ndarray, extra_history: pd.DataFrame | None = None,
+            prior_strength: float = KNOWN_PRIOR_STRENGTH, median_weight: float = BUILDING_MEDIAN_WEIGHT) -> KnownBuildingPrice:
+        rows = train if extra_history is None else pd.concat([train, extra_history], ignore_index=True)
+        model = cls(history=cls.make_history(rows), W_adjust=np.zeros(4), prior_strength=prior_strength,
+                    median_weight=median_weight)
+        stats = model.building_stats(train, leave_one_out=True)
+        has = stats["n"].to_numpy() > 0
+        x = cls.adjustment_features(train, stats)[has]
+        x = np.nan_to_num(x)
+        residual = np.log(train["price_per_sqm"].to_numpy())[has] - model.base(stats, prior_log_ppsqm)[has]
+        model.W_adjust = lr.fit(x, residual)
+        return model
+
+    def predict(self, listings: pd.DataFrame, prior_log_ppsqm: np.ndarray) -> np.ndarray:
+        """Price in baht, NaN for a unit whose building has no listing in the history."""
+        stats = self.building_stats(listings, leave_one_out=False)
+        has = stats["n"].to_numpy() > 0
+        log_ppsqm = self.base(stats, prior_log_ppsqm) + lr.predict(np.nan_to_num(self.adjustment_features(listings, stats)), self.W_adjust)
+        return np.where(has, np.exp(log_ppsqm) * listings["area_sqm"].to_numpy(), np.nan)
 
 
 def attach_buildings(listings: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
