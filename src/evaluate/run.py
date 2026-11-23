@@ -27,20 +27,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingRegressor, RandomForestRegressor
-from sklearn.model_selection import KFold
 
 from src.features.build import (
     SEED,
     BuildingFeatures,
+    ExtendedBuildingFeatures,
+    MultiScaleNeighbourhood,
     NeighbourhoodPrice,
     ProjectPriceLevels,
     Standardizer,
     ZoneClustering,
     attach_buildings,
     choose_zone_clustering,
+    cv_splits,
     feature_frame,
     fuzzy_zone_memberships,
     membership_frame,
+    project_key,
     split_by_project,
     split_random,
     zone_statistics,
@@ -66,6 +69,8 @@ FILTER_AREA_TOLERANCE = 0.10
 METRICS = ["euclidean", "manhattan"]
 WEIGHTS = ["uniform", "distance"]
 NEIGHBOUR_COUNTS = [5, 10, 20]
+RIDGE_CANDIDATES = [0.0, 1.0, 5.0]
+BLEND_WEIGHTS = [0.0, 0.25, 0.35, 0.5, 0.65, 0.75, 1.0]
 # bands of the predicted price, the value the web app knows before the real price
 PRICE_BANDS = [0, 3e6, 5e6, 8e6, 15e6, np.inf]
 PRICE_BAND_LABELS = ["< 3 ล้าน", "3-5 ล้าน", "5-8 ล้าน", "8-15 ล้าน", "> 15 ล้าน"]
@@ -89,6 +94,11 @@ NEIGHBOUR_FFBP = "FFBP neural network + building + neighbourhood price"
 NEIGHBOUR_GB = "Gradient Boosting + building + neighbourhood price (reference)"
 BLEND = "Blend: Linear Regression + {partner} (building + neighbourhood price)"
 FUZZY_BUILDING_LR = "Linear Regression + building features (Fuzzy C-Means memberships)"
+EXTENDED_LR = "Linear Regression + extended building + multi-scale IDW"
+EXTENDED_GB = "Gradient Boosting (log price/sqm) + extended + IDW (reference)"
+EXTENDED_RF = "Random Forest (log price/sqm) + extended + IDW (reference)"
+EXTENDED_BLEND = "Blend: LR + GB (extended + IDW, CV-weighted)"
+EXTENDED_PROJECT_LR = "Linear Regression + extended + project price level"
 
 
 def price_metrics(actual: np.ndarray, predicted: np.ndarray) -> dict[str, float]:
@@ -140,8 +150,14 @@ def website_filter_prediction(train: pd.DataFrame, test: pd.DataFrame) -> tuple[
     return np.array(predicted), 100 * matched / len(test)
 
 
-def choose_knn_k(features: np.ndarray, log_price: np.ndarray, metric: str, weight: str) -> tuple[int, list[dict[str, float]]]:
-    folds = list(KFold(n_splits=CV_FOLDS, shuffle=True, random_state=SEED).split(features))
+def choose_knn_k(
+    features: np.ndarray,
+    log_price: np.ndarray,
+    metric: str,
+    weight: str,
+    groups: pd.Series | np.ndarray | None = None,
+) -> tuple[int, list[dict[str, float]]]:
+    folds = cv_splits(features, groups=groups)
     curve = []
     for k in K_CANDIDATES:
         fold_errors = []
@@ -170,8 +186,15 @@ class FittedKnn:
     curve: list[dict[str, float]]
 
     @classmethod
-    def fit(cls, features: np.ndarray, log_price: np.ndarray, metric: str, weight: str) -> FittedKnn:
-        k, curve = choose_knn_k(features, log_price, metric, weight)
+    def fit(
+        cls,
+        features: np.ndarray,
+        log_price: np.ndarray,
+        metric: str,
+        weight: str,
+        groups: pd.Series | np.ndarray | None = None,
+    ) -> FittedKnn:
+        k, curve = choose_knn_k(features, log_price, metric, weight, groups=groups)
         scaler = Standardizer.fit(features)
         cv_mape = min(row["cv_mape_pct"] for row in curve)
         return cls(scaler.transform(features), log_price, scaler, k, metric, weight, cv_mape, curve)
@@ -202,8 +225,13 @@ class FittedFfbp:
         return W0, W1, scaler, y_mean, y_std
 
     @classmethod
-    def fit(cls, features: np.ndarray, log_price: np.ndarray) -> FittedFfbp:
-        folds = list(KFold(n_splits=CV_FOLDS, shuffle=True, random_state=SEED).split(features))
+    def fit(
+        cls,
+        features: np.ndarray,
+        log_price: np.ndarray,
+        groups: pd.Series | np.ndarray | None = None,
+    ) -> FittedFfbp:
+        folds = cv_splits(features, groups=groups)
         scores = []
         for setting in FFBP_SETTINGS:
             fold_errors = []
@@ -216,6 +244,41 @@ class FittedFfbp:
         cv_mape, setting = min(scores, key=lambda score: score[0])
         return cls(*cls.train(features, log_price, setting), setting=setting, cv_mape_pct=cv_mape)
 
+    @classmethod
+    def fit_with_neighbourhood(
+        cls,
+        train: pd.DataFrame,
+        clustering: ZoneClustering,
+        neighbour_k: int,
+        groups: pd.Series | np.ndarray | None = None,
+    ) -> FittedFfbp:
+        """Tune FFBP with neighbourhood price refit strictly inside every CV fold (no leakage)."""
+        folds = cv_splits(train, groups=groups)
+        fold_data = []
+        for train_index, valid_index in folds:
+            fold_train, fold_valid = train.iloc[train_index], train.iloc[valid_index]
+            fold_buildings = BuildingFeatures.fit(fold_train)
+            fold_nb = NeighbourhoodPrice.fit(fold_train, neighbour_k)
+            x_fit = feature_frame(fold_train, clustering, buildings=fold_buildings.transform(fold_train),
+                                  neighbourhood=fold_nb.transform(fold_train)).to_numpy()
+            x_valid = feature_frame(fold_valid, clustering, buildings=fold_buildings.transform(fold_valid),
+                                    neighbourhood=fold_nb.transform(fold_valid)).to_numpy()
+            fold_data.append((x_fit, np.log(fold_train["price_thb"].to_numpy()), x_valid, fold_valid["price_thb"].to_numpy()))
+        scores = []
+        for setting in FFBP_SETTINGS:
+            fold_errors = []
+            for x_fit, y_fit, x_valid, actual in fold_data:
+                W0, W1, scaler, y_mean, y_std = cls.train(x_fit, y_fit, setting)
+                predicted = np.exp(ffbp.predict(scaler.transform(x_valid), W0, W1) * y_std + y_mean)
+                fold_errors.append(mape_pct(actual, predicted))
+            scores.append((float(np.mean(fold_errors)), setting))
+        cv_mape, setting = min(scores, key=lambda score: score[0])
+        full_buildings = BuildingFeatures.fit(train)
+        full_nb = NeighbourhoodPrice.fit(train, neighbour_k)
+        x_full = feature_frame(train, clustering, buildings=full_buildings.transform(train),
+                               neighbourhood=full_nb.transform(train)).to_numpy()
+        return cls(*cls.train(x_full, np.log(train["price_thb"].to_numpy()), setting), setting=setting, cv_mape_pct=cv_mape)
+
     def predict(self, features: np.ndarray) -> np.ndarray:
         return np.exp(ffbp.predict(self.scaler.transform(features), self.W0, self.W1) * self.y_std + self.y_mean)
 
@@ -224,19 +287,36 @@ def mape_pct(actual: np.ndarray, predicted: np.ndarray) -> float:
     return float(100 * np.mean(np.abs(predicted - actual) / actual))
 
 
-def choose_neighbour_count(train: pd.DataFrame, clustering: ZoneClustering, buildings: BuildingFeatures) -> tuple[int, list[dict[str, float]]]:
+def make_extended_gb() -> HistGradientBoostingRegressor:
+    return HistGradientBoostingRegressor(
+        loss="absolute_error",
+        max_depth=5,
+        min_samples_leaf=20,
+        l2_regularization=2.0,
+        learning_rate=0.05,
+        max_iter=250,
+        random_state=SEED,
+    )
+
+
+def choose_neighbour_count(
+    train: pd.DataFrame,
+    clustering: ZoneClustering,
+    groups: pd.Series | np.ndarray | None = None,
+) -> tuple[int, list[dict[str, float]]]:
     """k nearest buildings for the neighbourhood price, chosen by the CV error of Linear Regression.
-    The neighbourhood table is rebuilt inside every fold from that fold's training rows only."""
-    folds = list(KFold(n_splits=CV_FOLDS, shuffle=True, random_state=SEED).split(train))
+    Both BuildingFeatures and NeighbourhoodPrice are rebuilt inside every fold from training rows only."""
+    folds = cv_splits(train, groups=groups)
     scan = []
     for k in NEIGHBOUR_COUNTS:
         errors = []
         for train_index, valid_index in folds:
             fold_train, fold_valid = train.iloc[train_index], train.iloc[valid_index]
+            fold_buildings = BuildingFeatures.fit(fold_train)
             neighbourhood = NeighbourhoodPrice.fit(fold_train, k)
-            x_fit = feature_frame(fold_train, clustering, buildings=buildings.transform(fold_train),
+            x_fit = feature_frame(fold_train, clustering, buildings=fold_buildings.transform(fold_train),
                                   neighbourhood=neighbourhood.transform(fold_train)).to_numpy()
-            x_valid = feature_frame(fold_valid, clustering, buildings=buildings.transform(fold_valid),
+            x_valid = feature_frame(fold_valid, clustering, buildings=fold_buildings.transform(fold_valid),
                                     neighbourhood=neighbourhood.transform(fold_valid)).to_numpy()
             W = lr.fit(x_fit, np.log(fold_train["price_thb"].to_numpy()))
             errors.append(mape_pct(fold_valid["price_thb"].to_numpy(), np.exp(lr.predict(x_valid, W))))
@@ -244,14 +324,27 @@ def choose_neighbour_count(train: pd.DataFrame, clustering: ZoneClustering, buil
     return int(min(scan, key=lambda row: row["cv_mape_pct"])["k"]), scan
 
 
-def choose_blend_partner(features: np.ndarray, log_price: np.ndarray, ffbp_setting: dict[str, int]) -> tuple[str, dict[str, float]]:
-    """Average Linear Regression with a second model (geometric mean of the two prices). The
-    partner with the lowest 5-fold CV error on the training data is used."""
-    folds = list(KFold(n_splits=CV_FOLDS, shuffle=True, random_state=SEED).split(features))
+def choose_blend_partner(
+    train: pd.DataFrame,
+    clustering: ZoneClustering,
+    neighbour_k: int,
+    ffbp_setting: dict[str, int],
+    groups: pd.Series | np.ndarray | None = None,
+) -> tuple[str, dict[str, float]]:
+    """Average Linear Regression with a second model (geometric mean of the two prices).
+    BuildingFeatures and NeighbourhoodPrice are refit inside every CV fold to prevent leakage."""
+    folds = cv_splits(train, groups=groups)
     errors: dict[str, list[float]] = {"Linear Regression alone": [], "FFBP": [], "Gradient Boosting": []}
     for train_index, valid_index in folds:
-        x_fit, x_valid, y_fit = features[train_index], features[valid_index], log_price[train_index]
-        actual = np.exp(log_price[valid_index])
+        fold_train, fold_valid = train.iloc[train_index], train.iloc[valid_index]
+        fold_buildings = BuildingFeatures.fit(fold_train)
+        fold_nb = NeighbourhoodPrice.fit(fold_train, neighbour_k)
+        x_fit = feature_frame(fold_train, clustering, buildings=fold_buildings.transform(fold_train),
+                              neighbourhood=fold_nb.transform(fold_train)).to_numpy()
+        x_valid = feature_frame(fold_valid, clustering, buildings=fold_buildings.transform(fold_valid),
+                                neighbourhood=fold_nb.transform(fold_valid)).to_numpy()
+        y_fit = np.log(fold_train["price_thb"].to_numpy())
+        actual = fold_valid["price_thb"].to_numpy()
         log_lr = lr.predict(x_valid, lr.fit(x_fit, y_fit))
         W0, W1, scaler, y_mean, y_std = FittedFfbp.train(x_fit, y_fit, ffbp_setting)
         log_ffbp = ffbp.predict(scaler.transform(x_valid), W0, W1) * y_std + y_mean
@@ -264,8 +357,65 @@ def choose_blend_partner(features: np.ndarray, log_price: np.ndarray, ffbp_setti
     return partner, scores
 
 
-def best_zone_clustering(train: pd.DataFrame) -> tuple[ZoneClustering, list[dict[str, object]]]:
-    candidates = [choose_zone_clustering(train, metric) for metric in METRICS]
+def choose_extended_settings(
+    train: pd.DataFrame,
+    clustering: ZoneClustering,
+    groups: pd.Series | np.ndarray | None = None,
+) -> dict[str, object]:
+    """Select Ridge L2 penalty for extended LR and blend weight w_lr (between extended LR and
+    log-price/sqm Gradient Boosting) strictly via leak-free 5-fold CV."""
+    folds = cv_splits(train, groups=groups)
+    oof_lr: dict[float, list[np.ndarray]] = {l2: [] for l2 in RIDGE_CANDIDATES}
+    oof_gb: list[np.ndarray] = []
+    oof_actual: list[np.ndarray] = []
+
+    for train_index, valid_index in folds:
+        fold_train, fold_valid = train.iloc[train_index], train.iloc[valid_index]
+        ext_bf = ExtendedBuildingFeatures.fit(fold_train)
+        ms_nb = MultiScaleNeighbourhood.fit(fold_train)
+        x_fit = feature_frame(fold_train, clustering, buildings=ext_bf.transform(fold_train),
+                              neighbourhood=ms_nb.transform(fold_train)).to_numpy()
+        x_valid = feature_frame(fold_valid, clustering, buildings=ext_bf.transform(fold_valid),
+                                neighbourhood=ms_nb.transform(fold_valid)).to_numpy()
+        y_fit_log = np.log(fold_train["price_thb"].to_numpy())
+        y_fit_ppsqm = np.log(fold_train["price_per_sqm"].to_numpy())
+        log_area_valid = np.log(fold_valid["area_sqm"].to_numpy())
+        for l2 in RIDGE_CANDIDATES:
+            oof_lr[l2].append(lr.predict(x_valid, lr.fit(x_fit, y_fit_log, l2=l2)))
+        gb_fold = make_extended_gb().fit(x_fit, y_fit_ppsqm)
+        oof_gb.append(gb_fold.predict(x_valid) + log_area_valid)
+        oof_actual.append(fold_valid["price_thb"].to_numpy())
+
+    l2_scores = {
+        l2: float(np.mean([mape_pct(a, np.exp(p)) for a, p in zip(oof_actual, oof_lr[l2])]))
+        for l2 in RIDGE_CANDIDATES
+    }
+    best_l2 = min(l2_scores, key=l2_scores.get)
+    gb_cv_mape = float(np.mean([mape_pct(a, np.exp(p)) for a, p in zip(oof_actual, oof_gb)]))
+    weight_scores = {
+        w: float(np.mean([
+            mape_pct(a, np.exp(w * p_lr + (1.0 - w) * p_gb))
+            for a, p_lr, p_gb in zip(oof_actual, oof_lr[best_l2], oof_gb)
+        ]))
+        for w in BLEND_WEIGHTS
+    }
+    best_w_lr = min(weight_scores, key=weight_scores.get)
+    return {
+        "l2": float(best_l2),
+        "w_lr": float(best_w_lr),
+        "lr_cv_mape_pct": l2_scores[best_l2],
+        "gb_cv_mape_pct": gb_cv_mape,
+        "blend_cv_mape_pct": weight_scores[best_w_lr],
+        "l2_scan": {str(k): v for k, v in l2_scores.items()},
+        "weight_scan": {str(k): v for k, v in weight_scores.items()},
+    }
+
+
+def best_zone_clustering(
+    train: pd.DataFrame,
+    groups: pd.Series | np.ndarray | None = None,
+) -> tuple[ZoneClustering, list[dict[str, object]]]:
+    candidates = [choose_zone_clustering(train, metric, groups=groups) for metric in METRICS]
     rows = []
     for clustering in candidates:
         chosen = next(row for row in clustering.scan if row["k"] == clustering.n_clusters)
@@ -276,16 +426,23 @@ def best_zone_clustering(train: pd.DataFrame) -> tuple[ZoneClustering, list[dict
     return best, rows
 
 
-def best_knn(features: np.ndarray, log_price: np.ndarray) -> tuple[FittedKnn, list[FittedKnn]]:
-    candidates = [FittedKnn.fit(features, log_price, metric, weight) for metric in METRICS for weight in WEIGHTS]
+def best_knn(
+    features: np.ndarray,
+    log_price: np.ndarray,
+    groups: pd.Series | np.ndarray | None = None,
+) -> tuple[FittedKnn, list[FittedKnn]]:
+    candidates = [FittedKnn.fit(features, log_price, metric, weight, groups=groups) for metric in METRICS for weight in WEIGHTS]
     return min(candidates, key=lambda model: model.cv_mape_pct), candidates
 
 
-def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]:
-    clustering, kmeans_experiment = best_zone_clustering(train)
+def evaluate_split(train: pd.DataFrame, test: pd.DataFrame, group_cv: bool = False) -> dict[str, object]:
+    groups = train["project_name"] if group_cv else None
+    clustering, kmeans_experiment = best_zone_clustering(train, groups=groups)
     test = test[test["zone_no"].isin(clustering.zone_table["zone_no"])].reset_index(drop=True)
     y_train_log = np.log(train["price_thb"].to_numpy())
+    y_train_ppsqm_log = np.log(train["price_per_sqm"].to_numpy())
     y_test = test["price_thb"].to_numpy()
+    log_area_test = np.log(test["area_sqm"].to_numpy())
 
     x_train = feature_frame(train, clustering).to_numpy()
     x_test = feature_frame(test, clustering).to_numpy()
@@ -308,11 +465,11 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     W = lr.fit(x_train, y_train_log)
     W_project = lr.fit(xp_train, y_train_log)
     W_no_location = lr.fit(x_train_no_location, y_train_log)
-    knn, knn_candidates = best_knn(x_train, y_train_log)
-    knn_project = FittedKnn.fit(xp_train, y_train_log, knn.metric, knn.weight)
+    knn, knn_candidates = best_knn(x_train, y_train_log, groups=groups)
+    knn_project = FittedKnn.fit(xp_train, y_train_log, knn.metric, knn.weight, groups=groups)
     W_building = lr.fit(xb_train, y_train_log)
     W_building_project = lr.fit(xbp_train, y_train_log)
-    knn_building = FittedKnn.fit(xb_train, y_train_log, knn.metric, knn.weight)
+    knn_building = FittedKnn.fit(xb_train, y_train_log, knn.metric, knn.weight, groups=groups)
     forest_building = RandomForestRegressor(n_estimators=300, random_state=SEED, n_jobs=-1).fit(xb_train, y_train_log)
     boosting_building = HistGradientBoostingRegressor(random_state=SEED).fit(xb_train, y_train_log)
     boosting_building_project = HistGradientBoostingRegressor(random_state=SEED).fit(xbp_train, y_train_log)
@@ -325,7 +482,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     xfb_test = pd.concat([xf_test, buildings.transform(test)], axis=1).to_numpy()
     W_fuzzy = lr.fit(xf_train.to_numpy(), y_train_log)
     W_fuzzy_building = lr.fit(xfb_train, y_train_log)
-    neighbour_count, neighbour_scan = choose_neighbour_count(train, clustering, buildings)
+    neighbour_count, neighbour_scan = choose_neighbour_count(train, clustering, groups=groups)
     neighbourhood = NeighbourhoodPrice.fit(train, neighbour_count)
     xn_train_frame = feature_frame(train, clustering, buildings=buildings.transform(train),
                                    neighbourhood=neighbourhood.transform(train))
@@ -333,15 +490,44 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     xn_test = feature_frame(test, clustering, buildings=buildings.transform(test),
                             neighbourhood=neighbourhood.transform(test)).to_numpy()
     W_neighbour = lr.fit(xn_train, y_train_log)
-    network_neighbour = FittedFfbp.fit(xn_train, y_train_log)
+    network_neighbour = FittedFfbp.fit_with_neighbourhood(train, clustering, neighbour_count, groups=groups)
     boosting_neighbour = HistGradientBoostingRegressor(random_state=SEED).fit(xn_train, y_train_log)
-    partner, blend_scores = choose_blend_partner(xn_train, y_train_log, network_neighbour.setting)
+    partner, blend_scores = choose_blend_partner(train, clustering, neighbour_count, network_neighbour.setting, groups=groups)
     log_lr_neighbour = lr.predict(xn_test, W_neighbour)
     log_partner = (np.log(network_neighbour.predict(xn_test)) if partner == "FFBP"
                    else boosting_neighbour.predict(xn_test))
     blend_name = BLEND.format(partner=partner)
-    network = FittedFfbp.fit(x_train, y_train_log)
-    network_building = FittedFfbp.fit(xb_train, y_train_log)
+
+    # Extended building features + multi-scale IDW neighbourhood + CV-selected Ridge L2 & blend weight
+    ext_settings = choose_extended_settings(train, clustering, groups=groups)
+    ext_buildings = ExtendedBuildingFeatures.fit(train)
+    ms_neighbourhood = MultiScaleNeighbourhood.fit(train)
+    xe_train_frame = feature_frame(train, clustering, buildings=ext_buildings.transform(train),
+                                   neighbourhood=ms_neighbourhood.transform(train))
+    xe_train = xe_train_frame.to_numpy()
+    xe_test = feature_frame(test, clustering, buildings=ext_buildings.transform(test),
+                            neighbourhood=ms_neighbourhood.transform(test)).to_numpy()
+    W_extended = lr.fit(xe_train, y_train_log, l2=ext_settings["l2"])
+    gb_extended = make_extended_gb().fit(xe_train, y_train_ppsqm_log)
+    rf_extended = RandomForestRegressor(n_estimators=300, min_samples_leaf=3, random_state=SEED, n_jobs=-1).fit(
+        xe_train, y_train_ppsqm_log
+    )
+    log_lr_extended = lr.predict(xe_test, W_extended)
+    log_gb_extended = gb_extended.predict(xe_test) + log_area_test
+    log_rf_extended = rf_extended.predict(xe_test) + log_area_test
+    w_lr = ext_settings["w_lr"]
+    log_blend_extended = w_lr * log_lr_extended + (1.0 - w_lr) * log_gb_extended
+
+    xep_train_frame = feature_frame(train, clustering, project_levels=levels.transform(train, leave_one_out=True),
+                                    buildings=ext_buildings.transform(train),
+                                    neighbourhood=ms_neighbourhood.transform(train))
+    xep_test = feature_frame(test, clustering, project_levels=levels.transform(test, leave_one_out=False),
+                             buildings=ext_buildings.transform(test),
+                             neighbourhood=ms_neighbourhood.transform(test)).to_numpy()
+    W_extended_project = lr.fit(xep_train_frame.to_numpy(), y_train_log, l2=ext_settings["l2"])
+
+    network = FittedFfbp.fit(x_train, y_train_log, groups=groups)
+    network_building = FittedFfbp.fit(xb_train, y_train_log, groups=groups)
     boosting = HistGradientBoostingRegressor(random_state=SEED).fit(x_train, y_train_log)
     boosting_project = HistGradientBoostingRegressor(random_state=SEED).fit(xp_train, y_train_log)
     forest = RandomForestRegressor(n_estimators=300, random_state=SEED, n_jobs=-1).fit(x_train, y_train_log)
@@ -369,11 +555,16 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         NEIGHBOUR_FFBP: network_neighbour.predict(xn_test),
         NEIGHBOUR_GB: np.exp(boosting_neighbour.predict(xn_test)),
         blend_name: np.exp((log_lr_neighbour + log_partner) / 2),
+        EXTENDED_LR: np.exp(log_lr_extended),
+        EXTENDED_GB: np.exp(log_gb_extended),
+        EXTENDED_RF: np.exp(log_rf_extended),
+        EXTENDED_BLEND: np.exp(log_blend_extended),
         BUILDING_KNN: knn_building.predict(xb_test),
         BUILDING_FFBP: network_building.predict(xb_test),
         "Random Forest + building features (reference)": np.exp(forest_building.predict(xb_test)),
         "Gradient Boosting + building features (reference)": np.exp(boosting_building.predict(xb_test)),
         BUILDING_PROJECT_LR: np.exp(lr.predict(xbp_test, W_building_project)),
+        EXTENDED_PROJECT_LR: np.exp(lr.predict(xep_test, W_extended_project)),
         "Gradient Boosting + building + project price level (reference)": np.exp(boosting_building_project.predict(xbp_test)),
     }
     knn_experiment = [
@@ -386,13 +577,19 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         "W": W, "W_project": W_project, "knn": knn, "knn_project": knn_project,
         "W_building": W_building, "W_building_project": W_building_project, "knn_building": knn_building,
         "ffbp": {name: {"hidden": model.setting["H"], "epochs": model.setting["epochs"], "cv_mape_pct": model.cv_mape_pct}
-                 for name, model in ((MAIN_FFBP, network), (BUILDING_FFBP, network_building))},
+                 for name, model in ((MAIN_FFBP, network), (BUILDING_FFBP, network_building), (NEIGHBOUR_FFBP, network_neighbour))},
         "buildings": buildings, "building_feature_names": list(xb_train_frame.columns),
         "memberships": memberships,
         "neighbourhood": neighbourhood, "neighbour_scan": neighbour_scan, "W_neighbour": W_neighbour,
         "neighbour_feature_names": list(xn_train_frame.columns),
         "network_neighbour": network_neighbour, "boosting_neighbour": boosting_neighbour,
         "blend": {"name": blend_name, "partner": partner, "cv_mape_pct": blend_scores, "neighbour_k": neighbour_count},
+        "extended_buildings": ext_buildings, "multiscale_neighbourhood": ms_neighbourhood,
+        "extended_feature_names": list(xe_train_frame.columns),
+        "W_extended": W_extended, "gb_extended": gb_extended,
+        "extended_blend": ext_settings,
+        "W_extended_project": W_extended_project,
+        "extended_project_feature_names": list(xep_train_frame.columns),
         "building_project_feature_names": list(xbp_train_frame.columns),
         "residual_std_log_building": float(np.std(y_train_log - lr.predict(xb_train, W_building))),
         "residual_std_log_building_project": float(np.std(y_train_log - lr.predict(xbp_train, W_building_project))),
@@ -628,8 +825,8 @@ def main() -> None:
     LOG.info("building data found for %.1f%% of listings", 100 * listings["has_building_info"].mean())
     LOG.info("using %s of %s clean listings (pages <= %s per zone)", len(listings), len(all_listings), MAX_PAGES_PER_ZONE)
 
-    main_run = evaluate_split(*split_random(listings))
-    project_run = evaluate_split(*split_by_project(listings))
+    main_run = evaluate_split(*split_random(listings), group_cv=False)
+    project_run = evaluate_split(*split_by_project(listings), group_cv=True)
     curve = learning_curve(main_run["train"], main_run["test"], main_run["clustering"])
 
     clustering = main_run["clustering"]
@@ -661,13 +858,20 @@ def main() -> None:
         "neighbourhood_project_split": {"k": project_run["blend"]["neighbour_k"], "scan": project_run["neighbour_scan"]},
         "blend_random_split": main_run["blend"],
         "blend_project_split": project_run["blend"],
+        "extended_blend_random_split": main_run["extended_blend"],
+        "extended_blend_project_split": project_run["extended_blend"],
         "ffbp_random_split": main_run["ffbp"],
         "ffbp_project_split": project_run["ffbp"],
         "features": main_run["feature_names"],
         "building_features": main_run["building_feature_names"],
+        "extended_features": main_run["extended_feature_names"],
         "building_linear_regression": {
             name: {"coef_log": float(coef), "effect_pct": float(100 * (np.exp(coef) - 1))}
             for name, coef in zip(main_run["building_feature_names"], main_run["W_building"][:-1])
+        },
+        "extended_linear_regression": {
+            name: {"coef_log": float(coef), "effect_pct": float(100 * (np.exp(coef) - 1))}
+            for name, coef in zip(main_run["extended_feature_names"], main_run["W_extended"][:-1])
         },
         "linear_regression": {"intercept_log": float(main_run["W"][-1]), "coefficients": coefficients},
         "test_results_random_split": main_run["results"],
@@ -684,17 +888,16 @@ def main() -> None:
     memberships.sort_values("median_price_per_sqm").to_csv(REPORTS_DIR / "zone_fuzzy_memberships.csv", index=False)
     plot_fuzzy_memberships(memberships)
     for split_name, run in (("random_split", main_run), ("project_split", project_run)):
-        errors = zone_errors(run["test"], run["predictions"][run["blend"]["name"]])
+        errors = zone_errors(run["test"], run["predictions"][EXTENDED_BLEND])
         errors.to_csv(REPORTS_DIR / f"zone_errors_{split_name}.csv", index=False)
-    blend_name = main_run["blend"]["name"]
     # the web app uses the project-level model only for a building that has other listings in the
     # data, so its accuracy is measured on those test units only
     known = main_run["levels"].transform(main_run["test"], leave_one_out=False)["has_project_history"].to_numpy() > 0
     web_reliability = {
         "project_level": reliability(main_run["test"][known], main_run["predictions"][BUILDING_PROJECT_LR][known]),
         # a building the app cannot price from its own listings is an unseen building: the
-        # by-project split measures exactly that case
-        "blend_unseen": reliability(project_run["test"], project_run["predictions"][blend_name]),
+        # by-project split measures the exact extended unseen-building blend deployed in the app
+        "blend_unseen": reliability(project_run["test"], project_run["predictions"][EXTENDED_BLEND]),
     }
     for name, table in web_reliability.items():
         table["bands"].to_csv(REPORTS_DIR / f"price_band_errors_{name}.csv", index=False)
@@ -709,6 +912,33 @@ def main() -> None:
     plot_model_comparison(main_run["results"], project_run["results"])
     plot_learning_curve(curve)
     plot_knn_experiment(main_run["knn_experiment"], project_run["knn_experiment"])
+
+    # Fit the unseen-building extended blend on main_run["train"] with the GroupCV-selected
+    # hyperparameters from project_run so deployed weights and web_reliability match 100%.
+    unseen_l2 = project_run["extended_blend"]["l2"]
+    unseen_w_lr = project_run["extended_blend"]["w_lr"]
+    xe_web_frame = feature_frame(
+        main_run["train"], clustering,
+        buildings=main_run["extended_buildings"].transform(main_run["train"]),
+        neighbourhood=main_run["multiscale_neighbourhood"].transform(main_run["train"]),
+    )
+    W_unseen_web = lr.fit(xe_web_frame.to_numpy(), np.log(main_run["train"]["price_thb"].to_numpy()), l2=unseen_l2)
+    gb_unseen_web = make_extended_gb().fit(xe_web_frame.to_numpy(), np.log(main_run["train"]["price_per_sqm"].to_numpy()))
+
+    # Exclude fake unlinked project names that equal a zone name (no real project page)
+    zone_names = set(listings["zone_name_th"].dropna().str.strip())
+    real_listing_projects = {
+        name.strip() for name in main_run["train"].loc[main_run["train"]["has_building_info"], "project_name"].dropna()
+    }
+    parsed_projects = {name.strip() for name in projects["project_name"].dropna()}
+    clean_project_names = sorted((real_listing_projects | parsed_projects) - zone_names - {""})
+    # Map each project key -> most frequent zone_no in listings so the web app can detect zone mismatches
+    project_zones = (
+        listings.assign(_key=project_key(listings["project_name"]))
+        .groupby("_key")["zone_no"]
+        .agg(lambda s: int(s.mode().iloc[0]))
+        .to_dict()
+    )
 
     reference_rows = main_run["train"][["project_name", "zone_name_th", "district_th", "room_type", "bedrooms",
                                         "bathrooms", "floor", "area_sqm", "price_thb"]].reset_index(drop=True)
@@ -732,20 +962,25 @@ def main() -> None:
         "residual_std_log_building": main_run["residual_std_log_building"],
         "residual_std_log_building_project": main_run["residual_std_log_building_project"],
         "blend": {
-            "name": blend_name,
-            "partner": main_run["blend"]["partner"],
+            "name": EXTENDED_BLEND,
+            "partner": "Gradient Boosting",
+            "mode": "extended_multiscale",
+            "w_lr": unseen_w_lr,
+            "l2": unseen_l2,
+            "extended_buildings": main_run["extended_buildings"],
+            "multiscale_neighbourhood": main_run["multiscale_neighbourhood"],
+            "W_extended": W_unseen_web,
+            "gb_extended": gb_unseen_web,
+            "feature_names": list(xe_web_frame.columns),
+            # keep legacy single-scale neighbourhood object for reference / backward compatibility
             "neighbourhood": main_run["neighbourhood"],
-            "W_neighbour": main_run["W_neighbour"],
-            "feature_names": main_run["neighbour_feature_names"],
-            "boosting": main_run["boosting_neighbour"],
-            # plain values for the same reason as knn below
-            "ffbp": {key: getattr(main_run["network_neighbour"], key) for key in ("W0", "W1", "scaler", "y_mean", "y_std")},
         },
         "reliability": web_reliability,
         "knn_building": {key: getattr(main_run["knn_building"], key) for key in ("X", "y", "scaler", "k", "metric", "weight")},
         "projects": projects,
+        "project_zones": project_zones,
         "reference_rows": reference_rows,
-        "project_names": sorted(set(main_run["train"]["project_name"].dropna()) | set(projects["project_name"].str.strip())),
+        "project_names": clean_project_names,
         "test_results": main_run["results"],
         "test_results_project_split": project_run["results"],
         "residual_std_log": main_run["residual_std_log"],
