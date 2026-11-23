@@ -524,6 +524,30 @@
     }
   }
 
+  const PRESETS = {
+    studio: { area_sqm: 28, bedrooms: 0, bathrooms: 1, floor: 12, complete_year: 2020, rail_km: 0.3, is_new: false },
+    default: { area_sqm: 35, bedrooms: 1, bathrooms: 1, floor: 10, complete_year: 2016, rail_km: 0.5, is_new: false },
+    family: { area_sqm: 65, bedrooms: 2, bathrooms: 2, floor: 24, complete_year: 2019, rail_km: 0.4, is_new: false },
+  };
+
+  function applyPreset(key) {
+    const preset = PRESETS[key];
+    if (!preset) return;
+    els.areaInput.value = String(preset.area_sqm);
+    els.bedroomsSelect.value = String(preset.bedrooms);
+    els.bathroomsSelect.value = String(preset.bathrooms);
+    els.floorInput.value = String(preset.floor);
+    els.completeYearInput.value = String(preset.complete_year);
+    els.railKmInput.value = String(preset.rail_km);
+    els.isNewCheckbox.checked = Boolean(preset.is_new);
+    setSelectedProject(null);
+    markStale();
+  }
+
+  document.querySelectorAll("[data-preset]").forEach((btn) => {
+    btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
+  });
+
   els.yearSlider.addEventListener("input", () => {
     els.yearValue.textContent = els.yearSlider.value;
     renderFuture(Number(els.yearSlider.value));

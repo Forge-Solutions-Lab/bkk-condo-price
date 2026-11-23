@@ -90,6 +90,37 @@ h3 {
   background: var(--abyss);
 }
 
+.preset-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--charcoal);
+}
+
+.preset-label {
+  margin-right: 4px;
+}
+
+.btn-chip {
+  background: var(--iron);
+  color: var(--white);
+  border: 1px solid var(--graphite);
+  border-radius: 0;
+  padding: 7px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-chip:hover {
+  background: var(--charcoal);
+  border-color: var(--white);
+}
+
 .grid-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
