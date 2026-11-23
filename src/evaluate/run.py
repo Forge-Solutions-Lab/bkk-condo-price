@@ -41,6 +41,7 @@ from src.features.build import (
     split_by_project,
     split_random,
 )
+from src.models import ffbp
 from src.models import linear_regression as lr
 from src.models.knn_regression import knn_predict
 
@@ -60,6 +61,7 @@ LEARNING_FRACTIONS = [0.1, 0.25, 0.5, 0.75, 1.0]
 FILTER_AREA_TOLERANCE = 0.10
 METRICS = ["euclidean", "manhattan"]
 WEIGHTS = ["uniform", "distance"]
+FFBP_SETTINGS = [{"H": H, "epochs": epochs} for H in (4, 8, 16) for epochs in (3000, 10000)]
 GOLD = "#FFC000"
 WHITE = "#FFFFFF"
 ASH = "#7D7D7D"
@@ -70,6 +72,8 @@ MAIN_KNN = "KNN Regression (K-Means tiers)"
 PROJECT_LR = "Linear Regression + project price level"
 BUILDING_LR = "Linear Regression + building features"
 BUILDING_KNN = "KNN Regression + building features"
+MAIN_FFBP = "FFBP neural network (K-Means tiers)"
+BUILDING_FFBP = "FFBP neural network + building features"
 
 
 def price_metrics(actual: np.ndarray, predicted: np.ndarray) -> dict[str, float]:
@@ -161,6 +165,46 @@ class FittedKnn:
         return np.exp(knn_predict(self.X, self.y, self.scaler.transform(features), self.k, self.metric, self.weight))
 
 
+@dataclass
+class FittedFfbp:
+    """Neural network on standardised features and standardised log price. Hidden size and
+    number of epochs are chosen by 5-fold cross-validation on the training data."""
+
+    W0: np.ndarray
+    W1: np.ndarray
+    scaler: Standardizer
+    y_mean: float
+    y_std: float
+    setting: dict[str, int]
+    cv_mape_pct: float
+
+    @staticmethod
+    def train(features: np.ndarray, log_price: np.ndarray, setting: dict[str, int]) -> tuple[np.ndarray, np.ndarray, Standardizer, float, float]:
+        scaler = Standardizer.fit(features)
+        y_mean, y_std = float(log_price.mean()), float(log_price.std())
+        W0, W1 = ffbp.ffbp(scaler.transform(features), (log_price - y_mean) / y_std, H=setting["H"],
+                           epochs=setting["epochs"], seed=SEED)
+        return W0, W1, scaler, y_mean, y_std
+
+    @classmethod
+    def fit(cls, features: np.ndarray, log_price: np.ndarray) -> FittedFfbp:
+        folds = list(KFold(n_splits=CV_FOLDS, shuffle=True, random_state=SEED).split(features))
+        scores = []
+        for setting in FFBP_SETTINGS:
+            fold_errors = []
+            for train_index, valid_index in folds:
+                W0, W1, scaler, y_mean, y_std = cls.train(features[train_index], log_price[train_index], setting)
+                predicted = np.exp(ffbp.predict(scaler.transform(features[valid_index]), W0, W1) * y_std + y_mean)
+                actual = np.exp(log_price[valid_index])
+                fold_errors.append(100 * np.mean(np.abs(predicted - actual) / actual))
+            scores.append((float(np.mean(fold_errors)), setting))
+        cv_mape, setting = min(scores, key=lambda score: score[0])
+        return cls(*cls.train(features, log_price, setting), setting=setting, cv_mape_pct=cv_mape)
+
+    def predict(self, features: np.ndarray) -> np.ndarray:
+        return np.exp(ffbp.predict(self.scaler.transform(features), self.W0, self.W1) * self.y_std + self.y_mean)
+
+
 def best_zone_clustering(train: pd.DataFrame) -> tuple[ZoneClustering, list[dict[str, object]]]:
     candidates = [choose_zone_clustering(train, metric) for metric in METRICS]
     rows = []
@@ -213,6 +257,8 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     forest_building = RandomForestRegressor(n_estimators=300, random_state=SEED, n_jobs=-1).fit(xb_train, y_train_log)
     boosting_building = HistGradientBoostingRegressor(random_state=SEED).fit(xb_train, y_train_log)
     boosting_building_project = HistGradientBoostingRegressor(random_state=SEED).fit(xbp_train, y_train_log)
+    network = FittedFfbp.fit(x_train, y_train_log)
+    network_building = FittedFfbp.fit(xb_train, y_train_log)
     boosting = HistGradientBoostingRegressor(random_state=SEED).fit(x_train, y_train_log)
     boosting_project = HistGradientBoostingRegressor(random_state=SEED).fit(xp_train, y_train_log)
     forest = RandomForestRegressor(n_estimators=300, random_state=SEED, n_jobs=-1).fit(x_train, y_train_log)
@@ -226,6 +272,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         "Linear Regression (no location)": np.exp(lr.predict(x_test_no_location, W_no_location)),
         MAIN_LR: np.exp(lr.predict(x_test, W)),
         MAIN_KNN: knn.predict(x_test),
+        MAIN_FFBP: network.predict(x_test),
         "Random Forest (K-Means tiers, reference)": np.exp(forest.predict(x_test)),
         "Gradient Boosting (K-Means tiers, reference)": np.exp(boosting.predict(x_test)),
         PROJECT_LR: np.exp(lr.predict(xp_test, W_project)),
@@ -234,6 +281,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         "Gradient Boosting + project price level (reference)": np.exp(boosting_project.predict(xp_test)),
         BUILDING_LR: np.exp(lr.predict(xb_test, W_building)),
         BUILDING_KNN: knn_building.predict(xb_test),
+        BUILDING_FFBP: network_building.predict(xb_test),
         "Random Forest + building features (reference)": np.exp(forest_building.predict(xb_test)),
         "Gradient Boosting + building features (reference)": np.exp(boosting_building.predict(xb_test)),
         "Linear Regression + building + project price level": np.exp(lr.predict(xbp_test, W_building_project)),
@@ -248,6 +296,8 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         "train": train, "test": test, "clustering": clustering, "levels": levels,
         "W": W, "W_project": W_project, "knn": knn, "knn_project": knn_project,
         "W_building": W_building, "W_building_project": W_building_project, "knn_building": knn_building,
+        "ffbp": {name: {"hidden": model.setting["H"], "epochs": model.setting["epochs"], "cv_mape_pct": model.cv_mape_pct}
+                 for name, model in ((MAIN_FFBP, network), (BUILDING_FFBP, network_building))},
         "buildings": buildings, "building_feature_names": list(xb_train_frame.columns),
         "building_project_feature_names": list(xbp_train_frame.columns),
         "residual_std_log_building": float(np.std(y_train_log - lr.predict(xb_train, W_building))),
@@ -444,6 +494,8 @@ def main() -> None:
             "knn_random_split": main_run["knn_experiment"],
             "knn_project_split": project_run["knn_experiment"],
         },
+        "ffbp_random_split": main_run["ffbp"],
+        "ffbp_project_split": project_run["ffbp"],
         "features": main_run["feature_names"],
         "building_features": main_run["building_feature_names"],
         "building_linear_regression": {
