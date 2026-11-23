@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Query, Response
+from fastapi import FastAPI, HTTPException, Query, Request, Response
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
@@ -33,6 +34,32 @@ app = FastAPI(
     description="Bangkok condo price estimator powered by K-Means, Linear Regression, Boosting/ExtraTrees, and KNN.",
     version="1.0.0",
 )
+
+FIELD_LABELS_TH: dict[str, str] = {
+    "zone_no": "โซน / เขต",
+    "area_sqm": "พื้นที่ (ตร.ม.)",
+    "bedrooms": "ห้องนอน",
+    "bathrooms": "ห้องน้ำ",
+    "floor": "ชั้น",
+    "project": "โครงการ",
+    "complete_year": "ปีที่ตึกสร้างเสร็จ",
+    "rail_km": "ระยะถึงสถานีรถไฟฟ้า",
+    "is_new": "ห้องมือ 1",
+    "year": "ปีที่ต้องการดูราคา",
+}
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(_request: Request, exc: RequestValidationError) -> JSONResponse:
+    parts: list[str] = []
+    for err in exc.errors():
+        loc = [str(item) for item in err.get("loc", ()) if item != "body"]
+        field = loc[-1] if loc else "ข้อมูลนำเข้า"
+        label = FIELD_LABELS_TH.get(field, field)
+        msg = err.get("msg", "ค่าไม่ถูกต้อง")
+        parts.append(f"{label}: {msg}")
+    summary = "ข้อมูลไม่ถูกต้อง — " + "; ".join(parts) if parts else "ข้อมูลนำเข้าไม่ถูกต้อง"
+    return JSONResponse(status_code=422, content={"detail": summary, "errors": exc.errors()})
 
 
 class PredictRequest(BaseModel):
