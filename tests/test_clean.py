@@ -4,9 +4,18 @@ from __future__ import annotations
 
 import math
 
+import pandas as pd
 import pytest
 
-from src.clean.clean import parse_area, parse_bedrooms, parse_floor, parse_price
+from src.clean.clean import (
+    normalised_name,
+    parse_area,
+    parse_bedrooms,
+    parse_floor,
+    parse_price,
+    twin_groups,
+    unlink_area_names,
+)
 
 
 @pytest.mark.parametrize(
@@ -66,3 +75,36 @@ def test_parse_floor_exact_and_range() -> None:
     assert parse_floor("11-20") == (15.5, True)
     val, is_range = parse_floor("ไม่ระบุ")
     assert math.isnan(val) and is_range is False
+
+
+def test_normalised_name_strips_spaces_hyphens_and_case() -> None:
+    series = pd.Series(["Ashton Asoke - Rama 9", "ashton asoke rama 9", None])
+    result = normalised_name(series).tolist()
+    assert result == ["ashtonasokerama9", "ashtonasokerama9", ""]
+
+
+def test_twin_groups_merges_near_duplicate_within_same_building() -> None:
+    listings = pd.DataFrame([
+        {"project_name": "The Line Asoke", "area_sqm": 35.0, "floor": 12.0, "price_thb": 5_000_000.0, "bedrooms": 1.0},
+        {"project_name": "the-line asoke", "area_sqm": 35.5, "floor": 12.0, "price_thb": 5_100_000.0, "bedrooms": 1.0},
+        {"project_name": "The Line Asoke", "area_sqm": 35.0, "floor": 18.0, "price_thb": 5_000_000.0, "bedrooms": 1.0},
+        {"project_name": "", "area_sqm": 35.0, "floor": 12.0, "price_thb": 5_000_000.0, "bedrooms": 1.0},
+        {"project_name": "", "area_sqm": 35.0, "floor": 12.0, "price_thb": 5_000_000.0, "bedrooms": 1.0},
+    ])
+    groups = twin_groups(listings)
+    assert groups[0] == groups[1]
+    assert groups[2] != groups[0]
+    # Unnamed rows are never collapsed into a single building twin group.
+    assert groups[3] != groups[4]
+
+
+def test_unlink_area_names_clears_zone_named_projects() -> None:
+    frame = pd.DataFrame([
+        {"project_name": "มีนบุรี - ร่มเกล้า", "zone_name_th": "มีนบุรี-ร่มเกล้า"},
+        {"project_name": "Ideo Q Siam", "zone_name_th": "สยาม-ราชเทวี"},
+    ])
+    log: list[dict[str, object]] = []
+    out = unlink_area_names(frame, log)
+    assert out["project_name"].tolist() == ["", "Ideo Q Siam"]
+    assert out["project_is_area_name"].tolist() == [True, False]
+    assert log[-1]["changed"] == 1
