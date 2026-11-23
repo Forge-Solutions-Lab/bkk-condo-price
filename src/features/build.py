@@ -15,6 +15,7 @@ from sklearn.metrics import silhouette_score
 from sklearn.model_selection import GroupShuffleSplit, KFold, train_test_split
 
 from src.models import linear_regression as lr
+from src.models.fuzzy_cmeans import fuzzy_cmeans
 from src.models.kmeans import kmeans
 
 LOG = logging.getLogger(__name__)
@@ -84,6 +85,29 @@ def cluster_zones(stats: pd.DataFrame, n_clusters: int, metric: str = "euclidean
     has_groups = table["cluster"].nunique() > 1
     silhouette = float(silhouette_score(scaled, table["cluster"], metric=silhouette_metric)) if has_groups else -1.0
     return ZoneClustering(zone_table=table, n_clusters=n_clusters, metric=metric), silhouette, float(inertia)
+
+
+def fuzzy_zone_memberships(stats: pd.DataFrame, n_clusters: int) -> pd.DataFrame:
+    """Fuzzy C-Means on the same zone statistics as K-Means. Each zone gets a degree of
+    membership in every tier instead of exactly one tier, so a zone between two price
+    levels can be partly both."""
+    values = stats[ZONE_STAT_COLUMNS].to_numpy()
+    scaled = (values - values.mean(axis=0)) / values.std(axis=0)
+    _, mu = fuzzy_cmeans(scaled, n_clusters, seed=SEED)
+    # order clusters from cheapest to most expensive, as for the K-Means tiers
+    price = stats["median_log_price_per_sqm"].to_numpy()
+    order = np.argsort([np.average(price, weights=mu[:, k]) for k in range(n_clusters)])
+    table = stats[["zone_no", "zone_slug", "median_price_per_sqm"]].copy()
+    for tier, k in enumerate(order, start=1):
+        table[f"member_{tier}"] = mu[:, k]
+    return table
+
+
+def membership_frame(listings: pd.DataFrame, memberships: pd.DataFrame) -> pd.DataFrame:
+    # tier 1 is left out as the reference level, like the one-hot K-Means tiers
+    columns = [column for column in memberships.columns if column.startswith("member_")][1:]
+    table = memberships.set_index("zone_no")[columns]
+    return table.reindex(listings["zone_no"].to_numpy()).reset_index(drop=True)
 
 
 def mean_absolute_percentage_error(actual: np.ndarray, predicted: np.ndarray) -> float:
