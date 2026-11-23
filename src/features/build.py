@@ -384,6 +384,60 @@ class RecentNeighbourLevel:
         return out
 
 
+# Spatial spread features from jimmy's SpatialPriceEncoder (feature/model-stability-tuning): the
+# same inverse-distance weighting as there (8 nearest other buildings, power 1.5, 0.25 km floor,
+# weight grows with the square root of a building's listings up to 5).
+SPREAD_NEIGHBOURS = 8
+SPREAD_POWER = 1.5
+SPREAD_FLOOR_KM = 0.25
+SPREAD_DEFAULT_STD = 0.20
+SPREAD_DEFAULT_NEAREST_KM = 2.0
+
+
+@dataclass
+class NeighbourSpread:
+    """How mixed and how isolated a building's surroundings are: the weighted standard deviation of
+    the nearest other buildings' log price per sqm (a mixed area makes the neighbourhood level less
+    reliable) and the log distance to the nearest other building."""
+
+    keys: np.ndarray
+    coordinates: np.ndarray
+    levels: np.ndarray
+    counts: np.ndarray
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame) -> NeighbourSpread:
+        located = clean_coordinates(train).dropna(subset=["latitude", "longitude"])
+        log_ppsqm = np.log(located["price_per_sqm"].astype(float))
+        buildings = located.assign(_lp=log_ppsqm).groupby(project_key(located["project_name"])).agg(
+            latitude=("latitude", "first"), longitude=("longitude", "first"), level=("_lp", "mean"), count=("_lp", "size"))
+        return cls(keys=buildings.index.to_numpy(),
+                   coordinates=buildings[["latitude", "longitude"]].to_numpy() * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE],
+                   levels=buildings["level"].to_numpy(), counts=buildings["count"].to_numpy(dtype=float))
+
+    def transform(self, listings: pd.DataFrame) -> pd.DataFrame:
+        cleaned = clean_coordinates(listings)
+        keys = project_key(cleaned["project_name"]).to_numpy()
+        points = cleaned[["latitude", "longitude"]].to_numpy(dtype=float) * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE]
+        spread = np.full(len(cleaned), SPREAD_DEFAULT_STD)
+        nearest_km = np.full(len(cleaned), SPREAD_DEFAULT_NEAREST_KM)
+        for row, (key, point) in enumerate(zip(keys, points)):
+            if np.isnan(point).any() or len(self.levels) == 0:
+                continue
+            distance = np.sqrt(np.sum((self.coordinates - point) ** 2, axis=1))
+            distance[self.keys == key] = np.inf
+            nearest = np.argsort(distance)[:SPREAD_NEIGHBOURS]
+            nearest = nearest[np.isfinite(distance[nearest])]
+            if not len(nearest):
+                continue
+            nearest_km[row] = distance[nearest[0]]
+            weight = (np.sqrt(np.minimum(self.counts[nearest], 5.0))
+                      / np.maximum(distance[nearest], SPREAD_FLOOR_KM) ** SPREAD_POWER)
+            mean = np.sum(weight * self.levels[nearest]) / np.sum(weight)
+            spread[row] = np.sqrt(np.sum(weight * (self.levels[nearest] - mean) ** 2) / np.sum(weight))
+        return pd.DataFrame({"nb_spread": spread, "log_nearest_building_km": np.log1p(nearest_km)})
+
+
 # words that start many project names without naming the developer's series
 GENERIC_NAME_WORDS = frozenset({"เดอะ", "เดอ", "เลอ", "ดิ", "the", "บ้าน", "คอนโด"})
 # how many buildings' worth of weight the "no premium" prior gets (chosen by grouped CV from 1 and 3)

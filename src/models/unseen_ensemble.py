@@ -24,8 +24,8 @@ import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor, HistGradientBoostingRegressor
 
 from src.features.build import (
-    SEED, BrandPremium, ExtendedBuildingFeatures, MultiScaleNeighbourhood, RecentNeighbourLevel, ZoneClustering,
-    feature_frame,
+    SEED, BrandPremium, ExtendedBuildingFeatures, MultiScaleNeighbourhood, NeighbourSpread, RecentNeighbourLevel,
+    ZoneClustering, feature_frame,
 )
 from src.models import linear_regression as lr
 
@@ -63,11 +63,12 @@ class UnseenBuildingEnsemble:
     feature_names: list[str]
     brand: BrandPremium | None = None
     recent: RecentNeighbourLevel | None = None
+    spread: NeighbourSpread | None = None
 
     @staticmethod
     def _frame(listings: pd.DataFrame, clustering: ZoneClustering, extended_buildings: ExtendedBuildingFeatures,
                neighbourhood: MultiScaleNeighbourhood, brand: BrandPremium | None = None,
-               recent: RecentNeighbourLevel | None = None) -> pd.DataFrame:
+               recent: RecentNeighbourLevel | None = None, spread: NeighbourSpread | None = None) -> pd.DataFrame:
         frame = feature_frame(listings, clustering, buildings=extended_buildings.transform(listings),
                               neighbourhood=neighbourhood.transform(listings))
         frame["large_area_hinge"] = np.maximum(0.0, frame["log_area_sqm"] - np.log(LARGE_AREA_HINGE_SQM))
@@ -76,6 +77,9 @@ class UnseenBuildingEnsemble:
         if recent is not None:
             # gap between recent launches nearby and all nearby buildings; 0 where unknown
             frame["nb_recent_gap"] = np.nan_to_num(recent.transform(listings) - frame["nb_idw_k5"].to_numpy())
+        if spread is not None:
+            for column, values in spread.transform(listings).items():
+                frame[column] = values.to_numpy()
         return frame
 
     @classmethod
@@ -84,19 +88,20 @@ class UnseenBuildingEnsemble:
         neighbourhood = MultiScaleNeighbourhood.fit(train)
         brand = BrandPremium.fit(train, neighbourhood.transform(train)["nb_idw_k5"].to_numpy())
         recent = RecentNeighbourLevel.fit(train)
-        frame = cls._frame(train, clustering, extended_buildings, neighbourhood, brand, recent)
+        spread = NeighbourSpread.fit(train)
+        frame = cls._frame(train, clustering, extended_buildings, neighbourhood, brand, recent, spread)
         x = frame.to_numpy()
         log_ppsqm = np.log(train["price_per_sqm"].to_numpy())
         return cls(
             extended_buildings=extended_buildings, neighbourhood=neighbourhood,
             W_lr=lr.fit(x, np.log(train["price_thb"].to_numpy()), l2=l2),
             gb=make_gb().fit(x, log_ppsqm), et=make_et().fit(x, log_ppsqm),
-            l2=float(l2), feature_names=list(frame.columns), brand=brand, recent=recent,
+            l2=float(l2), feature_names=list(frame.columns), brand=brand, recent=recent, spread=spread,
         )
 
     def features(self, listings: pd.DataFrame, clustering: ZoneClustering) -> np.ndarray:
         frame = self._frame(listings, clustering, self.extended_buildings, self.neighbourhood, self.brand,
-                            self.recent)
+                            self.recent, self.spread)
         return frame[self.feature_names].to_numpy()
 
     def predict_parts(self, listings: pd.DataFrame, clustering: ZoneClustering) -> pd.DataFrame:
