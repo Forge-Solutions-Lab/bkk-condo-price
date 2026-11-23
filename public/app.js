@@ -251,7 +251,7 @@
 
     const width = 820;
     const height = 280;
-    const pad = { top: 20, right: 24, bottom: 38, left: 78 };
+    const pad = { top: 24, right: 64, bottom: 38, left: 78 };
     const plotW = width - pad.left - pad.right;
     const plotH = height - pad.top - pad.bottom;
 
@@ -306,6 +306,30 @@
       svg.appendChild(label);
     });
 
+    const bandPoints = [
+      ...series.map((d, idx) => `${xOf(idx).toFixed(1)},${yOf(d.high).toFixed(1)}`),
+      ...series.slice().reverse().map((d, rIdx) => {
+        const idx = series.length - 1 - rIdx;
+        return `${xOf(idx).toFixed(1)},${yOf(d.low).toFixed(1)}`;
+      }),
+    ].join(" ");
+    const bandPoly = document.createElementNS(svgNS, "polygon");
+    bandPoly.setAttribute("points", bandPoints);
+    bandPoly.setAttribute("fill", "rgba(255, 192, 0, 0.08)");
+    svg.appendChild(bandPoly);
+
+    const lastIdx = series.length - 1;
+    const lastX = xOf(lastIdx);
+    const guide = document.createElementNS(svgNS, "line");
+    guide.setAttribute("x1", lastX.toFixed(1));
+    guide.setAttribute("x2", lastX.toFixed(1));
+    guide.setAttribute("y1", pad.top);
+    guide.setAttribute("y2", (pad.top + plotH).toFixed(1));
+    guide.setAttribute("stroke", "#917300");
+    guide.setAttribute("stroke-dasharray", "3 3");
+    guide.setAttribute("stroke-width", "1");
+    svg.appendChild(guide);
+
     const lines = [
       { key: "low", color: "#7D7D7D", width: 2 },
       { key: "high", color: "#FFFFFF", width: 2 },
@@ -326,13 +350,26 @@
       const circle = document.createElementNS(svgNS, "circle");
       circle.setAttribute("cx", xOf(idx).toFixed(1));
       circle.setAttribute("cy", yOf(d.price).toFixed(1));
-      circle.setAttribute("r", "4");
+      circle.setAttribute("r", idx === lastIdx ? "5.5" : "4");
       circle.setAttribute("fill", "#FFC000");
+      if (idx === lastIdx) {
+        circle.setAttribute("stroke", "#000000");
+        circle.setAttribute("stroke-width", "1.5");
+      }
       const title = document.createElementNS(svgNS, "title");
       title.textContent = `ปี ${d.year}: ${formatBaht(d.price)} (ช่วง ${formatBaht(d.low)} - ${formatBaht(d.high)})`;
       circle.appendChild(title);
       svg.appendChild(circle);
     });
+
+    const endDatum = series[lastIdx];
+    const endLabel = document.createElementNS(svgNS, "text");
+    endLabel.setAttribute("x", (lastX + 8).toFixed(1));
+    endLabel.setAttribute("y", (yOf(endDatum.price) + 4).toFixed(1));
+    endLabel.setAttribute("fill", "#FFC000");
+    endLabel.setAttribute("font-size", "12");
+    endLabel.textContent = `${(endDatum.price / 1e6).toFixed(2)}M`;
+    svg.appendChild(endLabel);
 
     els.forecastChart.appendChild(svg);
   }
