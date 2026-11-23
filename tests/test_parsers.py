@@ -149,3 +149,21 @@ def test_parse_file_returns_none_without_project_data(tmp_path: Path, html_conte
     html_file.write_text(html_content, encoding="utf-8")
 
     assert parse_file(html_file) is None
+
+
+def test_parse_file_reads_academy_category_as_school(tmp_path: Path) -> None:
+    payload = {
+        "identity": {"id": 6666, "name": "คอนโด ใกล้โรงเรียน", "slug": "near-school"},
+        "overview": {"complete_year": 2020},
+        "amenities": {
+            "facilities": {"items": []},
+            "nearby": {"items": [{"category": "academy", "distance": 0.45, "icon": "icon_school.svg"}]},
+        },
+    }
+    html_file = tmp_path / "academy.html"
+    html_file.write_text(make_flight_html([payload]), encoding="utf-8")
+
+    result = parse_file(html_file)
+
+    assert result is not None
+    assert result["nearest_school_km"] == pytest.approx(0.45)
