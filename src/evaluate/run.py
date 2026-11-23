@@ -100,6 +100,7 @@ EXTENDED_LR = "Linear Regression + extended building + multi-scale IDW"
 EXTENDED_GB = "Gradient Boosting (log price/sqm) + extended + IDW (reference)"
 EXTENDED_RF = "Random Forest (log price/sqm) + extended + IDW (reference)"
 EXTENDED_BLEND = "Blend: LR + GB + ExtraTrees (extended + IDW, size-weighted)"
+EXTENDED_KNN = "KNN Regression (extended building + IDW + brand, price per sqm)"
 EXTENDED_PROJECT_LR = "Linear Regression + extended + project price level"
 
 
@@ -514,6 +515,14 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame, group_cv: bool = Fal
     # unseen-building ensemble deployed in the app (src/models/unseen_ensemble.py)
     unseen_ensemble = UnseenBuildingEnsemble.fit(train, clustering, l2=ext_settings["l2"])
     log_blend_extended = unseen_ensemble.predict_parts(test, clustering)["log_blend"].to_numpy()
+    # KNN on the same features as the ensemble, voting on log price per sqm: neighbours are then
+    # comparable however large they are, and the price is per sqm x the unit's area
+    xk_train, xk_test = unseen_ensemble.features(train, clustering), unseen_ensemble.features(test, clustering)
+    knn_extended = min(
+        (FittedKnn.fit(xk_train, np.log(train["price_per_sqm"].to_numpy()), metric, weight, groups=groups)
+         for metric in METRICS for weight in WEIGHTS),
+        key=lambda model: model.cv_mape_pct,
+    )
 
     xep_train_frame = feature_frame(train, clustering, project_levels=levels.transform(train, leave_one_out=True),
                                     buildings=ext_buildings.transform(train),
@@ -556,6 +565,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame, group_cv: bool = Fal
         EXTENDED_GB: np.exp(log_gb_extended),
         EXTENDED_RF: np.exp(log_rf_extended),
         EXTENDED_BLEND: np.exp(log_blend_extended),
+        EXTENDED_KNN: knn_extended.predict(xk_test) * test["area_sqm"].to_numpy(),
         BUILDING_KNN: knn_building.predict(xb_test),
         BUILDING_FFBP: network_building.predict(xb_test),
         "Random Forest + building features (reference)": np.exp(forest_building.predict(xb_test)),
@@ -586,6 +596,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame, group_cv: bool = Fal
         "W_extended": W_extended, "gb_extended": gb_extended,
         "extended_blend": ext_settings,
         "unseen_ensemble": unseen_ensemble,
+        "knn_extended": knn_extended,
         "W_extended_project": W_extended_project,
         "extended_project_feature_names": list(xep_train_frame.columns),
         "building_project_feature_names": list(xbp_train_frame.columns),
@@ -981,6 +992,8 @@ def main() -> None:
         "known_building": known_model,
         "reliability": web_reliability,
         "knn_building": {key: getattr(main_run["knn_building"], key) for key in ("X", "y", "scaler", "k", "metric", "weight")},
+        # KNN on the unseen-ensemble features, voting on log price per sqm (shown in the app)
+        "knn_extended": {key: getattr(main_run["knn_extended"], key) for key in ("X", "y", "scaler", "k", "metric", "weight")},
         "projects": projects,
         "project_zones": project_zones,
         "reference_rows": reference_rows,
