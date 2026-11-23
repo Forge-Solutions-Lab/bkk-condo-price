@@ -8,6 +8,8 @@ import pandas as pd
 import pytest
 
 from src.clean.clean import (
+    clean_listings,
+    label_listings,
     normalised_name,
     parse_area,
     parse_bedrooms,
@@ -108,3 +110,41 @@ def test_unlink_area_names_clears_zone_named_projects() -> None:
     assert out["project_name"].tolist() == ["", "Ideo Q Siam"]
     assert out["project_is_area_name"].tolist() == [True, False]
     assert log[-1]["changed"] == 1
+
+
+def test_label_and_clean_listings_synthetic_pipeline() -> None:
+    zone_labels = pd.DataFrame([
+        {"zone_no": 1, "zone_name_th": "อโศก-พร้อมพงษ์", "district_th": "วัฒนา", "label_confidence": "high"},
+    ])
+    rows = [
+        # Valid normal units (enough rows to establish a tight IQR around 150k/sqm)
+        {"listing_id": "1", "zone_no": 1, "project_name": "Condo A", "price_raw": "฿5,250,000", "area_raw": "35 ตร.ม.",
+         "bedrooms_raw": "1", "bathrooms_raw": "1", "floor_raw": "10", "badges": ""},
+        {"listing_id": "2", "zone_no": 1, "project_name": "Condo B", "price_raw": "฿5,400,000", "area_raw": "36 ตร.ม.",
+         "bedrooms_raw": "1", "bathrooms_raw": "1", "floor_raw": "11-20", "badges": "มือ 1"},
+        {"listing_id": "3", "zone_no": 1, "project_name": "Condo C", "price_raw": "฿4,500,000", "area_raw": "30 ตร.ม.",
+         "bedrooms_raw": "สตูดิโอ", "bathrooms_raw": "1", "floor_raw": "", "badges": ""},
+        {"listing_id": "4", "zone_no": 1, "project_name": "Condo D", "price_raw": "฿6,000,000", "area_raw": "40 ตร.ม.",
+         "bedrooms_raw": "2", "bathrooms_raw": "2", "floor_raw": "20", "badges": ""},
+        # Duplicate listing_id -> dropped
+        {"listing_id": "1", "zone_no": 1, "project_name": "Condo A", "price_raw": "฿5,250,000", "area_raw": "35 ตร.ม.",
+         "bedrooms_raw": "1", "bathrooms_raw": "1", "floor_raw": "10", "badges": ""},
+        # Down-payment listing -> dropped
+        {"listing_id": "5", "zone_no": 1, "project_name": "Condo E", "price_raw": "฿1,000,000", "area_raw": "35 ตร.ม.",
+         "bedrooms_raw": "1", "bathrooms_raw": "1", "floor_raw": "5", "badges": "ขายดาวน์"},
+        # Area below 15 sqm -> dropped
+        {"listing_id": "6", "zone_no": 1, "project_name": "Condo F", "price_raw": "฿1,500,000", "area_raw": "10 ตร.ม.",
+         "bedrooms_raw": "สตูดิโอ", "bathrooms_raw": "1", "floor_raw": "5", "badges": ""},
+        # Extreme price/sqm outlier -> dropped by per-zone log-IQR
+        {"listing_id": "7", "zone_no": 1, "project_name": "Condo G", "price_raw": "฿50,000,000", "area_raw": "35 ตร.ม.",
+         "bedrooms_raw": "1", "bathrooms_raw": "1", "floor_raw": "15", "badges": ""},
+    ]
+    labeled = label_listings(pd.DataFrame(rows), zone_labels)
+    assert labeled.loc[labeled["listing_id"] == "3", "room_type"].iloc[0] == "studio"
+    assert bool(labeled.loc[labeled["listing_id"] == "2", "is_new_unit"].iloc[0]) is True
+
+    cleaned, log = clean_listings(labeled)
+    assert sorted(cleaned["listing_id"].tolist()) == ["1", "2", "3", "4"]
+    # Missing floor on listing 3 must be imputed to the median of the remaining floors.
+    assert cleaned["floor"].isna().sum() == 0
+    assert any(entry["rule"] == "down-payment listing (price is not full price)" and entry["removed"] == 1 for entry in log)
