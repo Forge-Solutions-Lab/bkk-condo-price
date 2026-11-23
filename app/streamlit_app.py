@@ -14,6 +14,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.inference import (  # noqa: E402
+    BASE_YEAR,
     BEDROOM_OPTIONS,
     BUNDLE_PATH,
     FORECAST_PATH,
@@ -68,14 +69,14 @@ def render_reliability(result: dict[str, object]) -> list[str]:
     return warnings
 
 
-def render_result(result: dict[str, object], area: float, bundle: dict) -> None:
+def render_result(result: dict[str, object], area: float, bundle: dict, year: int, forecast: dict | None) -> None:
     title, basis = main_model_label(result, bundle)
     price = result["price"]
     left, right = st.columns([3, 2])
     with left:
         # within 20% of the real price means the real price is between price / 1.2 and price / 0.8
         st.markdown(
-            f'<div class="panel"><div class="micro-label">{title} (โมเดลหลัก)</div>'
+            f'<div class="panel"><div class="micro-label">ราคาวันนี้ (ปี {BASE_YEAR}) · {title}</div>'
             f'<div class="price-main">{format_baht(price)}</div>'
             f'<div class="value-note">ถ้าทายพลาดไม่เกิน 20% ราคาจริงอยู่ระหว่าง {format_baht(price / 1.2)} - '
             f'{format_baht(price / 0.8)} | {price / area:,.0f} บาท/ตร.ม.</div>'
@@ -91,6 +92,9 @@ def render_result(result: dict[str, object], area: float, bundle: dict) -> None:
             ' จาก K-Means (1 = ราคาต่อตร.ม. ต่ำสุด)</div></div>',
             unsafe_allow_html=True,
         )
+    # the price for the year on the slider sits right under today's price
+    if forecast and year > BASE_YEAR:
+        render_future_price(result["price"], year, forecast)
     for warning in render_reliability(result):
         st.warning(warning)
     building = result["building"]
@@ -135,7 +139,8 @@ def render_future_price(price_today: float, year: int, forecast: dict) -> None:
     row = next(item for item in forecast["forecast"] if item["year"] == year)
     error = forecast["backtest_mape_pct_by_horizon"].get(str(year - forecast["base_year"]))
     st.markdown(
-        f'<div class="panel-deep"><div class="micro-label">คาดการณ์ราคาปี {year} (แนวโน้มตลาด)</div>'
+        f'<div class="panel-deep"><div class="micro-label">คาดการณ์ราคาปี {year} (แนวโน้มตลาด จากราคาวันนี้ '
+        f'{format_baht(price_today)})</div>'
         f'<div class="price-second">{format_baht(price_today * row["factor"])}</div>'
         f'<div class="value-note">ช่วงที่น่าจะเป็น {format_baht(price_today * row["low"])} - '
         f'{format_baht(price_today * row["high"])} | แนวโน้ม {forecast["annual_growth_pct"]:.1f}% ต่อปี '
@@ -194,19 +199,26 @@ def main() -> None:
         rail_km = rail_col.number_input("ระยะถึงสถานีรถไฟฟ้า กม. (ใช้เมื่อไม่ระบุโครงการ)", min_value=0.0,
                                         max_value=3.0, value=0.5, step=0.1)
         is_new = st.checkbox("ห้องมือ 1 (ยังไม่เคยมีผู้อยู่)")
-        forecast = load_forecast()
-        year = st.slider("ปีที่ต้องการดูราคา", 2026, 2036, 2026) if forecast else 2026
         submitted = st.form_submit_button("ประเมินราคา")
+    # Outside the form, so moving it reruns the page at once; the estimate itself is kept in
+    # session_state, so only the forecast is recomputed, not the models.
+    forecast = load_forecast()
+    year = (st.slider("ปีที่ต้องการดูราคา (เลื่อนแล้วราคาเปลี่ยนทันที)", BASE_YEAR, 2036, BASE_YEAR, key="year")
+            if forecast else BASE_YEAR)
     if submitted:
         project = None if project_choice == NO_PROJECT else project_choice
         listing = build_input(bundle, zone_no, area, bedrooms, bathrooms, floor, is_new, project,
                               complete_year, rail_km)
-        for warning in input_warnings(listing, zone_labels=labels):
+        st.session_state["last_estimate"] = {
+            "result": predict(bundle, listing),
+            "area": area,
+            "warnings": input_warnings(listing, zone_labels=labels),
+        }
+    estimate = st.session_state.get("last_estimate")
+    if estimate:
+        for warning in estimate["warnings"]:
             st.warning(warning)
-        result = predict(bundle, listing)
-        render_result(result, area, bundle)
-        if year > 2026:
-            render_future_price(result["price"], year, forecast)
+        render_result(estimate["result"], estimate["area"], bundle, year, forecast)
     render_model_quality(bundle)
     st.markdown(
         '<div class="value-note">ข้อมูล: ประกาศขายคอนโดบน Livinginsider ที่บันทึกด้วยมือเมื่อ 23 พ.ย. 2569 '
