@@ -7,7 +7,7 @@ How to save each page (Google Chrome):
 4. Save into `data/raw/livinginsider/` with the file name shown below.
 5. If time allows, click page 2 at the bottom of the list and save it with `_p2` instead of `_p1`.
 
-Step A: save only file 01 first and tell Claude. Claude builds the parser from it, then you continue with 02-38.
+Step A: save file 01 first to verify the HTML structure and parser, then continue with zones 02-38.
 
 | # | File name | URL |
 |---|---|---|

@@ -123,7 +123,8 @@ def plot(index: pd.Series, table: list[dict[str, float]], window: int | None, an
     axes.plot(years, [base * row["factor"] for row in table], color=GOLD, linestyle="--", label="forecast")
     axes.fill_between(years, [base * row["low"] for row in table], [base * row["high"] for row in table],
                       color=GOLD, alpha=0.2, label=f"{BAND_PERCENTILE}% backtest band")
-    style_axes(axes, f"Bangkok residential price index: trend {100 * annual_growth:.1f}%/yr (last {window or 'all'} years)")
+    window_label = f"last {window} years" if window else f"{int(index.index.min())}-{int(index.index.max())}"
+    style_axes(axes, f"Bangkok residential price index: trend {100 * annual_growth:.1f}%/yr ({window_label})")
     axes.set_xlabel("year")
     axes.set_ylabel("index (2010 = 100)")
     axes.legend(facecolor=CHARCOAL, labelcolor=WHITE, edgecolor=CHARCOAL, loc="upper left")

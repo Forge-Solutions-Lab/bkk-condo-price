@@ -679,7 +679,7 @@ def plot_zone_tiers(clustering: ZoneClustering) -> None:
 
 def plot_actual_vs_predicted(actual: np.ndarray, predictions: dict[str, np.ndarray]) -> None:
     figure, axes = new_figure(7, 7)
-    for name, color in ((MAIN_LR, GOLD), (MAIN_KNN, WHITE)):
+    for name, color in ((EXTENDED_LR, GOLD), (EXTENDED_BLEND, WHITE)):
         axes.scatter(actual / 1e6, predictions[name] / 1e6, s=8, alpha=0.45, color=color, label=name)
     limit = np.percentile(actual / 1e6, 98)
     axes.plot([0, limit], [0, limit], color=ASH, linestyle="--")
@@ -688,7 +688,7 @@ def plot_actual_vs_predicted(actual: np.ndarray, predictions: dict[str, np.ndarr
     style_axes(axes, "Actual vs predicted price (random-split test set)")
     axes.set_xlabel("actual price (million THB)")
     axes.set_ylabel("predicted price (million THB)")
-    axes.legend(facecolor=CHARCOAL, labelcolor=WHITE, edgecolor=CHARCOAL)
+    axes.legend(facecolor=CHARCOAL, labelcolor=WHITE, edgecolor=CHARCOAL, fontsize=8)
     save_figure(figure, "actual_vs_predicted.png")
 
 
@@ -706,18 +706,21 @@ def plot_knn_curve(curve: list[dict[str, float]], best_k: int) -> None:
 def plot_model_comparison(random_results: dict[str, dict[str, float]], project_results: dict[str, dict[str, float]]) -> None:
     names = list(random_results)
     positions = np.arange(len(names))
-    figure, axes = new_figure(10, 0.42 * len(names) + 1.5)
-    axes.barh(positions - 0.2, [random_results[n]["mape_pct"] for n in names], height=0.4, color=GOLD, label="random split")
-    axes.barh(positions + 0.2, [project_results[n]["mape_pct"] for n in names], height=0.4, color=ASH, label="unseen buildings")
-    for position, name in zip(positions, names):
-        axes.text(random_results[name]["mape_pct"], position - 0.2, f" {random_results[name]['mape_pct']:.1f}%", va="center", color=WHITE, fontsize=8)
-        axes.text(project_results[name]["mape_pct"], position + 0.2, f" {project_results[name]['mape_pct']:.1f}%", va="center", color=WHITE, fontsize=8)
+    figure, axes = new_figure(12, 0.42 * len(names) + 1.6)
+    rand_vals = [random_results[n]["mape_pct"] for n in names]
+    proj_vals = [project_results[n]["mape_pct"] for n in names]
+    axes.barh(positions - 0.2, rand_vals, height=0.4, color=GOLD, label="random split")
+    axes.barh(positions + 0.2, proj_vals, height=0.4, color=ASH, label="unseen buildings")
+    for position, r_val, p_val in zip(positions, rand_vals, proj_vals):
+        axes.text(r_val + 0.3, position - 0.2, f"{r_val:.1f}%", va="center", color=WHITE, fontsize=8)
+        axes.text(p_val + 0.3, position + 0.2, f"{p_val:.1f}%", va="center", color=WHITE, fontsize=8)
+    axes.set_xlim(0, max(rand_vals + proj_vals) * 1.15)
     axes.set_yticks(positions, names, fontsize=8)
     axes.invert_yaxis()
-    style_axes(axes, "Mean absolute percentage error on test set (lower is better)")
+    style_axes(axes, "Test MAPE (%) by model (lower is better)")
     axes.set_xlabel("MAPE (%)")
     axes.legend(facecolor=CHARCOAL, labelcolor=WHITE, edgecolor=CHARCOAL, loc="upper center",
-                bbox_to_anchor=(0.5, -0.12), ncol=2)
+                bbox_to_anchor=(0.5, -0.10), ncol=2)
     save_figure(figure, "model_comparison.png")
 
 
