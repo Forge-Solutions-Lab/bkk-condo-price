@@ -1,0 +1,385 @@
+{
+  "method": "forward_feature_selection",
+  "metric": "euclidean",
+  "weight": "distance",
+  "cv_folds": 5,
+  "random_split": {
+    "candidate_features": [
+      "log_area_sqm",
+      "bedrooms",
+      "bathrooms",
+      "floor",
+      "is_new_unit",
+      "tier_2",
+      "tier_3",
+      "tier_4",
+      "tier_5",
+      "tier_6",
+      "tier_7",
+      "tier_8",
+      "building_age",
+      "log_total_unit",
+      "total_floor",
+      "facility_count",
+      "rail_km",
+      "mall_km",
+      "has_building_info"
+    ],
+    "selected_features": [
+      "log_area_sqm",
+      "total_floor",
+      "building_age",
+      "log_total_unit",
+      "rail_km",
+      "tier_2",
+      "tier_4",
+      "tier_7",
+      "tier_5",
+      "tier_8",
+      "has_building_info",
+      "tier_6"
+    ],
+    "n_selected": 12,
+    "n_total": 19,
+    "selection_k": 21,
+    "steps": [
+      {
+        "step": 1,
+        "added_feature": "log_area_sqm",
+        "selected_features": [
+          "log_area_sqm"
+        ],
+        "cv_mape_pct": 45.64578319307642,
+        "test_mape_pct": 47.29444007067279
+      },
+      {
+        "step": 2,
+        "added_feature": "total_floor",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor"
+        ],
+        "cv_mape_pct": 31.422326663806206,
+        "test_mape_pct": 32.39275471841991
+      },
+      {
+        "step": 3,
+        "added_feature": "building_age",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age"
+        ],
+        "cv_mape_pct": 23.435359519623216,
+        "test_mape_pct": 22.463764945932578
+      },
+      {
+        "step": 4,
+        "added_feature": "log_total_unit",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age",
+          "log_total_unit"
+        ],
+        "cv_mape_pct": 20.57222427122317,
+        "test_mape_pct": 19.743097253735453
+      },
+      {
+        "step": 5,
+        "added_feature": "rail_km",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age",
+          "log_total_unit",
+          "rail_km"
+        ],
+        "cv_mape_pct": 19.257369704005693,
+        "test_mape_pct": 19.244612013270867
+      },
+      {
+        "step": 6,
+        "added_feature": "tier_2",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age",
+          "log_total_unit",
+          "rail_km",
+          "tier_2"
+        ],
+        "cv_mape_pct": 19.048684493374203,
+        "test_mape_pct": 18.43042843977409
+      },
+      {
+        "step": 7,
+        "added_feature": "tier_4",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age",
+          "log_total_unit",
+          "rail_km",
+          "tier_2",
+          "tier_4"
+        ],
+        "cv_mape_pct": 18.967412335135002,
+        "test_mape_pct": 18.88787605515926
+      },
+      {
+        "step": 8,
+        "added_feature": "tier_7",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age",
+          "log_total_unit",
+          "rail_km",
+          "tier_2",
+          "tier_4",
+          "tier_7"
+        ],
+        "cv_mape_pct": 18.76685074782366,
+        "test_mape_pct": 18.570834160306507
+      },
+      {
+        "step": 9,
+        "added_feature": "tier_5",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age",
+          "log_total_unit",
+          "rail_km",
+          "tier_2",
+          "tier_4",
+          "tier_7",
+          "tier_5"
+        ],
+        "cv_mape_pct": 18.257927492771636,
+        "test_mape_pct": 17.17664485850476
+      },
+      {
+        "step": 10,
+        "added_feature": "tier_8",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age",
+          "log_total_unit",
+          "rail_km",
+          "tier_2",
+          "tier_4",
+          "tier_7",
+          "tier_5",
+          "tier_8"
+        ],
+        "cv_mape_pct": 18.1150523924508,
+        "test_mape_pct": 17.142863611863863
+      },
+      {
+        "step": 11,
+        "added_feature": "has_building_info",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age",
+          "log_total_unit",
+          "rail_km",
+          "tier_2",
+          "tier_4",
+          "tier_7",
+          "tier_5",
+          "tier_8",
+          "has_building_info"
+        ],
+        "cv_mape_pct": 18.06688373572912,
+        "test_mape_pct": 17.04199882558889
+      },
+      {
+        "step": 12,
+        "added_feature": "tier_6",
+        "selected_features": [
+          "log_area_sqm",
+          "total_floor",
+          "building_age",
+          "log_total_unit",
+          "rail_km",
+          "tier_2",
+          "tier_4",
+          "tier_7",
+          "tier_5",
+          "tier_8",
+          "has_building_info",
+          "tier_6"
+        ],
+        "cv_mape_pct": 17.968388937003464,
+        "test_mape_pct": 17.428353193468364
+      }
+    ],
+    "selected_tuned": {
+      "k": 7,
+      "cv_mape_pct": 16.95817057965818,
+      "test_mape_pct": 16.862263253707642
+    },
+    "all_features_baseline": {
+      "k": 5,
+      "cv_mape_pct": 21.416985863793162,
+      "test_mape_pct": 21.948353395180806
+    }
+  },
+  "project_split": {
+    "candidate_features": [
+      "log_area_sqm",
+      "bedrooms",
+      "bathrooms",
+      "floor",
+      "is_new_unit",
+      "tier_2",
+      "tier_3",
+      "tier_4",
+      "tier_5",
+      "tier_6",
+      "tier_7",
+      "tier_8",
+      "building_age",
+      "log_total_unit",
+      "total_floor",
+      "facility_count",
+      "rail_km",
+      "mall_km",
+      "has_building_info"
+    ],
+    "selected_features": [
+      "log_area_sqm",
+      "building_age",
+      "total_floor",
+      "log_total_unit",
+      "tier_4",
+      "tier_6",
+      "tier_8",
+      "tier_5"
+    ],
+    "n_selected": 8,
+    "n_total": 19,
+    "selection_k": 21,
+    "steps": [
+      {
+        "step": 1,
+        "added_feature": "log_area_sqm",
+        "selected_features": [
+          "log_area_sqm"
+        ],
+        "cv_mape_pct": 54.16037395095824,
+        "test_mape_pct": 59.62045983773332
+      },
+      {
+        "step": 2,
+        "added_feature": "building_age",
+        "selected_features": [
+          "log_area_sqm",
+          "building_age"
+        ],
+        "cv_mape_pct": 42.12821483718945,
+        "test_mape_pct": 45.0930610791688
+      },
+      {
+        "step": 3,
+        "added_feature": "total_floor",
+        "selected_features": [
+          "log_area_sqm",
+          "building_age",
+          "total_floor"
+        ],
+        "cv_mape_pct": 32.299348697880674,
+        "test_mape_pct": 37.299759421070874
+      },
+      {
+        "step": 4,
+        "added_feature": "log_total_unit",
+        "selected_features": [
+          "log_area_sqm",
+          "building_age",
+          "total_floor",
+          "log_total_unit"
+        ],
+        "cv_mape_pct": 28.658218604955543,
+        "test_mape_pct": 30.469062481054543
+      },
+      {
+        "step": 5,
+        "added_feature": "tier_4",
+        "selected_features": [
+          "log_area_sqm",
+          "building_age",
+          "total_floor",
+          "log_total_unit",
+          "tier_4"
+        ],
+        "cv_mape_pct": 28.040389875452227,
+        "test_mape_pct": 30.27845883573229
+      },
+      {
+        "step": 6,
+        "added_feature": "tier_6",
+        "selected_features": [
+          "log_area_sqm",
+          "building_age",
+          "total_floor",
+          "log_total_unit",
+          "tier_4",
+          "tier_6"
+        ],
+        "cv_mape_pct": 27.39363958601274,
+        "test_mape_pct": 27.534456819068453
+      },
+      {
+        "step": 7,
+        "added_feature": "tier_8",
+        "selected_features": [
+          "log_area_sqm",
+          "building_age",
+          "total_floor",
+          "log_total_unit",
+          "tier_4",
+          "tier_6",
+          "tier_8"
+        ],
+        "cv_mape_pct": 27.273464037273904,
+        "test_mape_pct": 26.282855751051436
+      },
+      {
+        "step": 8,
+        "added_feature": "tier_5",
+        "selected_features": [
+          "log_area_sqm",
+          "building_age",
+          "total_floor",
+          "log_total_unit",
+          "tier_4",
+          "tier_6",
+          "tier_8",
+          "tier_5"
+        ],
+        "cv_mape_pct": 26.590932263622374,
+        "test_mape_pct": 24.918289342712804
+      }
+    ],
+    "selected_tuned": {
+      "k": 17,
+      "cv_mape_pct": 26.562449577178946,
+      "test_mape_pct": 24.872414846414042
+    },
+    "all_features_baseline": {
+      "k": 19,
+      "cv_mape_pct": 30.225571600850863,
+      "test_mape_pct": 29.844068504349547
+    }
+  },
+  "summary": {
+    "unseen_buildings_benchmark_mape_pct": 30.0,
+    "unseen_buildings_selected_test_mape_pct": 24.872414846414042,
+    "improves_over_30pct_unseen_buildings": true
+  }
+}
