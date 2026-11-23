@@ -1,0 +1,972 @@
+priority,key,listings,url
+1,วี คอนโด เอกมัย - รามอินทรา,30,https://www.livinginsider.com/detail/condo-for-sale-วี-คอนโด-เอกมัย-รามอินทรา-1bedroom-3316975
+2,วันเวลา ณ เจ้าพระยา,29,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A7%E0%B8%B1%E0%B8%99%E0%B9%80%E0%B8%A7%E0%B8%A5%E0%B8%B2-%E0%B8%93-%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A2%E0%B8%B2-1bedroom-3315083
+3,แอชตัน สีลม,25,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-ashton-silom-2bedroom-3316731
+4,แอชตัน จุฬา - สีลม,24,https://www.livinginsider.com/detail/condo-for-sale-condo-ashton-chula-silom-2bedroom-3209326
+5,ไลฟ์ สาทร เซียร์รา,24,https://www.livinginsider.com/detail/condo-for-sale-condo-life-sathorn-sierra-2bedroom-3248369
+6,ไอดีโอ สุขุมวิท - พระราม 4,23,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-sukhumvit-rama4-2bedroom-3041699
+7,ดิ ออริจิ้น ราม 209 อินเตอร์เชนจ์,23,https://www.livinginsider.com/detail/condo-for-sale-condo-the-origin-ram-209-interchange-1bedroom-3305659
+8,ไลฟ์ ลาดพร้าว,22,https://www.livinginsider.com/detail/condo-for-sale-condo-life-ladprao-1bedroom-3316800
+9,ซิตี้ วิลล่า,21,https://www.livinginsider.com/detail/condo-for-sale-city-villa-studio-3313473
+10,แอร์ลิงค์ เรสซิเดนซ์ ร่มเกล้า,20,https://www.livinginsider.com/detail/condo-for-sale-airlink-residences-1bedroom-807075
+11,พรีเซนต์ คอนโด เอกชัย 32,19,https://www.livinginsider.com/detail/condo-for-sale-present-condo-ekachai-32-1bedroom-3314305
+12,เดอะ ไลน์ พหลโยธิน - ประดิพัทธ์,19,https://www.livinginsider.com/detail/condo-for-sale-condo-the-line-phahol-pradipat-1bedroom-3308711
+13,พาร์ค ออริจิ้น จุฬา - สามย่าน,18,https://www.livinginsider.com/detail/condo-for-sale-condo-park-origin-chula-samyarn-1bedroom-3291994
+14,ศุภาลัย พรีมา ริวา,18,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-prima-riva-2bedroom-907849
+15,ดิ อิสสระ ลาดพร้าว,18,https://www.livinginsider.com/detail/condo-for-sale-ดิ-อิสสระ-ลาดพร้าว-1bedroom-3317222
+16,เดอะ พาโน พระราม 3,17,https://www.livinginsider.com/detail/condo-for-sale-the-pano-rama-3-3bedroom-3307159
+17,ไอริส แอเวนิว อ่อนนุช – วงแหวน,17,https://www.livinginsider.com/detail/condo-for-sale-condo-iris-avenue-onnut-wongwan-1bedroom-3307784
+18,ไนท์บริดจ์ ไพร์ม สาทร,16,https://www.livinginsider.com/detail/condo-for-sale-condo-knightsbridge-prime-sathorn-1bedroom-622299
+19,โนเบิล เพลินจิต,16,https://www.livinginsider.com/detail/condo-for-sale-condo-noble-ploenchit-1bedroom-3308805
+20,โคโค่ พาร์ค พระราม 4,16,https://www.livinginsider.com/detail/condo-for-sale-coco-parc-2bedroom-3299661
+21,ไอดีโอ รามคำแหง - ลำสาลี สเตชั่น,16,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-ramkhamhaeng-lam-sali-station-2bedroom-3257714
+22,ไฮด์ สุขุมวิท 13,15,https://www.livinginsider.com/detail/condo-for-sale-condo-hyde-sukhumvit-13-1bedroom-3245159
+23,แฮปปี้ คอนโด ลาดพร้าว 101,15,https://www.livinginsider.com/detail/condo-for-sale-happy-condo-ladprao-101-1bedroom-3301298
+24,คิววัน สุขุมวิท,14,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%84%E0%B8%B4%E0%B8%A7-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-3bedroom-3316256
+25,ไอดีโอ โมบิ สุขุมวิท อีสต์พอยท์,14,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mobi-sukhumvit-east-point-2bedroom-3103480
+26,เวีย อารีย์,14,https://www.livinginsider.com/detail/condo-for-sale-via-ari-1bedroom-3313952
+27,ดุสิต เรสซิเดนเซส และ ดุสิต พาร์คไซด์,13,https://www.livinginsider.com/detail/condo-for-sale-dusit-residences-and-dusit-parkside-2bedroom-3316759
+28,ลุมพินี วิลล์ ราษฎร์บูรณะ - ริเวอร์วิว,13,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-ratburana-riverview-studio-3315937
+29,แชปเตอร์วัน โมเดิร์นดัชต์ ราษฎร์บูรณะ 33,13,https://www.livinginsider.com/detail/condo-for-sale-condo-chapter-one-modern-dutch-ratburana-33-1bedroom-3310974
+30,รีเจ้นท์ โฮม 12 ลาดพร้าว 41,13,https://www.livinginsider.com/detail/condo-for-sale-regent-home-12-ladprao-41-1bedroom-3232673
+31,เปรมสิริ บูทิก ปาร์ค เกษตร - นวมินทร์,13,https://www.livinginsider.com/detail/condo-for-sale-condo-premsiri-boutique-park-1bedroom-3311326
+32,มีนบุรี-ร่มเกล้า,13,https://www.livinginsider.com/detail/condo-for-sale-min-buri-romklao-1bedroom-3316627
+33,ลุมพินี พาร์ค นวมินทร์ ศรีบูรพา,13,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-park-nawamin-si-burapha-1bedroom-3317233
+34,ไลฟ์ วัน ไวร์เลส,12,https://www.livinginsider.com/detail/condo-for-sale-condo-life-one-wireless-2bedroom-3203225
+35,โนเบิล อราวน์ อารีย์,12,https://www.livinginsider.com/detail/condo-for-sale-condo-noble-around-ari-1bedroom-3302876
+36,ลุมพินี คอนโดทาวน์ บดินทรเดชา - รามคำแหง,12,https://www.livinginsider.com/detail/condo-for-sale-lumpini-condo-town-bodindecha-ramkhamhaeng-studio-3311781
+37,เดอะ ไลน์ วงศ์สว่าง,12,https://www.livinginsider.com/detail/condo-for-sale-condo-the-line-wongsawang-1bedroom-3303116
+38,รมย์ คอนแวนต์,11,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A3%E0%B8%A1%E0%B8%A2%E0%B9%8C-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%81%E0%B8%A7%E0%B8%99%E0%B8%95%E0%B9%8C-1bedroom-3315211
+39,ศุภาลัย ริวา แกรนด์ พระราม 3,11,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-riva-grande-rama-3-1bedroom-3120511
+40,เดอะ ริเวอร์,11,https://www.livinginsider.com/detail/condo-for-sale-condo-the-river-3bedroom-3186427
+41,ซิตี้โฮม รัชดา - ปิ่นเกล้า (จรัญสนิทวงศ์ 95/1),11,https://www.livinginsider.com/detail/condo-for-sale-condo-city-home-ratchada-pinklao-1bedroom-3271742
+42,บ้านนวธารา (ริเวอร์ไลฟ์),11,https://www.livinginsider.com/detail/condo-for-sale-baan-navatara-river-life-1bedroom-3269186
+43,เจ.ดับบลิว. บูเลอวาร์ด ศรีวรา,11,https://www.livinginsider.com/detail/condo-for-sale-เจดับบลิว-บูเลอวาร์ด-ศรีวรา-1bedroom-3291082
+44,เอ็กซ์ที พญาไท,11,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%AD%E0%B9%87%E0%B8%81%E0%B8%8B%E0%B9%8C%E0%B8%97%E0%B8%B5-%E0%B8%9E%E0%B8%8D%E0%B8%B2%E0%B9%84%E0%B8%97-2bedroom-3317025
+45,อัสสกาญจน์ซิตี้ รามคำแหง 186,11,https://www.livinginsider.com/detail/condo-for-sale-condo-asakan-city-ramkhamhaeng-186-studio-339319
+46,ศาลาแดง วัน,10,https://www.livinginsider.com/detail/condo-for-sale-condo-saladaeng-one-2bedroom-547064
+47,ไลฟ์ พระราม 4 - อโศก,10,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%84%E0%B8%A5%E0%B8%9F%E0%B9%8C-%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1-4-%E0%B8%AD%E0%B9%82%E0%B8%A8%E0%B8%81-1bedroom-3316252
+48,ชาโตว์ อินทาวน์ พระราม 8,10,https://www.livinginsider.com/detail/condo-for-sale-chateau-in-town-rama-8-1bedroom-3303693
+49,ศุภาลัย ซิตี้ รีสอร์ท พระราม 8,10,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-city-resort-rama-8-1bedroom-806621
+50,ไอวี่ ริเวอร์ ราษฎร์บูรณะ,10,https://www.livinginsider.com/detail/condo-for-sale-condo-ivy-river-ratburana-1bedroom-3311137
+51,สมาร์ทคอนโด พระราม 2,10,https://www.livinginsider.com/detail/condo-for-sale-smart-condo-rama-2-1bedroom-3311017
+52,ศุภาลัย เวอเรนด้า สถานีภาษีเจริญ,10,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-veranda-phasi-charoen-station-studio-3316051
+53,ลุมพินี คอนโดทาวน์ รามอินทรา - ลาดปลาเค้า,10,https://www.livinginsider.com/detail/condo-for-sale-lumpini-condo-town-ramindra-lat-pla-khao-1bedroom-3315789
+54,ไอดีโอ พหลฯ - จตุจักร,10,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-phahol-jatujak-1bedroom-3190045
+55,ศุภาลัย เวอเรนด้า รามคำแหง,10,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-veranda-ramkhamheang-2bedroom-3248131
+56,แอทโมซ โฟลว์ มีนบุรี,10,https://www.livinginsider.com/detail/condo-for-sale-atmoz-flow-minburi-1bedroom-3307751
+57,ไนท์บริดจ์ พหลโยธิน - อินเตอร์เชนจ์,10,https://www.livinginsider.com/detail/condo-for-sale-condo-knightsbridge-phaholyothin-interchange-2bedroom-3314717
+58,คัลเจอร์ จุฬา,9,https://www.livinginsider.com/detail/condo-for-sale-culture-chula-2bedroom-3126231
+59,ไอดีโอ จุฬา - สามย่าน,9,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-chula-samyan-1bedroom-3316286
+60,สุขุมวิท สวีท,9,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-%E0%B8%AA%E0%B8%A7%E0%B8%B5%E0%B8%97-4bedroom-3277983
+61,ยูนิโอ พระราม 2 - ท่าข้าม,9,https://www.livinginsider.com/detail/condo-for-sale-condo-unio-rama-2-thakham-1bedroom-3310502
+62,เดอะ นิช ไอดี พระราม 2,9,https://www.livinginsider.com/detail/condo-for-sale-condo-the-niche-id-rama-2-1bedroom-3257380
+63,อีส 2 พระราม 2,9,https://www.livinginsider.com/detail/condo-for-sale-condo-ease-2-rama-2-1bedroom-3304063
+64,เดอะ มูฟ บางหว้า,9,https://www.livinginsider.com/detail/condo-for-sale-the-muve-bangwa-1bedroom-3315793
+65,ดิ เอ็กเซล ลาดพร้าว - สุทธิสาร,9,https://www.livinginsider.com/detail/condo-for-sale-condo-the-excel-ladprao-sutthisan-2bedroom-3317316
+66,ลุมพินี คอนโดทาวน์ รามอินทรา – ลาดปลาเค้า 2,9,https://www.livinginsider.com/detail/condo-for-sale-lumpini-condo-town-ramindra-latplakhao-2-2bedroom-3305473
+67,เดอะ ไลน์ จตุจักร - หมอชิต,9,https://www.livinginsider.com/detail/condo-for-sale-the-line-jatujak-mochit-1bedroom-2788652
+68,ดิ แอดเดรส สยาม - ราชเทวี,9,https://www.livinginsider.com/detail/condo-for-sale-condo-the-address-siam-ratchathewi-1bedroom-3285618
+69,ไอดีโอ คิว วิคตอรี่,9,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-q-victory-1bedroom-3242288
+70,ดีคอนโด คาล์ม รามคำแหง 40,9,https://www.livinginsider.com/detail/condo-for-sale-d-condo-calm-ramkhamhaeng-40-1bedroom-3309412
+71,รีเจ้นท์ โฮม 6 ประชาชื่น,9,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A3%E0%B8%B5%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%99%E0%B8%97%E0%B9%8C-%E0%B9%82%E0%B8%AE%E0%B8%A1-6-%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%8A%E0%B8%B2%E0%B8%8A%E0%B8%B7%E0%B9%88%E0%B8%99-1bedroom-3317097
+72,รีเจ้นท์ โฮม 1 พหลโยธิน 67,9,https://www.livinginsider.com/detail/condo-for-sale-condo-regent-home-1-phaholyothin-67-1bedroom-3273298
+73,ทริปเปิ้ล วาย เรสซิเด้นซ์,8,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-triple-y-residence-2bedroom-3298405
+74,ออมนิ ทาวเวอร์,8,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AD%E0%B8%AD%E0%B8%A1%E0%B8%99%E0%B8%B4-%E0%B8%97%E0%B8%B2%E0%B8%A7%E0%B9%80%E0%B8%A7%E0%B8%AD%E0%B8%A3%E0%B9%8C-2bedroom-3312997
+75,ลุมพินี เพลส พระราม 8,8,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-rama-8-studio-3314065
+76,เดอะ พาร์คแลนด์ จรัญ - ปิ่นเกล้า,8,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parkland-charan-pinklao-2bedroom-3317294
+77,อีส พระราม 2,8,https://www.livinginsider.com/detail/condo-for-sale-condo-ease-rama-2-1bedroom-3287388
+78,เดอะนิช ไอดี บางแค,8,https://www.livinginsider.com/detail/condo-for-sale-condo-the-niche-id-bangkhae-1bedroom-3307798
+79,ไนท์บริดจ์ สเปซ รัชโยธิน,8,https://www.livinginsider.com/detail/condo-for-sale-condo-knightsbridge-space-rachayothin-2bedroom-3298499
+80,ลุมพินี เซ็นเตอร์ ลาดพร้าว 111,8,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-center-ladprao-111-studio-3311714
+81,เดอะ ไลน์ พหลโยธิน พาร์ค,8,https://www.livinginsider.com/detail/condo-for-sale-condo-the-line-phahonyothin-park-1bedroom-3267909
+82,พัฒนาการ ไลฟ์ คอมเพล็กซ์,8,https://www.livinginsider.com/detail/condo-for-sale-condo-pattanakarn-life-complex-1bedroom-3284029
+83,ไอดีโอ คิว พญาไท,8,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-q-phayathai-1bedroom-3317300
+84,ไอดีโอ คิว สยาม - ราชเทวี,8,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-ideo-q-siam-ratchathewi-1bedroom-3297921
+85,ไอดีโอ โอทู,8,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-o2-1bedroom-3303103
+86,ไนท์บริดจ์ ไพร์ม อ่อนนุช,8,https://www.livinginsider.com/detail/condo-for-sale-condo-knightsbridge-prime-onnut-1bedroom-3309000
+87,ไอดีโอ พระราม 9 - อโศก,8,https://www.livinginsider.com/detail/condo-for-sale-ideo-rama-9-asoke-2bedroom-3287842
+88,แอชตัน อโศก - พระราม 9,8,https://www.livinginsider.com/detail/condo-for-sale-condo-ashton-asoke-rama-9-2bedroom-3295478
+89,อัสสกาญจน์ เพลส รามคำแหง 147/2,8,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AD%E0%B8%B1%E0%B8%AA%E0%B8%AA%E0%B8%81%E0%B8%B2%E0%B8%8D%E0%B8%88%E0%B8%99%E0%B9%8C-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%AA-%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%84%E0%B8%B3%E0%B9%81%E0%B8%AB%E0%B8%87-1472-1bedroom-3316964
+90,ลุมพินี คอนโดทาวน์ รามอินทรา - นวมินทร์,8,https://www.livinginsider.com/detail/condo-for-sale-lumpini-condo-town-ramintra-nawamin-studio-3316246
+91,ปาร์ค เอ็กซ์โซ่ เกษตร - นวมินทร์,8,https://www.livinginsider.com/detail/condo-for-sale-condo-parc-exo-kaset-navamintra-1bedroom-3226354
+92,เมโทร สกาย บางซ่อน อินเตอร์เชนจ์ (ประชาชื่น),8,https://www.livinginsider.com/detail/condo-for-sale-metro-sky-bangson-interchange-2bedroom-3219060
+93,ไอดีโอ คิว สุขุมวิท 36,7,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-q-sukhumvit-36-2bedroom-2798616
+94,ดิ แอดเดรส สาทร,7,https://www.livinginsider.com/detail/condo-for-sale-condo-the-address-sathorn-1bedroom-904194
+95,ไอดีโอ คิว จุฬา - สามย่าน,7,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-q-chula-samyan-1bedroom-3069479
+96,มิวนีค หลังสวน,7,https://www.livinginsider.com/detail/condo-for-sale-condo-muniq-langsuan-3bedroom-3310135
+97,185 ราชดำริ,7,https://www.livinginsider.com/detail/condo-for-sale-condo-185-rajadamri-2bedroom-3272876
+98,เดอะ เทรนดี้ คอนโดมิเนียม,7,https://www.livinginsider.com/detail/condo-for-sale-the-trendy-condominium-1bedroom-3313556
+99,ไซมิส เอ๊กซ์คลูซีพ ควีนส์,7,https://www.livinginsider.com/detail/condo-for-sale-condo-siamese-exclusive-queens-1bedroom-3197001
+100,ลุมพินี พาร์ค ริเวอร์ไซด์ - พระราม 3,7,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-park-riverside-rama-3-3bedroom-3030074
+101,ยู ดีไลท์ เรสซิเดนซ์ ริเวอร์ฟร้อนท์ พระราม 3,7,https://www.livinginsider.com/detail/condo-for-sale-condo-u-delight-residence-riverfront-rama-3-1bedroom-3300728
+102,เดอะ ทรัสต์ เรสซิเด้นซ์ ปิ่นเกล้า (บรมราชชนนี),7,https://www.livinginsider.com/detail/condo-for-sale-condo-the-trust-residence-pinklao-1bedroom-3316684
+103,เซอราโน่ คอนโดมิเนียม พระราม 2,7,https://www.livinginsider.com/detail/condo-for-sale-serrano-condominium-1bedroom-3303331
+104,ดิ ออริจิ้น บางแค,7,https://www.livinginsider.com/detail/condo-for-sale-the-origin-bangkae-1bedroom-3287352
+105,โมเดิร์น คอนโด กำนันแม้น 3,7,https://www.livinginsider.com/detail/condo-for-sale-modern-condo-kamnanmaen-3-studio-3316879
+106,ชีวาทัย ฮอลล์มาร์ค ลาดพร้าว - โชคชัย 4,7,https://www.livinginsider.com/detail/condo-for-sale-chawathai-hallmark-ladprao-chokchai-4-1bedroom-3219881
+107,ไอคอนโด เกษตร,7,https://www.livinginsider.com/detail/condo-for-sale-icondo-kaset-1bedroom-3313713
+108,เดอะ รีเซิร์ฟ พหล - ประดิพัทธ์,7,https://www.livinginsider.com/detail/condo-for-sale-condo-the-reserve-phahol-pradipat-2bedroom-712257
+109,อีควิน็อกซ์ พหล - วิภา,7,https://www.livinginsider.com/detail/condo-for-sale-condo-equinox-phahol-vibha-2bedroom-934448
+110,ดิ ไอริส พระราม 9 - ศรีนครินทร์,7,https://www.livinginsider.com/detail/condo-for-sale-condo-the-iris-rama-9-srinakarin-1bedroom-3317263
+111,ฟลอร่า วิลล์,7,https://www.livinginsider.com/detail/condo-for-sale-condo-flora-ville-2bedroom-3316714
+112,ไอดีโอ โมบิ สุขุมวิท (สุขุมวิท 81),7,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mobi-sukhumvit-2bedroom-3284452
+113,เดอะ เบส พาร์ค เวสต์,7,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0-%E0%B9%80%E0%B8%9A%E0%B8%AA-%E0%B8%9E%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%84-%E0%B9%80%E0%B8%A7%E0%B8%AA%E0%B8%95%E0%B9%8C-1bedroom-3317040
+114,เซ็นทริค อารีย์ สเตชั่น,7,https://www.livinginsider.com/detail/condo-for-sale-condo-centric-ari-station-1bedroom-3305948
+115,แอสปาย วิภา - วิคตอรี่,7,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%81%E0%B8%AD%E0%B8%AA%E0%B8%9B%E0%B8%B2%E0%B8%A2-%E0%B8%A7%E0%B8%B4%E0%B8%A0%E0%B8%B2-%E0%B8%A7%E0%B8%B4%E0%B8%84%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B8%B5%E0%B9%88-1bedroom-3316240
+116,เอ็กซ์ที ห้วยขวาง,7,https://www.livinginsider.com/detail/condo-for-sale-condo-xt-huaikhwang-1bedroom-3073446
+117,เดอะคิวบ์ พลัส มีนบุรี,7,https://www.livinginsider.com/detail/condo-for-sale-condo-the-cube-plus-minburi-1bedroom-3311026
+118,ลุมพินี คอนโดทาวน์ รามอินทรา - หลักสี่,7,https://www.livinginsider.com/detail/condo-for-sale-lumpini-condotown-ramindra-laksi-1bedroom-3316294
+119,ลุมพินี วิลล์ อ่อนนุช - ลาดกระบัง 2,7,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-onnut-ladkrabang-2-1bedroom-3313987
+120,ดีคอนโด แอร์ ลาดกระบัง,7,https://www.livinginsider.com/detail/condo-for-sale-d-condo-air-ladkrabang-1bedroom-3315980
+121,ไฮด์ เฮอริเทจ ทองหล่อ,6,https://www.livinginsider.com/detail/condo-for-sale-condo-hyde-heritage-thonglor-1bedroom-3166045
+122,ศุภาลัย ไอคอน สาทร,6,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-icon-sathorn-3bedroom-3106332
+123,ริทึ่ม สาทร,6,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-rhythm-sathorn-1bedroom-2881718
+124,ดิ เอ็มไพร์ เพลส สาทร,6,https://www.livinginsider.com/detail/condo-for-sale-the-empire-place-sathorn-2bedroom-3202250
+125,คูเปอร์ สยาม,6,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-cooper-siam-1bedroom-3306243
+126,สุขุมวิท ซิตี้ รีสอร์ท สุขุมวิท 11,6,https://www.livinginsider.com/detail/condo-for-sale-condo-sukhumvit-city-resort-sukhumvit-11-2bedroom-3284774
+127,ไลฟ์ สุขุมวิท - พระราม 4,6,https://www.livinginsider.com/detail/condo-for-sale-life-sukhumvit-rama-4-1bedroom-3316819
+128,แอสปาย สุขุมวิท - พระราม 4,6,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%81%E0%B8%AD%E0%B8%AA%E0%B8%9B%E0%B8%B2%E0%B8%A2-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1-4-1bedroom-3316248
+129,สตาร์วิว,6,https://www.livinginsider.com/detail/condo-for-sale-condo-star-view-2bedroom-3284722
+130,โฟล บาย แสนสิริ,6,https://www.livinginsider.com/detail/condo-for-sale-flo-by-sansiri-1bedroom-3310061
+131,แชปเตอร์ เจริญนคร - ริเวอร์ไซด์,6,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-chapter-charoennakhon-riverside-1bedroom-3317394
+132,นายน์ บาย แสนสิริ,6,https://www.livinginsider.com/detail/condo-for-sale-condo-nye-by-sansiri-1bedroom-3271035
+133,ยูนิโอ จรัญฯ 3,6,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A2%E0%B8%B9%E0%B8%99%E0%B8%B4%E0%B9%82%E0%B8%AD-%E0%B8%88%E0%B8%A3%E0%B8%B1%E0%B8%8D%E0%B8%AF-3-1bedroom-3317170
+134,อิซซี่ คอนโด สุขสวัสดิ์,6,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AD%E0%B8%B4%E0%B8%8B%E0%B8%8B%E0%B8%B5%E0%B9%88-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%AA%E0%B8%A7%E0%B8%B1%E0%B8%AA%E0%B8%94%E0%B8%B4%E0%B9%8C-1bedroom-3314167
+135,พลัมคอนโด เอ็กซ์ตร้า พระราม 2,6,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%9E%E0%B8%A5%E0%B8%B1%E0%B8%A1%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B9%80%E0%B8%AD%E0%B9%87%E0%B8%81%E0%B8%8B%E0%B9%8C%E0%B8%95%E0%B8%A3%E0%B9%89%E0%B8%B2-%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1-2-1bedroom-3237225
+136,เดอะ พาร์คแลนด์ เพชรเกษม 56,6,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parkland-phetkasem-56-2bedroom-3256818
+137,เอกชัย บางบอน,6,https://www.livinginsider.com/detail/condo-for-sale-daokanongbang-bon-1bedroom-3311570
+138,ลุมพินี คอนโดทาวน์ เอกชัย 48,6,https://www.livinginsider.com/detail/condo-for-sale-lumpini-condotown-ekachai-48-studio-3267599
+139,เจ ดับบลิว สวีท,6,https://www.livinginsider.com/detail/condo-for-sale-j-w-suite-studio-3271417
+140,ไลฟ์ แอท รัชดา (ลาดพร้าว 36),6,https://www.livinginsider.com/detail/condo-for-sale-life-ratchada-ladprao36-2bedroom-3315140
+141,แอทโมซ ลาดพร้าว 71,6,https://www.livinginsider.com/detail/condo-for-sale-condo-atmoz-ladprao-71-2bedroom-3205492
+142,เอลลิโอ เดล มอสส์ พหลโยธิน 34,6,https://www.livinginsider.com/detail/condo-for-sale-condo-elio-del-moss-phaholyothin-34-1bedroom-465113
+143,แมสซารีน รัชโยธิน,6,https://www.livinginsider.com/detail/condo-for-sale-condo-mazarine-ratchayothin-1bedroom-3307973
+144,โค้บบ์ เกษตร - ศรีปทุม,6,https://www.livinginsider.com/detail/condo-for-sale-cobe-kaset-sripatum-2bedroom-3271533
+145,เกษตร นวมินทร์ ลาดปลาเค้า,6,https://www.livinginsider.com/detail/condo-for-sale-kaset-nawaminladplakao-1bedroom-3278738
+146,พรีมิโอ ไพร์ม,6,https://www.livinginsider.com/detail/condo-for-sale-condo-premio-prime-1bedroom-3315641
+147,ริชพาร์ค แอท ทริปเปิ้ล สเตชั่น,6,https://www.livinginsider.com/detail/condo-for-sale-condo-rich-park-triple-station-1bedroom-3316027
+148,พัฒนาการ ศรีนครินทร์,6,https://www.livinginsider.com/detail/condo-for-sale-pattanakan-srinakarin-1bedroom-3303765
+149,ไอดีโอ เวิร์ฟ ราชปรารภ,6,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-verve-ratchaprarop-1bedroom-3247265
+150,ยูนิโอ สุขุมวิท 72,6,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-unio-sukhumvit-72-1bedroom-3266680
+151,ไลฟ์ สุขุมวิท 48,6,https://www.livinginsider.com/detail/condo-for-sale-condo-life-sukhumvit-48-2bedroom-3178991
+152,ไลฟ์ รัชดาภิเษก,6,https://www.livinginsider.com/detail/condo-for-sale-condo-life-ratchadapisek-2bedroom-3316980
+153,ริทึ่ม รัชดา,6,https://www.livinginsider.com/detail/condo-for-sale-condo-rhythm-ratchada-1bedroom-3199703
+154,ดิ ออริจิ้น สุขุมวิท 105,6,https://www.livinginsider.com/detail/condo-for-sale-condo-the-origin-sukhumvit-105-2bedroom-3291742
+155,เมทริส พระราม 9 - รามคำแหง,6,https://www.livinginsider.com/detail/condo-for-sale-condo-metris-rama-9-ramkhamheang-2bedroom-3315674
+156,โมดิซ ไรห์ม รามคำแหง,6,https://www.livinginsider.com/detail/condo-for-sale-condo-modiz-rhyme-ramkhamhaeng-1bedroom-3307734
+157,รีเจ้นท์ โฮม บางซ่อน (เฟส 27),6,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A3%E0%B8%B5%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%99%E0%B8%97%E0%B9%8C-%E0%B9%82%E0%B8%AE%E0%B8%A1-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B8%8B%E0%B9%88%E0%B8%AD%E0%B8%99-%E0%B9%80%E0%B8%9F%E0%B8%AA-27-1bedroom-3317103
+158,ดีคอนโด อ่อนนุช - สุวรรณภูมิ,6,https://www.livinginsider.com/detail/condo-for-sale-d-condo-onnut-suvarnabhumi-1bedroom-3264291
+159,เดอะ เบส สะพานใหม่,6,https://www.livinginsider.com/detail/condo-for-sale-condo-the-base-saphanmai-1bedroom-3303071
+160,ดีคอนโด คลาวด์ ดอนเมือง,6,https://www.livinginsider.com/detail/condo-for-sale-dcondo-cloud-don-mueang-1bedroom-3309404
+161,ออริจิ้น ปลั๊ก แอนด์ เพลย์ รามคำแหง ทริปเปิ้ล สเตชั่น,6,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AD%E0%B8%AD%E0%B8%A3%E0%B8%B4%E0%B8%88%E0%B8%B4%E0%B9%89%E0%B8%99-%E0%B8%9B%E0%B8%A5%E0%B8%B1%E0%B9%8A%E0%B8%81-%E0%B9%81%E0%B8%AD%E0%B8%99%E0%B8%94%E0%B9%8C-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%A2%E0%B9%8C-%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%84%E0%B8%B3%E0%B9%81%E0%B8%AB%E0%B8%87-%E0%B8%97%E0%B8%A3%E0%B8%B4%E0%B8%9B%E0%B9%80%E0%B8%9B%E0%B8%B4%E0%B9%89%E0%B8%A5-%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-1bedroom-3317038
+162,ยูนิโอ รามคำแหง - เสรีไทย,6,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-unio-ramkhamhaeng-serithai-studio-3296614
+163,624 คอนโดเลต ลาดพร้าว,6,https://www.livinginsider.com/detail/condo-for-sale-lette-624-ladprao-1bedroom-3220312
+164,เดอะ ปราก คอนโดมิเนียม,6,https://www.livinginsider.com/detail/condo-for-sale-the-prague-condominium-1bedroom-3095708
+165,เอ็ม สีลม,5,https://www.livinginsider.com/detail/condo-for-sale-condo-m-silom-1bedroom-3257092
+166,คลาส คอนโด สีลม,5,https://www.livinginsider.com/detail/condo-for-sale-klass-condo-silom-1bedroom-3184218
+167,เดอะ แบงค็อค สาทร,5,https://www.livinginsider.com/detail/condo-for-sale-condo-the-bangkok-sathorn-1bedroom-2988015
+168,แชปเตอร์ จุฬา - สามย่าน,5,https://www.livinginsider.com/detail/condo-for-sale-condo-chapter-chula-samyan-1bedroom-3196701
+169,15 สุขุมวิท เรสซิเด็นซ์,5,https://www.livinginsider.com/detail/condo-for-sale-condo-15-sukhumvit-residences-studio-2984946
+170,เซลฟ์ บาย แสนสิริ,5,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%8B%E0%B8%A5%E0%B8%9F%E0%B9%8C-%E0%B8%9A%E0%B8%B2%E0%B8%A2-%E0%B9%81%E0%B8%AA%E0%B8%99%E0%B8%AA%E0%B8%B4%E0%B8%A3%E0%B8%B4-1bedroom-3133218
+171,ศุภาลัย พรีเมียร์ เจริญนคร,5,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-premier-charoen-nakhon-1bedroom-3317020
+172,แอสปาย สาทร - ตากสิน (timber zone),5,https://www.livinginsider.com/detail/condo-for-sale-aspire-sathorn-taksin-timber-zone-1bedroom-3317370
+173,ไอดีโอ สาทร - ท่าพระ,5,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-sathorn-tha-phra-studio-3313465
+174,ศุภาลัย ลอฟท์ สถานีตลาดพลู,5,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-loft-talat-phlu-station-1bedroom-3056701
+175,ลุมพินี พาร์ค ปิ่นเกล้า,5,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-park-pinklao-1bedroom-3316165
+176,พลัมคอนโด พระราม 2,5,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%9E%E0%B8%A5%E0%B8%B1%E0%B8%A1%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1-2-1bedroom-3317062
+177,ศุภาลัย ปาร์ค ราชพฤกษ์ - เพชรเกษม,5,https://www.livinginsider.com/detail/condo-for-sale-supalai-park-ratchapruek-phetkasem-1bedroom-3316546
+178,เดอะ นิช โมโน รัชวิภา,5,https://www.livinginsider.com/detail/condo-for-sale-condo-the-niche-mono-ratchavipha-2bedroom-3175314
+179,เซ็นทริค รัชโยธิน,5,https://www.livinginsider.com/detail/condo-for-sale-condo-centric-ratchayothin-2bedroom-3315749
+180,ลาดพร้าว101 แฮปปี้แลนด์,5,https://www.livinginsider.com/detail/condo-for-sale-ladprao101-the-mall-bang-kapi-1bedroom-3317305
+181,ลุมพินี เซ็นเตอร์ แฮปปี้แลนด์ เฟส 1-4,5,https://www.livinginsider.com/detail/condo-for-sale-ลุมพินี-เซ็นเตอร์-แฮปปี้แลนด์-เฟส-1-4-1bedroom-3317215
+182,พลัมคอนโด ลาดพร้าว 101,5,https://www.livinginsider.com/detail/condo-for-sale-พลัม-คอนโด-ลาดพร้าว-101-1bedroom-3317208
+183,ยู ดีไลท์ แอท จตุจักร สเตชั่น,5,https://www.livinginsider.com/detail/condo-for-sale-condo-u-delight-jatujak-station-2bedroom-3317301
+184,เดอะไพรเวซี่ จตุจักร,5,https://www.livinginsider.com/detail/condo-for-sale-condo-the-privacy-jatujak-1bedroom-2765511
+185,แชปเตอร์วัน มิดทาวน์ ลาดพร้าว 24,5,https://www.livinginsider.com/detail/condo-for-sale-condo-chapter-one-midtown-ladprao-24-2bedroom-3138932
+186,เดอะ รูม รัชดา - ลาดพร้าว,5,https://www.livinginsider.com/detail/condo-for-sale-เดอะ-รูม-รัชดา-ลาดพร้าว-1bedroom-3317124
+187,ศุภาลัย ปาร์ค ศรีนครินทร์,5,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-park-srinakarin-1bedroom-3314208
+188,เดอะพาร์คแลนด์ ศรีนครินทร์,5,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parkland-srinakarin-1bedroom-3274398
+189,วิลล่า ราชเทวี,5,https://www.livinginsider.com/detail/condo-for-sale-condo-villa-rachatewi-2bedroom-3248270
+190,บ้านกลางกรุง สยาม - ปทุมวัน,5,https://www.livinginsider.com/detail/condo-for-sale-condo-baan-klang-krung-siam-pathumwan-2bedroom-3227709
+191,วิช ซิกเนเจอร์ มิดทาวน์ สยาม,5,https://www.livinginsider.com/detail/condo-for-sale-condo-wish-signature-midtown-siam-1bedroom-3204832
+192,วิสซ์ดอม เดอะ ฟอเรสเทียส์,5,https://www.livinginsider.com/detail/condo-for-sale-whizdom-the-forestias-1bedroom-3200817
+193,ริทึ่ม สุขุมวิท 44/1,5,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A3%E0%B8%B4%E0%B8%97%E0%B8%B6%E0%B9%88%E0%B8%A1-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-441-2bedroom-2766077
+194,แอสปาย สุขุมวิท 48,5,https://www.livinginsider.com/detail/condo-for-sale-condo-aspire-sukhumvit-48-1bedroom-439205
+195,โนเบิล รีฟอร์ม,5,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-noble-reform-2bedroom-3271156
+196,มาเอสโตร 07 อนุสาวรีย์ชัย,5,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-maestro-07-victory-monument-2bedroom-3277608
+197,ศุภาลัยปาร์ค เอกมัย - ทองหล่อ,5,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-park-ekkamai-thonglor-2bedroom-3205811
+198,โนเบิล รีวอลฟ์ รัชดา,5,https://www.livinginsider.com/detail/condo-for-sale-condo-noble-revolve-ratchada-1bedroom-3259389
+199,เดอะ เบส รัชดา 19,5,https://www.livinginsider.com/detail/condo-for-sale-the-base-ratchada-19-1bedroom-3262590
+200,แอทโมซ รัชดา - ห้วยขวาง,5,https://www.livinginsider.com/detail/condo-for-sale-condo-atmoz-ratchada-huaikwang-studio-3119779
+201,ริทึ่ม สุขุมวิท 50,5,https://www.livinginsider.com/detail/condo-for-sale-condo-rhythm-sukhumvit-50-1bedroom-3316921
+202,ศุภาลัย เวอเรนด้า พระราม 9,5,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-veranda-rama-9-1bedroom-3109413
+203,นิช โมโน รามคําแหง,5,https://www.livinginsider.com/detail/condo-for-sale-condo-niche-mono-ramkhamhaeng-1bedroom-3281628
+204,ยู ดีไลท์ แอท หัวหมากสเตชั่น,5,https://www.livinginsider.com/detail/condo-for-sale-condo-u-delight-huamak-station-1bedroom-3301299
+205,ดีคอนโด รามคำแหง,5,https://www.livinginsider.com/detail/condo-for-sale-d-condo-ramkhamhaeng-1bedroom-3076380
+206,เอสต้า บลิซ,5,https://www.livinginsider.com/detail/condo-for-sale-condo-esta-bliss-2bedroom-3313484
+207,ดีคอนโด รามอินทรา,5,https://www.livinginsider.com/detail/condo-for-sale-d-condo-ramindra-1bedroom-3215048
+208,ลุมพินี วิลล์ รามอินทรา - หลักสี่,5,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-ramintra-laksi-1bedroom-3240153
+209,ลุมพินี คอนโดทาวน์ นิด้า - เสรีไทย 2,5,https://www.livinginsider.com/detail/condo-for-sale-lumpini-condotown-nida-serithai-2-1bedroom-3308121
+210,เดอะ นิช ไอดี เสรีไทย (วงแหวน ),5,https://www.livinginsider.com/detail/condo-for-sale-condo-the-niche-id-serithai-1bedroom-324305
+211,ไอคอนโด สุขาภิบาล 2,5,https://www.livinginsider.com/detail/condo-for-sale-icondo-sukhapiban-2-1bedroom-3278160
+212,เสรีไทย-นิด้า,5,https://www.livinginsider.com/detail/condo-for-sale-rent-ramkhamhaeng-nida-seri-thai-2bedroom-3314934
+213,เดอะ สแตรนด์ ทองหล่อ,4,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-the-strand-thonglor-2bedroom-3122077
+214,เดอะ เรสซิเดนเซส 38,4,https://www.livinginsider.com/detail/condo-for-sale-the-residences-38-2bedroom-3063912
+215,คัลเจอร์ ทองหล่อ,4,https://www.livinginsider.com/detail/condo-for-sale-culture-thonglor-studio-3168728
+216,ศุภาลัย เอลีท สุรวงศ์,4,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-elite-surawong-2bedroom-3201706
+217,สีลม สวีท,4,https://www.livinginsider.com/detail/condo-for-sale-condo-silom-suite-2bedroom-3099128
+218,เทตต์ สาทร ทเวลฟ์,4,https://www.livinginsider.com/detail/condo-for-sale-con-do-tait-sa-thorn-12-2bedroom-3083545
+219,โนเบิล รีโว สีลม,4,https://www.livinginsider.com/detail/condo-for-sale-condo-noble-revo-silom-1bedroom-2821618
+220,เดอะรูม พระราม 4,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-room-rama-4-1bedroom-3310078
+221,ดิ แอดเดรส ชิดลม,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-address-chidlom-1bedroom-2942605
+222,28 ชิดลม,4,https://www.livinginsider.com/detail/condo-for-sale-condo-28-chidlom-1bedroom-3166335
+223,ไฮด์ สุขุมวิท 11,4,https://www.livinginsider.com/detail/condo-for-sale-condo-hyde-sukhumvit-11-1bedroom-3312401
+224,แอสปาย พระราม 4,4,https://www.livinginsider.com/detail/condo-for-sale-condo-aspire-rama-4-1bedroom-3278059
+225,บ้าน สวน สุโขทัย,4,https://www.livinginsider.com/detail/condo-for-sale-condo-baan-suan-sukhothai-1bedroom-3307123
+226,เอสวี ซิตี้ พระราม 3,4,https://www.livinginsider.com/detail/condo-for-sale-sv-city-rama-3-2bedroom-3283733
+227,เดอะ คีย์ พระราม 3,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-key-rama-3-1bedroom-3033274
+228,ริธึ่ม เจริญนคร ไอคอนิค,4,https://www.livinginsider.com/detail/condo-for-sale-rhythm-charoennakhon-iconic-1bedroom-3250803
+229,วอเตอร์มาร์ค เจ้าพระยา ริเวอร์,4,https://www.livinginsider.com/detail/condo-for-sale-condo-watermark-chaophraya-river-3bedroom-3246809
+230,เออร์บาโน่ แอบโซลูท สาทร - ตากสิน,4,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%AD%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%9A%E0%B8%B2%E0%B9%82%E0%B8%99%E0%B9%88-%E0%B9%81%E0%B8%AD%E0%B8%9A%E0%B9%82%E0%B8%8B%E0%B8%A5%E0%B8%B9%E0%B8%97-%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%A3-%E0%B8%95%E0%B8%B2%E0%B8%81%E0%B8%AA%E0%B8%B4%E0%B8%99-1bedroom-3317209
+231,บ้าน สาทร – เจ้าพระยา,4,https://www.livinginsider.com/detail/condo-for-sale-condo-baan-sathorn-chaophraya-2bedroom-3295700
+232,แอสปาย สาทร - ท่าพระ,4,https://www.livinginsider.com/detail/condo-for-sale-condo-aspire-sathorn-thapra-1bedroom-3206550
+233,วิสซ์ดอม สเตชั่น รัชดา - ท่าพระ,4,https://www.livinginsider.com/detail/condo-for-sale-condo-whizdom-station-ratchada-thapra-1bedroom-3317389
+234,เดอะ พาร์คแลนด์ ตากสิน - ท่าพระ,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parkland-taksin-thapra-1bedroom-3317315
+235,แอสปาย สาทร - ราชพฤกษ์,4,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-aspire-sathorn-ratchaphruek-1bedroom-3245776
+236,เอลลิโอ สาทร - วุฒากาศ,4,https://www.livinginsider.com/detail/condo-for-sale-condo-elio-sathorn-wutthakat-1bedroom-2975611
+237,เออร์บาโน่ ราชวิถี,4,https://www.livinginsider.com/detail/condo-for-sale-condo-urbano-rajavithi-studio-3253645
+238,แชปเตอร์ วัน สปาร์ค จรัญ,4,https://www.livinginsider.com/detail/condo-for-sale-chapter-one-spark-charan-1bedroom-2902143
+239,เพลส 168 ปิ่นเกล้า,4,https://www.livinginsider.com/detail/condo-for-sale-place-168-pinklao-1bedroom-3316717
+240,ฟีล คอนโด ปิ่นเกล้า - จรัญ 59,4,https://www.livinginsider.com/detail/condo-for-sale-feel-condo-pinklao-charan-59-1bedroom-3175664
+241,ลุมพินี วิลล์ ราษฎร์บูรณะ - ริเวอร์วิว 2,4,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A5%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%99%E0%B8%B5-%E0%B8%A7%E0%B8%B4%E0%B8%A5%E0%B8%A5%E0%B9%8C-%E0%B8%A3%E0%B8%B2%E0%B8%A9%E0%B8%8E%E0%B8%A3%E0%B9%8C%E0%B8%9A%E0%B8%B9%E0%B8%A3%E0%B8%93%E0%B8%B0-%E0%B8%A3%E0%B8%B4%E0%B9%80%E0%B8%A7%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%A7%E0%B8%B4%E0%B8%A7-2-1bedroom-3317128
+242,ลุมพินี เพลส สุขสวัสดิ์ – พระราม 2,4,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-suksawat-rama-2-1bedroom-3242568
+243,เดอะ ไพรเวซี่ ประชาอุทิศ – สุขสวัสดิ์,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-privacy-prachauthit-suksawat-1bedroom-3314768
+244,ปาร์ค พุทธบูชา 48,4,https://www.livinginsider.com/detail/condo-for-sale-condo-parque-phutthabucha-48-1bedroom-3308430
+245,กู๊ดเดย์ มอร์ บางมด,4,https://www.livinginsider.com/detail/condo-for-sale-good-day-more-bangmod-1bedroom-3308307
+246,ออริจินส์ พระราม 2,4,https://www.livinginsider.com/detail/condo-for-sale-origins-rama-2-1bedroom-3305331
+247,ออริจินส์ บางมด - พระราม 2,4,https://www.livinginsider.com/detail/condo-for-sale-condo-origins-bangmod-rama-2-1bedroom-3303941
+248,ลุมพินี คอนโดทาวน์ บางแค,4,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A5%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%99%E0%B8%B5-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94%E0%B8%97%E0%B8%B2%E0%B8%A7%E0%B8%99%E0%B9%8C-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%84-1bedroom-3317017
+249,ธนาเพลส คอนโดมิเนียม,4,https://www.livinginsider.com/detail/condo-for-sale-thanaplace-condominium-2bedroom-3308116
+250,บี ยู โชคชัย 4,4,https://www.livinginsider.com/detail/condo-for-sale-be-you-chokchai-4-1bedroom-3242430
+251,เดอะ คีย์ พหลโยธิน (พหลโยธิน 34),4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-key-phahonyothin-1bedroom-3261503
+252,วินด์ รัชโยธิน,4,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-wind-ratchayothin-2bedroom-3125334
+253,เดอะคิวบ์ ลอฟท์ ลาดพร้าว 107,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-cube-loft-ladprao-107-1bedroom-3248985
+254,สตูดิโอ วัน - สตูดิโอ โซน,4,https://www.livinginsider.com/detail/condo-for-sale-studio-one-studio-zone-2bedroom-3316734
+255,นีเวร่า เอกมัย - รามอินทรา,4,https://www.livinginsider.com/detail/condo-for-sale-condo-newera-ekmai-ramintra-1bedroom-3303561
+256,เวนโต้ คอนโด เกษตร - นวมินทร์,4,https://www.livinginsider.com/detail/condo-for-sale-เวนโต้-คอนโด-เกษตร-นวมินทร์-1bedroom-3313016
+257,เอ็ม จตุจักร,4,https://www.livinginsider.com/detail/condo-for-sale-condo-m-jatujak-2bedroom-3273478
+258,ริธึ่ม พหลฯ - อารีย์,4,https://www.livinginsider.com/detail/condo-for-sale-condo-rhythm-phahon-ari-1bedroom-3019092
+259,เดอะ ไลน์ ไวบ์,4,https://www.livinginsider.com/detail/condo-for-sale-the-line-vi-1bedroom-3305140
+260,เอ็ม ลาดพร้าว,4,https://www.livinginsider.com/detail/condo-for-sale-condo-m-ladprao-1bedroom-3297745
+261,บ้านสวนซื่อตรง,4,https://www.livinginsider.com/detail/condo-for-sale-baan-suan-sue-trong-2bedroom-3317245
+262,เดอะ เครสท์ พาร์ค เรสซิเดนซ์,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-crest-park-residences-1bedroom-3202411
+263,ไนท์บริดจ์ ไพร์ม รัชโยธิน,4,https://www.livinginsider.com/detail/condo-for-sale-condo-knightsbridge-prime-ratchayothin-1bedroom-3316786
+264,ลุมพินี วิลล์ อ่อนนุช - พัฒนาการ,4,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-on-nut-phatthanakan-1bedroom-3115523
+265,อิลีเม้นท์ ศรีนครินทร์,4,https://www.livinginsider.com/detail/condo-for-sale-condo-elements-srinakarin-1bedroom-2704793
+266,พาร์ค ออริจิ้น พญาไท (แฮมป์ตัน เรสซิเดนซ์ พญาไท),4,https://www.livinginsider.com/detail/condo-for-sale-rent-park-origin-phayathai-hampton-residence-phayathai-1bedroom-3316934
+267,ศุภาลัย เอลีท แอท พญาไท,4,https://www.livinginsider.com/detail/condo-for-sale-supalai-elite-phayathai-1bedroom-3316832
+268,คอนเนอร์ ราชเทวี,4,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%80%E0%B8%99%E0%B8%AD%E0%B8%A3%E0%B9%8C-%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B9%80%E0%B8%97%E0%B8%A7%E0%B8%B5-1bedroom-3317211
+269,บางนา แบริ่ง ลาซาล,4,https://www.livinginsider.com/detail/condo-for-sale-bangna-lasalle-bearing-1bedroom-3317132
+270,ไอดีโอ โมบิ สุขุมวิท 66,4,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mobi-sukhumvit-66-1bedroom-408827
+271,ไอดีโอ มิกซ์ สุขุมวิท 103,4,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mix-sukhumvit-103-1bedroom-3270100
+272,ไซมิส ราชครู,4,https://www.livinginsider.com/detail/condo-for-sale-condo-siamese-ratchakru-1bedroom-3137146
+273,ไลฟ์ แอท พหลฯ - อารีย์,4,https://www.livinginsider.com/detail/condo-for-sale-condo-life-phahon-ari-1bedroom-804081
+274,เดอะ เวอร์ติเคิล อารีย์,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-vertical-aree-1bedroom-3220411
+275,ลุมพินี พาร์ค พระราม 9 - รัชดา,4,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-park-rama-9-ratchada-1bedroom-3278577
+276,ศุภาลัย เวลลิงตัน,4,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-wellington-2bedroom-3317217
+277,เดอะ นิช ไพร์ด ทองหล่อ - เพชรบุรี,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-niche-pride-thonglor-phetchaburi-1bedroom-3295294
+278,เดอะ เบส การ์เดน - พระราม 9,4,https://www.livinginsider.com/detail/condo-for-sale-condo-the-base-garden-rama-9-2bedroom-2987020
+279,ลุมพินี วิลล์ ศูนย์วัฒนธรรม,4,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-cultural-center-1bedroom-3317105
+280,อาร์ติซาน รัชดา,4,https://www.livinginsider.com/detail/condo-for-sale-condo-artisan-ratchada-1bedroom-3158716
+281,ออริจิ้น เพลย์ ศรีอุดม สเตชั่น,4,https://www.livinginsider.com/detail/condo-for-sale-origin-play-sri-udom-station-1bedroom-3287694
+282,พลัมคอนโด นวมินทร์,4,https://www.livinginsider.com/detail/condo-for-sale-plum-condo-nawamin-1bedroom-3225045
+283,รีเจ้นท์ โฮม บางซ่อน 2 (เฟส 28),4,https://www.livinginsider.com/detail/condo-for-sale-condo-regent-home-bangson-2-phase-28-1bedroom-3277007
+284,เด็น วิภาวดี,4,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B9%87%E0%B8%99-%E0%B8%A7%E0%B8%B4%E0%B8%A0%E0%B8%B2%E0%B8%A7%E0%B8%94%E0%B8%B5-1bedroom-3317067
+285,วิภาวดี ดอนเมือง หลักสี่,4,https://www.livinginsider.com/detail/condo-for-sale-vipawadee-don-mueang-lak-si-4bedroom-3256457
+286,วินน์ คอนโด พหลโยธิน 52,4,https://www.livinginsider.com/detail/condo-for-sale-wynn-condo-phaholyothin-52-2bedroom-3226373
+287,แบงค์คอก ฮอไรซอน รามคำแหง,4,https://www.livinginsider.com/detail/condo-for-sale-condo-bangkok-horizon-ramkhamhaeng-1bedroom-3304243
+288,ลุมพินี วิลล์ รามคำแหง 60/2,4,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A5%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%99%E0%B8%B5-%E0%B8%A7%E0%B8%B4%E0%B8%A5%E0%B8%A5%E0%B9%8C-%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%84%E0%B8%B3%E0%B9%81%E0%B8%AB%E0%B8%87-602-1bedroom-3312973
+289,สุขาภิบาล 3 แมนชั่น,4,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B2%E0%B8%A0%E0%B8%B4%E0%B8%9A%E0%B8%B2%E0%B8%A5-3-%E0%B9%81%E0%B8%A1%E0%B8%99%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-1bedroom-3317139
+290,เอสทีค ทองหล่อ,3,https://www.livinginsider.com/detail/condo-for-sale-condo-aestiq-thonglor-1bedroom-3180728
+291,บีทนิค สุขุมวิท 32,3,https://www.livinginsider.com/detail/condo-for-sale-condo-beatniq-sukhumvit-32-2bedroom-3071786
+292,สีลม ซิตี้ รีสอร์ท,3,https://www.livinginsider.com/detail/condo-for-sale-condo-silom-city-resort-2bedroom-3230204
+293,สเตท ทาวเวอร์ คอนโดมิเนียม,3,https://www.livinginsider.com/detail/condo-for-sale-state-tower-condominium-2bedroom-3314317
+294,สีลม ศาลาแดง บางรัก,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AA%E0%B8%B5%E0%B8%A5%E0%B8%A1-1bedroom-3317157
+295,ศาลาแดง เรสซิเด้นซ์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-saladaeng-residences-1bedroom-3204941
+296,ธนา แอสทรา สาทร - จันทน์,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%98%E0%B8%99%E0%B8%B2-%E0%B9%81%E0%B8%AD%E0%B8%AA%E0%B8%97%E0%B8%A3%E0%B8%B2-%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%A3-%E0%B8%88%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%99%E0%B9%8C-1bedroom-3316998
+297,เซ็นทริค สาทร - เซนต์หลุยส์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-centric-sathorn-st-louis-1bedroom-3018828
+298,สาทร การ์เด้นส์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-sathorn-garden-1bedroom-3272391
+299,ศุภาลัย ไลท์ สาทร - เจริญราษฎร์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-lite-sathorn-charoenrat-1bedroom-3245223
+300,เดอะ สุโขทัย เรสซิเด้นซ์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-sukhothai-residences-3bedroom-3208468
+301,แม่น้ำ เรสซิเดนท์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-menam-residences-3bedroom-2361875
+302,ศุภาลัย พรีเมียร์ สี่พระยา - สามย่าน,3,https://www.livinginsider.com/detail/condo-for-sale-rent-supalai-premier-si-phraya-samyan-2bedroom-3258475
+303,ออลซีซั่น แมนชั่น,3,https://www.livinginsider.com/detail/condo-for-sale-all-seasons-mansion-3bedroom-3304931
+304,สโคป หลังสวน,3,https://www.livinginsider.com/detail/condo-for-sale-condo-scope-langsuan-1bedroom-2774122
+305,บ้านสินธร หลังสวน,3,https://www.livinginsider.com/detail/condo-for-sale-baan-sindhorn-lang-suan-2bedroom-3304396
+306,โฟกัส แอท เพลินจิต,3,https://www.livinginsider.com/detail/condo-for-sale-condo-focus-ploenchit-1bedroom-3018840
+307,แอทธินี เรสซิเด้นซ์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-athenee-residence-2bedroom-2878958
+308,อมันตา ลุมพินี,3,https://www.livinginsider.com/detail/condo-for-sale-condo-amanta-lumpini-1bedroom-3295876
+309,สินธร ต้นสน,3,https://www.livinginsider.com/detail/condo-for-sale-condo-sindhorn-tonson-1bedroom-3070188
+310,เดอะไพรม์ 11,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-prime-11-2bedroom-2778282
+311,นานา,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%99%E0%B8%B2%E0%B8%99%E0%B8%B2-3bedroom-3277964
+312,เมโทร ลักซ์ พระราม 4,3,https://www.livinginsider.com/detail/condo-for-sale-condo-metro-luxe-rama-4-1bedroom-3317330
+313,ฟอร์จูน คอนโด ทาวน์,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%9F%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%88%E0%B8%B9%E0%B8%99-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%97%E0%B8%B2%E0%B8%A7%E0%B8%99%E0%B9%8C-2bedroom-3317035
+314,ไวด์เด็น บาย แสนสิริ,3,https://www.livinginsider.com/detail/condo-for-sale-widen-by-sansiri-2bedroom-2809768
+315,เรฟเฟอเรนซ์ สาทร - วงเวียนใหญ่,3,https://www.livinginsider.com/detail/condo-for-sale-reference-sathorn-wongwianyai-1bedroom-3108784
+316,ศุภาลัย ริเวอร์ รีสอร์ท เจริญนคร,3,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-river-resort-2bedroom-2542279
+317,วิลล่า สาทร,3,https://www.livinginsider.com/detail/condo-for-sale-condo-villa-sathorn-1bedroom-2670157
+318,ศุภาลัย ลอฟท์ ประชาธิปก - วงเวียนใหญ่,3,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-loft-prajadhipok-wongwian-yai-2bedroom-2886486
+319,เดอะ ไพรเวชี่ ท่าพระ อินเตอร์เชนจ์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-privacy-thaphra-interchange-1bedroom-3253350
+320,ออริจิ้น ปลั๊ก แอนด์ เพลย์ สิรินธร สเตชั่น,3,https://www.livinginsider.com/detail/condo-for-sale-condo-origin-plug-play-sirindhorn-station-1bedroom-3287231
+321,เดอ ลาพีส จรัญ 81,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD-%E0%B8%A5%E0%B8%B2%E0%B8%9E%E0%B8%B5%E0%B8%AA-%E0%B8%88%E0%B8%A3%E0%B8%B1%E0%B8%8D-81-1bedroom-3317196
+322,ปิ่นเกล้า จรัญสนิทวงศ์,3,https://www.livinginsider.com/detail/condo-for-sale-pinklao-charansanitwong-1bedroom-3316732
+323,อรุณ ศิริราช ทริปเปิ้ล สเตชั่น,3,https://www.livinginsider.com/detail/condo-for-sale-aroon-siriraj-triple-station-3bedroom-2447114
+324,เดอะทรี ริโอ้ บางอ้อ สเตชั่น,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-tree-rio-bang-aor-station-2bedroom-3114218
+325,ศุภาลัย ซิตี้ รีสอร์ท จรัญฯ 91,3,https://www.livinginsider.com/detail/condo-for-sale-supalai-city-resort-charan-91-1bedroom-3316160
+326,โพลิส สุขสวัสดิ์ 64,3,https://www.livinginsider.com/detail/condo-for-sale-condo-polis-suksawat-64-1bedroom-3295978
+327,เดอะ เบลล่า คอนโด พระราม 2,3,https://www.livinginsider.com/detail/condo-for-sale-the-bella-condo-rama-2-1bedroom-3307107
+328,ลุมพินี พาร์ค เพชรเกษม 98 เฟส 1-2,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A5%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%99%E0%B8%B5-%E0%B8%9E%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%84-%E0%B9%80%E0%B8%9E%E0%B8%8A%E0%B8%A3%E0%B9%80%E0%B8%81%E0%B8%A9%E0%B8%A1-98-1bedroom-3317111
+329,ศุภาลัย ลอฟท์ สถานีภาษีเจริญ,3,https://www.livinginsider.com/detail/condo-for-sale-supalai-loft-phasi-charoen-station-1bedroom-3145215
+330,ลุมพินี วิลล์ ราชพฤกษ์ - บางแวก,3,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-ratchaphruek-bangwaek-1bedroom-3118131
+331,ชีวาทัย เพชรเกษม 27,3,https://www.livinginsider.com/detail/condo-for-sale-condo-chewathai-phetkasem-27-studio-3314785
+332,ศุภาลัย ปาร์ค เกษตร,3,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-park-kaset-studio-3316439
+333,ฟีล พหล 34,3,https://www.livinginsider.com/detail/condo-for-sale-condo-phyll-phahol-34-1bedroom-3272504
+334,มิติ ชีวา เกษตร สเตชั่น,3,https://www.livinginsider.com/detail/condo-for-sale-condo-miti-chiva-kaset-station-studio-3282095
+335,โมดิซวอลท์ เกษตร - ศรีปทุม,3,https://www.livinginsider.com/detail/condo-for-sale-modiz-vault-kaset-sripatum-1bedroom-3307787
+336,ยู เกษตร – นวมินทร์,3,https://www.livinginsider.com/detail/condo-for-sale-u-kaset-nawamin-1bedroom-3303568
+337,เอวาคัส การ์เด้นท์ - แฟมิลี่ เฮ้าส์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-avacas-garden-family-house-2bedroom-3187007
+338,อินโทร พหลโยธิน - ประดิพัทธ์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-intro-paholyothin-pradipat-1bedroom-3295723
+339,ไลฟ์ ลาดพร้าว วัลเล่ย์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-life-ladprao-valley-1bedroom-3301114
+340,เมทริส ลาดพร้าว,3,https://www.livinginsider.com/detail/condo-for-sale-condo-metris-ladprao-2bedroom-3265826
+341,วิสซ์ดอม อเวนิว รัชดา - ลาดพร้าว,3,https://www.livinginsider.com/detail/condo-for-sale-condo-whizdom-avenue-ratchada-ladprao-1bedroom-3199705
+342,ดุลิยา พาวิลเลี่ยน,3,https://www.livinginsider.com/detail/condo-for-sale-ดุลิยา-พาวิลเลี่ยน-1bedroom-3317022
+343,รีเจ้นท์ ศรีนครินทร์ ทาวเวอร์,3,https://www.livinginsider.com/detail/condo-for-sale-regent-srinakarin-tower-studio-3044475
+344,เดอะโฟร์วิงส์ เรสซิเดนซ์ ศรีนครินทร์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-four-wings-residence-2bedroom-3316438
+345,โมดิซ โวยาจ ศรีนครินทร์,3,https://www.livinginsider.com/detail/condo-for-sale-modiz-voyage-srinakarin-1bedroom-3307169
+346,ลุมพินี เพลส ศรีนครินทร์ - หัวหมาก สเตชั่น,3,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-srinakarin-huamak-station-1bedroom-3174333
+347,ยู ดีไลท์ เรสซิเดนซ์ (พัฒนาการ - ทองหล่อ),3,https://www.livinginsider.com/detail/condo-for-sale-condo-u-delight-residence-pattanakran-thonglor-3bedroom-3087088
+348,พาร์ค ออริจิ้น ราชเทวี,3,https://www.livinginsider.com/detail/condo-for-sale-condo-park-origin-ratchathewi-1bedroom-3307127
+349,เดอะ รูม พญาไท,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-room-phayathai-studio-3186565
+350,บ้านสวนลลนา - สวนหลวง,3,https://www.livinginsider.com/detail/condo-for-sale-baansuanlalana-suan-luang-2bedroom-3310787
+351,ลุมพินี เมกะซิตี้ บางนา,3,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-mega-city-bangna-1bedroom-3311817
+352,น็อตติ้ง ฮิลล์ สุขุมวิท 105,3,https://www.livinginsider.com/detail/condo-for-sale-condo-notting-hill-sukhumvit-105-2bedroom-3232605
+353,ไอคอนโด สุขุมวิท 105,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%84%E0%B8%AD%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-105-1bedroom-3317114
+354,ไนท์บริดจ์ คอลลาจ สุขุมวิท 107,3,https://www.livinginsider.com/detail/condo-for-sale-condo-knightsbridge-collage-sukhumvit-107-1bedroom-3317292
+355,ซิตี้ โฮม ศรีนครินทร์,3,https://www.livinginsider.com/detail/condo-for-sale-city-home-srinakarin-lasalle-1bedroom-3317144
+356,เดอะ ไลน์ สุขุมวิท 71,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-line-sukhumvit-71-1bedroom-2460751
+357,เอลลิโอ เดล เรย์ สุขุมวิท 64,3,https://www.livinginsider.com/detail/condo-for-sale-condo-elio-del-ray-sukhumvit-64-2bedroom-3284951
+358,รีเจ้นท์ โฮม สุขุมวิท 81,3,https://www.livinginsider.com/detail/condo-for-sale-condo-regent-home-sukhumvit-81-1bedroom-3316903
+359,ไอดีโอ สุขุมวิท 93,3,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-sukhumvit-93-1bedroom-402157
+360,เซ็นทริค ซีน พหลโยธิน 9,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%8B%E0%B9%87%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B8%B4%E0%B8%84-%E0%B8%8B%E0%B8%B5%E0%B8%99-%E0%B8%9E%E0%B8%AB%E0%B8%A5%E0%B9%82%E0%B8%A2%E0%B8%98%E0%B8%B4%E0%B8%99-9-2bedroom-3316548
+361,เดอะ โมนูเมนต์ สนามเป้า,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-monument-sanampao-1bedroom-2866180
+362,โนเบิล นิว ดิสทริค อาร์ไนน์,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%82%E0%B8%99%E0%B9%80%E0%B8%9A%E0%B8%B4%E0%B8%A5-%E0%B8%99%E0%B8%B4%E0%B8%A7-%E0%B8%94%E0%B8%B4%E0%B8%AA%E0%B8%97%E0%B8%A3%E0%B8%B4%E0%B8%84-%E0%B8%AD%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B9%84%E0%B8%99%E0%B8%99%E0%B9%8C-1bedroom-3317125
+363,ศุภาลัย พรีเมียร์ แอท อโศก,3,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-premier-asoke-1bedroom-3317243
+364,ไลฟ์ อโศก - พระราม 9,3,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-life-asoke-rama-9-2bedroom-3317253
+365,เดอะ เบส เพชรบุรี - ทองหล่อ,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-base-phetchaburi-thonglor-1bedroom-3308924
+366,ไลฟ์ อโศก ไฮป์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-life-asoke-hype-1bedroom-2629116
+367,ไซมิส พระราม 9 (แลนด์มาร์ค @mrta station),3,https://www.livinginsider.com/detail/condo-for-sale-condo-siamese-rama-9-landmark-mrta-station-3bedroom-2801848
+368,แชปเตอร์วัน อีโค รัชดา - ห้วยขวาง,3,https://www.livinginsider.com/detail/condo-for-sale-condo-chapter-one-eco-ratchada-huai-khwang-1bedroom-3212651
+369,บ้านพระยาภิรมย์ - รัชดา,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A2%E0%B8%B2%E0%B8%A0%E0%B8%B4%E0%B8%A3%E0%B8%A1%E0%B8%A2%E0%B9%8C-%E0%B8%A3%E0%B8%B1%E0%B8%8A%E0%B8%94%E0%B8%B2-1bedroom-3317168
+370,ซีนิธ เพลส แอท ห้วยขวาง,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%8B%E0%B8%B5%E0%B8%99%E0%B8%B4%E0%B8%98-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%AA-%E0%B9%81%E0%B8%AD%E0%B8%97-%E0%B8%AB%E0%B9%89%E0%B8%A7%E0%B8%A2%E0%B8%82%E0%B8%A7%E0%B8%B2%E0%B8%87-1bedroom-3317048
+371,ไอวี่ แอมพิโอ,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%84%E0%B8%AD%E0%B8%A7%E0%B8%B5%E0%B9%88-%E0%B9%81%E0%B8%AD%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B9%82%E0%B8%AD-1bedroom-3317034
+372,โนเบิล รีวอลฟ์ รัชดา 2,3,https://www.livinginsider.com/detail/condo-for-sale-condo-noble-revolve-ratchada-2-2bedroom-2856233
+373,รัชดาซิตี้ 18,3,https://www.livinginsider.com/detail/condo-for-sale-condo-ratchada-city-18-1bedroom-3282470
+374,เอ็ม พญาไท,3,https://www.livinginsider.com/detail/condo-for-sale-condo-m-phyathai-1bedroom-3112845
+375,มาเอสโตร 19 รัชดา 19 - วิภา,3,https://www.livinginsider.com/detail/condo-for-sale-maestro-19-ratchada-19-vipha-1bedroom-3274628
+376,คิว เฮ้าส์ สุขุมวิท 79,3,https://www.livinginsider.com/detail/condo-for-sale-condo-q-house-sukhumvit-79-2bedroom-2782288
+377,ลุมพินี วิลล์ สุขุมวิท 77,3,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-sukhumvit-77-2bedroom-3224896
+378,เอลลิโอ เดล เนสท์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-elio-del-nest-1bedroom-2953996
+379,ลุมพินี วิลล์ สุขุมวิท 109 - แบริ่ง,3,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-sukhumvit-109-bearing-1bedroom-3316130
+380,เดอะ ทรี หัวหมาก อินเตอร์เชนจ์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-tree-hua-mak-interchange-2bedroom-2833024
+381,เดอะ วัน พลัส หัวหมาก 20,3,https://www.livinginsider.com/detail/condo-for-sale-the-one-plus-condominium-huamak-20-1bedroom-3289000
+382,ไนท์บริดจ์ คอลลาจ รามคำแหง,3,https://www.livinginsider.com/detail/condo-for-sale-condo-knightsbridge-collage-ramkhamhaeng-1bedroom-3301307
+383,เดอะ ฮับ คอนโด,3,https://www.livinginsider.com/detail/condo-for-sale-the-hub-condo-1bedroom-3285020
+384,เดอะคิทท์ พลัส นวมินทร์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-kith-plus-nawamin-1bedroom-3316476
+385,แชปเตอร์วัน ชายน์ บางโพ,3,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-chapter-one-shine-bangpo-2bedroom-3269905
+386,เดอะไพรเวซี่ เตาปูน อินเตอร์เชนจ์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-the-privacy-taopoon-interchange-1bedroom-3317026
+387,ยู ดีไลท์ 2 บางซื่อ สเตชั่น,3,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A2%E0%B8%B9-%E0%B8%94%E0%B8%B5%E0%B9%84%E0%B8%A5%E0%B8%97%E0%B9%8C-2-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B8%8B%E0%B8%B7%E0%B9%88%E0%B8%AD-%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-1bedroom-3317220
+388,333 ริเวอร์ไซด์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-333-riverside-1bedroom-3157251
+389,โมดิซ คอลเลคชั่น บางโพ,3,https://www.livinginsider.com/detail/condo-for-sale-condo-modiz-collection-bangpho-1bedroom-1521086
+390,ดีคอนโด อ่อนนุช - พระราม 9,3,https://www.livinginsider.com/detail/condo-for-sale-d-condo-onnut-rama-9-1bedroom-3277104
+391,ลุมพินี วิลล์ อ่อนนุช - ลาดกระบัง,3,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-onnut-ladkrabang-1bedroom-3209703
+392,ลุมพินี คอนโดทาวน์ ร่มเกล้า - สุวรรณภูมิ,3,https://www.livinginsider.com/detail/condo-for-sale-lumpini-condotown-romklao-suvarnabhumi-1bedroom-3314790
+393,ไอคอนโด กรีนสเปซ สุขุมวิท 77 เฟส 1,3,https://www.livinginsider.com/detail/condo-for-sale-rent-icondo-green-space-sukhumvit-77-phase-1-1bedroom-2969882
+394,โมดิซ อินเตอร์เชนจ์,3,https://www.livinginsider.com/detail/condo-for-sale-condo-modiz-interchange-1bedroom-3262065
+395,รีเจ้นท์ โฮม 2 พหลโยธิน 67/1,3,https://www.livinginsider.com/detail/condo-for-sale-regent-home-2-phahonyothin-67-1-studio-3284564
+396,รีเจ้นท์ โฮม 15 แจ้งวัฒนะ,3,https://www.livinginsider.com/detail/condo-for-sale-condo-regent-home-15-changwattana-studio-3049714
+397,กรีเน่ ดอนเมือง - สรงประภา,3,https://www.livinginsider.com/detail/condo-for-sale-condo-grene-donmuang-songprapha-studio-3290840
+398,ดี คอนโด รามคำแหง 64,3,https://www.livinginsider.com/detail/condo-for-sale-d-condo-ramkhamhaeng-64-1bedroom-3292902
+399,ไอคอนโด เสรีไทย กรีนสเปซ,3,https://www.livinginsider.com/detail/condo-for-sale-icondo-serithai-green-space-1bedroom-3150139
+400,เดอะ แบงค็อค ทองหล่อ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-bangkok-thonglor-2bedroom-3220565
+401,ลาวิค สุขุมวิท 57,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-laviq-sukhumvit-57-1bedroom-880885
+402,เดอะ ดิโพลแมท 39,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0-%E0%B8%94%E0%B8%B4%E0%B9%82%E0%B8%9E%E0%B8%A5%E0%B9%81%E0%B8%A1%E0%B8%97-39-2bedroom-3317228
+403,มอนเทอเรย์ เพลส,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A1%E0%B8%AD%E0%B8%99%E0%B9%80%E0%B8%97%E0%B8%AD%E0%B9%80%E0%B8%A3%E0%B8%A2%E0%B9%8C-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%AA-2bedroom-3317199
+404,สโคป พร้อมศรี,2,https://www.livinginsider.com/detail/condo-for-sale-scope-promsri-1bedroom-2996960
+405,มารุ เอกมัย 2,2,https://www.livinginsider.com/detail/condo-for-sale-condo-maru-ekkamai-2-2bedroom-3317181
+406,โนเบิล รีโคล สุขุมวิท 19,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%82%E0%B8%99%E0%B9%80%E0%B8%9A%E0%B8%B4%E0%B8%A5-%E0%B8%A3%E0%B8%B5%E0%B9%82%E0%B8%84%E0%B8%A5-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-19-1bedroom-3317112
+407,เอควา สุขุมวิท 49,2,https://www.livinginsider.com/detail/condo-for-sale-condo-aequa-sukhumvit-49-2bedroom-3317056
+408,เดอะ โมนูเมนต์ ทองหล่อ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-monument-thonglo-3bedroom-3317052
+409,โนเบิล โซโล,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%82%E0%B8%99%E0%B9%80%E0%B8%9A%E0%B8%B4%E0%B8%A5-%E0%B9%82%E0%B8%8B%E0%B9%82%E0%B8%A5-1bedroom-3317045
+410,ควินทารา ภูม สุขุมวิท 39,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%84%E0%B8%A7%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%B2%E0%B8%A3%E0%B8%B2-%E0%B8%A0%E0%B8%B9%E0%B8%A1-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-39-2bedroom-3316973
+411,แอชตัน มอร์ฟ 38,2,https://www.livinginsider.com/detail/condo-for-sale-condo-ashton-morph-38-2bedroom-2953085
+412,ฟินน์ อโศก,2,https://www.livinginsider.com/detail/condo-for-sale-condo-fynn-asoke-1bedroom-2680709
+413,เอช คิว ทองหล่อ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-hq-thonglor-1bedroom-3026547
+414,ควินทารา ทรีเฮาส์ สุขุมวิท 42,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-quintara-treehaus-sukhumvit-42-1bedroom-3205970
+415,คุณ บาย ยู แสนสิริ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-khun-by-yoo-2bedroom-3178149
+416,เดอะ ลอฟท์ สีลม,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-lofts-silom-1bedroom-2737059
+417,สี่พระยา ริเวอร์ วิว,2,https://www.livinginsider.com/detail/condo-for-sale-condo-siphraya-riverview-3bedroom-2868523
+418,สีลม คอนโดมิเนียม,2,https://www.livinginsider.com/detail/condo-for-sale-rent-silom-condominuim-2bedroom-3074374
+419,ไซมิส สุรวงศ์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-siamese-surawong-3bedroom-3165552
+420,บ้าน สิริ สีลม,2,https://www.livinginsider.com/detail/condo-for-sale-condo-baan-siri-silom-1bedroom-3208249
+421,กรีนพอยท์ สีลม,2,https://www.livinginsider.com/detail/condo-for-sale-green-point-silom-2bedroom-3208327
+422,ควอด สีลม,2,https://www.livinginsider.com/detail/condo-for-sale-condo-quad-silom-2bedroom-3164386
+423,บ้าน สิริ สาทร,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99-%E0%B8%AA%E0%B8%B4%E0%B8%A3%E0%B8%B4-%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%A3-2bedroom-3317110
+424,อนิล สาทร 12,2,https://www.livinginsider.com/detail/condo-for-sale-condo-anil-sathorn-12-1bedroom-2936284
+425,ศุภาลัย ไลท์ รัชดา - นราธิวาส - สาทร,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-lite-ratchada-narathiwas-sathorn-1bedroom-2820050
+426,ดิ อิสสระ สาทร,2,https://www.livinginsider.com/detail/condo-for-sale-the-issara-sathorn-2bedroom-3016281
+427,เดอะ คีย์ สาทร - เจริญราษฎร์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-key-sathorn-charoenrat-1bedroom-3204967
+428,บ้าน นนทรี,2,https://www.livinginsider.com/detail/condo-for-sale-baan-nonsi-3bedroom-3252841
+429,เดอะ สตาร์ เอสเตท แอท นราธิวาสราชนครินทร์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-star-estatenarathiwas-1bedroom-3106314
+430,นารา 9 บาย อีสเทอร์น สตาร์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-nara-9-2bedroom-2509823
+431,ลุมพินี เพลส นราธิวาส 24,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-narathiwas-24-1bedroom-3172221
+432,เวอร์ทิค พระราม 4 – สยาม,2,https://www.livinginsider.com/detail/condo-for-sale-condo-vertiq-rama-4-siam-2bedroom-3265222
+433,เพลินจิต เทอเรส,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%B4%E0%B8%99%E0%B8%88%E0%B8%B4%E0%B8%95-%E0%B9%80%E0%B8%97%E0%B8%AD%E0%B9%80%E0%B8%A3%E0%B8%AA-3bedroom-3317109
+434,แมกโนเลียส์ ราชดำริ บูเลอวาร์ด,2,https://www.livinginsider.com/detail/condo-for-sale-condo-magnolias-ratchadamri-boulevard-2bedroom-2910800
+435,เดอะ โอเลียนเดอร์,2,https://www.livinginsider.com/detail/condo-for-sale-the-oleander-2bedroom-3316883
+436,บ้าน สิริ สุขุมวิท 13,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-baan-siri-sukhumvit-13-1bedroom-3224419
+437,ลิฟว์ แอท ไฟว์,2,https://www.livinginsider.com/detail/condo-for-sale-liv-5-1bedroom-3307091
+438,วินด์แฮม เรสซิเดนซ์,2,https://www.livinginsider.com/detail/condo-for-sale-wyndham-residence-2bedroom-3317187
+439,ลุมพินี เพลส พระราม 4 - สาทร,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A5%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%99%E0%B8%B5-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%AA-%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1-4-%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%A3-2bedroom-3317151
+440,ลุมพินี เพลส พระราม 4 - กล้วยน้ำไท,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-rama-4-kluaynamthai-1bedroom-3209496
+441,ศุภาลัย พรีเมียร์ สามเสน - ราชวัตร,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-premier-samsen-ratchawat-1bedroom-3310940
+442,พระราม 8 สามเสน ราชวัตร,2,https://www.livinginsider.com/detail/condo-for-sale-rama-8-samsen-ratchawat-2bedroom-3041096
+443,ริเวอร์ เฮเว่น (เจริญกรุง 76/1),2,https://www.livinginsider.com/detail/condo-for-sale-condo-river-heaven-2bedroom-3195143
+444,ลุมพินี เพลส พระราม 3 - ริเวอร์ไรน์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-rama-3-riverine-1bedroom-2804629
+445,ไอดีโอ สาทร - วงเวียนใหญ่,2,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-sathorn-wongwian-yai-1bedroom-3195381
+446,เฟล็กซี่ สาทร - เจริญนคร,2,https://www.livinginsider.com/detail/condo-for-sale-flexi-sathon-charoen-nakhon-1bedroom-3278648
+447,โมทีฟ คอนโด สาทร – วงเวียนใหญ่,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%82%E0%B8%A1%E0%B8%97%E0%B8%B5%E0%B8%9F-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%A3-%E0%B8%A7%E0%B8%87%E0%B9%80%E0%B8%A7%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-1bedroom-3317013
+448,ไบร์ท วงเวียนใหญ่,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%84%E0%B8%9A%E0%B8%A3%E0%B9%8C%E0%B8%97-%E0%B8%A7%E0%B8%87%E0%B9%80%E0%B8%A7%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-2bedroom-3317075
+449,นิช โมโน เจริญนคร,2,https://www.livinginsider.com/detail/condo-for-sale-condo-niche-mono-charoen-nakorn-2bedroom-3195151
+450,ไฮฟ์ ตากสิน,2,https://www.livinginsider.com/detail/condo-for-sale-condo-hive-taksin-2bedroom-3290298
+451,เดอะ รูม bts วงเวียนใหญ่,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-the-room-bts-wongwianyai-2bedroom-3279698
+452,แมกโนเลียส์ วอเตอร์ฟรอนท์ เรสซิเดนซ์ (ไอคอนสยาม),2,https://www.livinginsider.com/detail/condo-for-sale-condo-magnolias-waterfront-residences-icon-siam-2bedroom-3033503
+453,คิวเฮ้าส์ สาทร,2,https://www.livinginsider.com/detail/condo-for-sale-condo-qhouse-condo-sathorn-1bedroom-3316801
+454,เดอะ ไลท์เฮ้าส์ สาทร – เจริญนคร,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-the-lighthouse-sathorn-chareonnakorn-2bedroom-3314863
+455,เดอะ พาร์คแลนด์ เพชรเกษม – ท่าพระ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parkland-phetkasem-thapra-2bedroom-3316715
+456,เพลา วุฒากาศ,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%B2-%E0%B8%A7%E0%B8%B8%E0%B8%92%E0%B8%B2%E0%B8%81%E0%B8%B2%E0%B8%A8-1bedroom-3317221
+457,ศุภาลัย ปาร์ค สถานีตลาดพลู,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-park-talat-phlu-station-studio-3115531
+458,เมโทร พาร์ค สาทร (คอนโด ),2,https://www.livinginsider.com/detail/condo-for-sale-metro-park-sathorn-condo-1bedroom-3208506
+459,เดอะ รูม สาทร - ตากสิน,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-room-sathorn-taksin-1bedroom-3267653
+460,ไรย์ ตลาดพูล,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-rye-talat-phlu-1bedroom-3245756
+461,เดอะ เทมโป้ แกรนด์ สาทร - วุฒากาศ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-tempo-grand-sathon-wutthakat-1bedroom-2929378
+462,ศุภาลัย ลอฟท์ สาทร - ราชพฤกษ์,2,https://www.livinginsider.com/detail/condo-for-sale-supalai-loft-sathorn-ratchaphruek-2bedroom-3126213
+463,แอสปาย สาทร - ตากสิน ( คอปเปอร์ โซน),2,https://www.livinginsider.com/detail/condo-for-sale-aspire-sathorn-taksin-copper-zone-1bedroom-3282441
+464,เดอะ พาร์คแลนด์ รัชดา - ท่าพระ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parkland-ratchada-thapra-1bedroom-3121875
+465,ออริจิ้น เพลย์ บางขุนนนท์ ทริปเปิ้ล สเตชั่น,2,https://www.livinginsider.com/detail/condo-for-sale-origin-play-bangkhunnon-triple-station-1bedroom-3287339
+466,ดีคอนโด แคมปัส รีสอร์ท ราชพฤกษ์ – จรัญฯ 13,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%94%E0%B8%B5%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B9%81%E0%B8%84%E0%B8%A1%E0%B8%9B%E0%B8%B1%E0%B8%AA-%E0%B8%A3%E0%B8%B5%E0%B8%AA%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%97-%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%9E%E0%B8%A4%E0%B8%81%E0%B8%A9%E0%B9%8C-%E0%B8%88%E0%B8%A3%E0%B8%B1%E0%B8%8D%E0%B8%AF-13-1bedroom-3317065
+467,ธนา ทาวเวอร์,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%98%E0%B8%99%E0%B8%B2-%E0%B8%97%E0%B8%B2%E0%B8%A7%E0%B9%80%E0%B8%A7%E0%B8%AD%E0%B8%A3%E0%B9%8C-2bedroom-3317036
+468,เดอะไนน์ ปิ่นเกล้า - จรัญ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-nigh-pinklao-charan-1bedroom-2906979
+469,ไอดีโอ จรัญฯ 70 - ริเวอร์วิว,2,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-charan-70-riverview-1bedroom-2758991
+470,ธนา แอสโทเรีย,2,https://www.livinginsider.com/detail/condo-for-sale-condo-thana-astoria-2bedroom-3177174
+471,ศุภาลัย ลอฟท์ สถานีแยกไฟฉาย,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-loft-yaek-fai-chai-station-2bedroom-3223453
+472,ศุภาลัย ปาร์ค แยกไฟฉาย,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-supalai-park-yaekfaichai-1bedroom-3316373
+473,ลุมพินี วิลล์ สุขสวัสดิ์ - พระราม 2,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-suksawat-rama-2-1bedroom-3302261
+474,เคฟ ลูมินัส บางมด,2,https://www.livinginsider.com/detail/condo-for-sale-kave-luminous-bangmod-1bedroom-3307329
+475,พราวด์ พอสโต้ พระราม 2 - พุทธบูชา,2,https://www.livinginsider.com/detail/condo-for-sale-condo-proud-posto-rama-2-phutthabucha-1bedroom-3309787
+476,เฟล็กซี่ สุขสวัสดิ์,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%9F%E0%B8%A5%E0%B9%87%E0%B8%81%E0%B8%8B%E0%B8%B5%E0%B9%88-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%AA%E0%B8%A7%E0%B8%B1%E0%B8%AA%E0%B8%94%E0%B8%B4%E0%B9%8C-1bedroom-3314166
+477,เจ คอนโด พระราม 2,2,https://www.livinginsider.com/detail/condo-for-sale-j-condo-rama-2-1bedroom-3246288
+478,โมเดิร์น คอนโด เดอะ ฟอเรสท์ พระราม 2 - เอกชัย,2,https://www.livinginsider.com/detail/condo-for-sale-modern-condo-the-forest-rama-2-eakchai-2bedroom-3212067
+479,เดอะ เบส เพชรเกษม,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-base-phetkasem-2bedroom-3203248
+480,เดอะ คีย์ mrt เพชรเกษม 48,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-key-mrt-phetkasem-48-1bedroom-3298164
+481,บางแค เพชรเกษม,2,https://www.livinginsider.com/detail/condo-for-sale-bang-kae-phetkasem-studio-3315786
+482,ลุมพินี วิลล์ บางแค,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-bangkhae-1bedroom-3075011
+483,เดอะ โมนาเวล เพชรเกษม 39,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0-%E0%B9%82%E0%B8%A1%E0%B8%99%E0%B8%B2%E0%B9%80%E0%B8%A7%E0%B8%A5-%E0%B9%80%E0%B8%9E%E0%B8%8A%E0%B8%A3%E0%B9%80%E0%B8%81%E0%B8%A9%E0%B8%A1-39-1bedroom-3317003
+484,เดอะ โพรดิจี้ เอ็มอาร์ที บางแค,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0-%E0%B9%82%E0%B8%9E%E0%B8%A3%E0%B8%94%E0%B8%B4%E0%B8%88%E0%B8%B5%E0%B9%89-%E0%B9%80%E0%B8%AD%E0%B9%87%E0%B8%A1%E0%B8%AD%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%97%E0%B8%B5-%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%84-1bedroom-3226625
+485,ไอคอนโด เพชรเกษม 39,2,https://www.livinginsider.com/detail/condo-for-sale-icondo-phetchakasem-39-2bedroom-3248972
+486,แบงค์คอก ฮอไรซอน ไลท์ แอท สถานีเพชรเกษม 48,2,https://www.livinginsider.com/detail/condo-for-sale-condo-bangkok-horizon-lite-phetkasem-48-1bedroom-3290393
+487,เดอะ เพรสซิเดนท์ เพชรเกษม - บางแค,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-president-petchkasem-bangkhae-2bedroom-3052330
+488,ฟิวส์ เซนเซ่ บางแค,2,https://www.livinginsider.com/detail/condo-for-sale-condo-fuse-sense-1bedroom-3049814
+489,เดอะ ลีฟวิ่น เพชรเกษม 37,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-livin-phetkasem-37-1bedroom-2179876
+490,ดุลิยา เพลส,2,https://www.livinginsider.com/detail/condo-for-sale-duliya-place-1bedroom-3225607
+491,ไอ-เซน ไพร์ม คอนโด ลาดพร้าว 71 (ซอย สังคมสงเคราะห์ 12/1),2,https://www.livinginsider.com/detail/condo-for-sale-i-zen-prime-condominium-1bedroom-3314937
+492,ลุมพินี เพลส รัชโยธิน,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-ratchayothin-1bedroom-3281937
+493,ศุภาลัย ปาร์ค รัชโยธิน,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-park-ratchayothin-1bedroom-3316720
+494,แชมเบอร์ส ชาน ลาดพร้าว - วังหิน,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-chambers-chaan-ladprao-wanghin-2bedroom-3315778
+495,ลาเมซอง พหลโยธิน 24,2,https://www.livinginsider.com/detail/condo-for-sale-condo-la-maison-phaholyothin-24-studio-3285171
+496,นอตติ้ง ฮิลล์ พหลฯ - เกษตร,2,https://www.livinginsider.com/detail/condo-for-sale-condo-notting-hill-phahol-kaset-studio-3150610
+497,เดอะนิช ไอดี ลาดพร้าว - วังหิน,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-niche-id-ladprao-wanghin-1bedroom-3175627
+498,ยู ทู คอนโด,2,https://www.livinginsider.com/detail/condo-for-sale-you-2-condo-studio-3271958
+499,เอ สเปซ เกษตร,2,https://www.livinginsider.com/detail/condo-for-sale-condo-a-space-kaset-1bedroom-3310710
+500,เดอะ ซิกเนเจอร์ บาย เออร์บาโน่,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-signature-by-urbano-2bedroom-3317413
+501,สะพานควาย จตุจักร,2,https://www.livinginsider.com/detail/condo-for-sale-sapankwaijatujak-1bedroom-3249133
+502,เมโทรลักซ์ พหลโยธิน - สุทธิสาร,2,https://www.livinginsider.com/detail/condo-for-sale-condo-metroluxe-paholyothin-sutthisan-1bedroom-586444
+503,รอยัล ปาร์ค,2,https://www.livinginsider.com/detail/condo-for-sale-royal-park-2bedroom-2825280
+504,ออนิกซ์ พหลโยธิน,2,https://www.livinginsider.com/detail/condo-for-sale-condo-onyx-phahonyothin-1bedroom-2930629
+505,ดิ เอดิเตอร์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-editor-2bedroom-3309136
+506,ลุมพินี เพลส พหล - สะพานควาย,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-phahol-sapankhwai-studio-3209498
+507,เดอะ เซนต์ เรสสิเด้นเซส,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-saint-residences-2bedroom-3317246
+508,มารุ ลาดพร้าว 15,2,https://www.livinginsider.com/detail/condo-for-sale-condo-maru-ladprao-15-studio-3274606
+509,ฟอร์โมซ่า ลาดพร้าว 7,2,https://www.livinginsider.com/detail/condo-for-sale-condo-formosa-ladprao-7-1bedroom-3218469
+510,มาย สตอรี่ ลาดพร้าว 71,2,https://www.livinginsider.com/detail/condo-for-sale-condo-my-story-ladprao-71-1bedroom-3106426
+511,ลุมพินี วิลล์ ลาดพร้าว - โชคชัย4,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-latphrao-chokchai-4-1bedroom-3022232
+512,แอนนา คอนโด ลาดพร้าว 101,2,https://www.livinginsider.com/detail/condo-for-sale-anna-condo-ladprao-101-1bedroom-3225938
+513,กรู๊ฟ ไวบส์ ลาดพร้าว 18,2,https://www.livinginsider.com/detail/condo-for-sale-กรู๊ฟ-ไวบส์-ลาดพร้าว-18-1bedroom-3317169
+514,นิว โนเบิล รัชดา - ลาดพร้าว,2,https://www.livinginsider.com/detail/condo-for-sale-condo-nue-noble-ratchada-ladprao-1bedroom-3155727
+515,เมโทร ลักซ์ เกษตร,2,https://www.livinginsider.com/detail/condo-for-sale-condo-metro-luxe-kaset-1bedroom-3316871
+516,ศุภาลัย ปาร์ค พหลโยธิน 21,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-park-paholyothin-21-1bedroom-3315994
+517,เซ็นทริค ซีน รัชวิภา,2,https://www.livinginsider.com/detail/condo-for-sale-condo-centric-scene-ratcha-vipha-1bedroom-3317251
+518,ศุภาลัย คิวท์ รัชโยธิน - พหลโยธิน 34,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-cute-phaholyothin-34-1bedroom-3158148
+519,ยู ดีไลท์ รัชวิภา,2,https://www.livinginsider.com/detail/condo-for-sale-condo-u-delight-ratchavibha-1bedroom-3311221
+520,เดอะ ทรีโอ การ์เด้น,2,https://www.livinginsider.com/detail/condo-for-sale-the-trio-garden-2bedroom-3316933
+521,เอส วัน พระราม 9,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-s1-rama-9-2bedroom-3277615
+522,นิว โนเบิล ศรีนครินทร์ - ลาซาล,2,https://www.livinginsider.com/detail/condo-for-sale-condo-nue-noble-srinakarin-lasalle-1bedroom-2979619
+523,เดอะ แคปิตอล ราชปรารภ - วิภา,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-capital-ratchaprarop-vibha-studio-3221418
+524,ชูช์ ราชเทวี,2,https://www.livinginsider.com/detail/condo-for-sale-shush-ratchathewi-2bedroom-3291148
+525,ชีวาทัย ราชปรารภ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-chewathai-ratchaprarop-2bedroom-3246797
+526,ราชเทวี พญาไท,2,https://www.livinginsider.com/detail/condo-for-sale-ratchathewiphayathai-2bedroom-3277813
+527,คิว ชิดลม - เพชรบุรี,2,https://www.livinginsider.com/detail/condo-for-sale-condo-q-chidlom-phetchaburi-1bedroom-458857
+528,ศุภาลัย พรีเมียร์ ราชเทวี,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-premier-ratchathewi-1bedroom-3095701
+529,คอนโดมิเนียม เคนซิงตัน แบริ่ง สุขุมวิท 107,2,https://www.livinginsider.com/detail/condo-for-sale-condominium-kensington-bearing-sukhumvit-107-1bedroom-3255175
+530,เดอะ มูฟ บางนา,2,https://www.livinginsider.com/detail/condo-for-sale-the-muve-bangna-2bedroom-3310330
+531,วายน์ สุขุมวิท,2,https://www.livinginsider.com/detail/condo-for-sale-condo-wyne-sukhumvit-1bedroom-2185771
+532,เดอะ รูม สุขุมวิท 69,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-room-sukhumvit-69-1bedroom-2812745
+533,วิสซ์ดอม เอสเซ้นส์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-whizdom-essence-1bedroom-2390058
+534,ฮาร์โมนี่ลิฟวิ่ง พหลโยธิน 11,2,https://www.livinginsider.com/detail/condo-for-sale-condo-harmony-living-phahonyothin-11-1bedroom-3169037
+535,เลอ โมนาโค เรสิเดนซ์,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%A5%E0%B8%AD-%E0%B9%82%E0%B8%A1%E0%B8%99%E0%B8%B2%E0%B9%82%E0%B8%84-%E0%B9%80%E0%B8%A3%E0%B8%AA%E0%B8%B4%E0%B9%80%E0%B8%94%E0%B8%99%E0%B8%8B%E0%B9%8C-3bedroom-2622040
+536,เดอะ เท็มโป พหลโยธิน 2,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-tempo-phaholyothin-2-1bedroom-3276382
+537,ฟินน์ อารีย์,2,https://www.livinginsider.com/detail/condo-for-sale-fynn-aree-1bedroom-2996058
+538,ไลฟ์ อโศก,2,https://www.livinginsider.com/detail/condo-for-sale-life-asoke-1bedroom-3317087
+539,เดอะ ทรี สุขุมวิท 71 - เอกมัย,2,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-the-tree-sukhumvit-71-ekamai-2bedroom-3123228
+540,เบ็ล แกรนด์ พระราม 9,2,https://www.livinginsider.com/detail/condo-for-sale-condo-belle-grand-rama-9-3bedroom-3300750
+541,เอ สเปซ อโศก - รัชดา,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%AD-%E0%B8%AA%E0%B9%80%E0%B8%9B%E0%B8%8B-%E0%B8%AD%E0%B9%82%E0%B8%A8%E0%B8%81-%E0%B8%A3%E0%B8%B1%E0%B8%8A%E0%B8%94%E0%B8%B2-1bedroom-3317152
+542,ริธึ่ม อโศก 2,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A3%E0%B8%B4%E0%B8%98%E0%B8%B6%E0%B9%88%E0%B8%A1-%E0%B8%AD%E0%B9%82%E0%B8%A8%E0%B8%812-1bedroom-3316995
+543,ไอดีโอ โมบิ พระราม 9,2,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mobi-rama-9-1bedroom-3272461
+544,เซอร์เคิล2 ลิฟวิ่ง โพรโตไทป์,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%8B%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B9%80%E0%B8%84%E0%B8%B4%E0%B8%A52-%E0%B8%A5%E0%B8%B4%E0%B8%9F%E0%B8%A7%E0%B8%B4%E0%B9%88%E0%B8%87-%E0%B9%82%E0%B8%9E%E0%B8%A3%E0%B9%82%E0%B8%95%E0%B9%84%E0%B8%97%E0%B8%9B%E0%B9%8C-1bedroom-3316990
+545,เดอะ เบส เออเบิร์น พระราม 9,2,https://www.livinginsider.com/detail/condo-for-sale-the-base-urban-rama-9-1bedroom-2923315
+546,วิลล่า อโศก,2,https://www.livinginsider.com/detail/condo-for-sale-condo-villa-asoke-1bedroom-2685847
+547,ยู ดีไลท์ แอท ห้วยขวาง สเตชั่น,2,https://www.livinginsider.com/detail/condo-for-sale-condo-u-delight-huaykwang-station-1bedroom-3290552
+548,เดอะ สเตจ มายด์สเคป รัชดา - ห้วยขวาง,2,https://www.livinginsider.com/detail/condo-for-sale-the-stage-mindscape-ratchada-huai-khwang-1bedroom-2654637
+549,โค้บบ์ ลาดพร้าว - สุทธิสาร,2,https://www.livinginsider.com/detail/condo-for-sale-cobe-ladprao-sutthisan-2bedroom-2781207
+550,ไลฟ์ แอท รัชดา - สุทธิสาร,2,https://www.livinginsider.com/detail/condo-for-sale-condo-life-ratchada-suthisan-1bedroom-3316881
+551,ควินน์ คอนโดมิเนียม,2,https://www.livinginsider.com/detail/condo-for-sale-quinn-condo-2bedroom-3282310
+552,รัชอาภา ทาวเวอร์,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A3%E0%B8%B1%E0%B8%8A%E0%B8%AD%E0%B8%B2%E0%B8%A0%E0%B8%B2-%E0%B8%97%E0%B8%B2%E0%B8%A7%E0%B9%80%E0%B8%A7%E0%B8%AD%E0%B8%A3%E0%B9%8C-1bedroom-3317166
+553,เดอะ คัลเลอร์รี่ วิวิด,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0-%E0%B8%84%E0%B8%B1%E0%B8%A5%E0%B9%80%E0%B8%A5%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%A3%E0%B8%B5%E0%B9%88-%E0%B8%A7%E0%B8%B4%E0%B8%A7%E0%B8%B4%E0%B8%94-2bedroom-3316984
+554,ไอดีโอ รัชดา - ห้วยขวาง,2,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-ratchada-huaykwang-1bedroom-3175505
+555,ลุมพินี วิลล์ พัฒนาการ - เพชรบุรีตัดใหม่,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-pattanakarn-new-phetchaburi-1bedroom-3282427
+556,เดอะลีฟ พัฒนาการ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-leaf-pattanakarn-1bedroom-3209681
+557,ลุมพินี วิลล์ พัฒนาการ - ศรีนครินทร์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-pattanakarn-srinakarin-1bedroom-3109752
+558,ศุภาลัย ปาร์ค เอกมัย - พัฒนาการ,2,https://www.livinginsider.com/detail/condo-for-sale-supalai-parc-ekkamai-pattanakarn-1bedroom-3261355
+559,ชาโตว์ อินทาวน์ พหลโยธิน 11,2,https://www.livinginsider.com/detail/condo-for-sale-condo-chateau-in-town-phaholyothin-11-1bedroom-2974213
+560,รัชดา ห้วยขวาง,2,https://www.livinginsider.com/detail/condo-for-sale-ratchadapisek-huaikwang-suttisan-1bedroom-3316726
+561,เมโทรลักซ์ รัชดา,2,https://www.livinginsider.com/detail/condo-for-sale-condo-metro-luxe-ratchada-2bedroom-3095710
+562,ซิตี้ ลิฟวิ่ง รัชดา,2,https://www.livinginsider.com/detail/condo-for-sale-condo-city-living-ratchada-1bedroom-3106323
+563,เดอะ ไลน์ สุขุมวิท 101,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-line-sukhumvit-101-1bedroom-3307290
+564,ไซมิส สุขุมวิท 48 (รามาดา พลาซ่า เรสซิเดนซ์),2,https://www.livinginsider.com/detail/condo-for-sale-condo-siamese-sukhumvit-48-ramada-plaza-residence-1bedroom-3210550
+565,เดอะ ลิงค์ สุขุมวิท 50,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-link-sukhumvit-50-1bedroom-3308986
+566,ไลฟ์ สุขุมวิท 62,2,https://www.livinginsider.com/detail/condo-for-sale-condo-life-sukhumvit-62-1bedroom-1866976
+567,รีเจ้นท์ โฮม บางนา (โครงการใหม่),2,https://www.livinginsider.com/detail/condo-for-sale-regent-home-bangna-1bedroom-3317371
+568,ลุมพินี วิลล์ ลาซาล - แบริ่ง,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A5%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%99%E0%B8%B5-%E0%B8%A7%E0%B8%B4%E0%B8%A5%E0%B8%A5%E0%B9%8C-%E0%B8%A5%E0%B8%B2%E0%B8%8B%E0%B8%B2%E0%B8%A5-%E0%B9%81%E0%B8%9A%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%87-1bedroom-3317175
+569,นิช โมโน สุขุมวิท - แบริ่ง,2,https://www.livinginsider.com/detail/condo-for-sale-condo-niche-mono-sukhumvit-bearing-1bedroom-2964380
+570,ไอดีโอ โมบิ สุขุมวิท อีสท์เกต,2,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mobi-sukhumvit-eastgate-1bedroom-2747838
+571,อะพูล คอนโด บางนา,2,https://www.livinginsider.com/detail/condo-for-sale-a-pool-condo-bangna-2bedroom-3278082
+572,เดอะ เบส พระราม 9 - รามคำแหง,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-base-rama-9-ramkhamhaeng-1bedroom-3272904
+573,ศุภาลัย เวลลิงตัน 2,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-wellington-ii-1bedroom-3095819
+574,เดอะ ไพรเวซี่ พระราม 9,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-privacy-rama-9-1bedroom-3025325
+575,แอสปาย พระราม 9,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%81%E0%B8%AD%E0%B8%AA%E0%B8%9B%E0%B8%B2%E0%B8%A2-%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1-9-1bedroom-3289453
+576,ชีวาทัย เรสซิเดนซ์ อโศก,2,https://www.livinginsider.com/detail/condo-for-sale-condo-chewathai-residence-asoke-1bedroom-3155684
+577,บดินทร์ สวีท โฮม,2,https://www.livinginsider.com/detail/condo-for-sale-bodin-suite-home-1bedroom-3317334
+578,ธาราเรือนแก้ว,2,https://www.livinginsider.com/detail/condo-for-sale-rent-tara-ruankaew-4bedroom-3253375
+579,สัมมากร คอนโดมิเนียม,2,https://www.livinginsider.com/detail/condo-for-sale-sammakorn-condominium-2bedroom-3291589
+580,ลีฟวิ่ง เพลส รามคำแหง,2,https://www.livinginsider.com/detail/condo-for-sale-living-place-ramkhamhaeng-1bedroom-2871704
+581,เอชทู รามอินทรา 21,2,https://www.livinginsider.com/detail/condo-for-sale-condo-h2-ramintra-21-2bedroom-3174065
+582,ดิ ออริจิ้น รามอินทรา 83 สเตชั่น,2,https://www.livinginsider.com/detail/condo-for-sale-rent-the-origin-ramintra-83-station-1bedroom-2846748
+583,นวมินทร์ รามอินทรา,2,https://www.livinginsider.com/detail/condo-for-sale-nawamin-ramindra-1bedroom-3270307
+584,พรีมิโอ เฟรสโก,2,https://www.livinginsider.com/detail/condo-for-sale-condo-premio-fresco-1bedroom-3019503
+585,เดอะคิวบ์ พรีเมียม รามอินทรา 34,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-cube-premium-ramintra-34-1bedroom-3188751
+586,แชปเตอร์วัน ออล รามอินทรา,2,https://www.livinginsider.com/detail/condo-for-sale-chapter-one-all-ramintra-1bedroom-2550323
+587,ลุมพินี เพลส รามอินทรา - หลักสี่,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-ramindra-laksi-1bedroom-2792218
+588,กีรทรัพย์ แมนชั่น วิลล์,2,https://www.livinginsider.com/detail/condo-for-sale-kirasup-mansion-ville-1bedroom-3278780
+589,แชมเบอร์ส รามอินทรา,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%81%E0%B8%8A%E0%B8%A1%E0%B9%80%E0%B8%9A%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%AA-%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%AD%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B8%B2-2bedroom-3314144
+590,นว ลิฟวิ่ง นวมินทร์ 75,2,https://www.livinginsider.com/detail/condo-for-sale-nawa-living-nawamintra-75-1bedroom-3226213
+591,บางซื่อ วงศ์สว่าง เตาปูน,2,https://www.livinginsider.com/detail/condo-for-sale-bang-sue-wong-sawang-2bedroom-3315987
+592,เฟล็กซี่ เตาปูน - อินเตอร์เชนจ์,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%9F%E0%B8%A5%E0%B9%87%E0%B8%81%E0%B8%8B%E0%B8%B5%E0%B9%88-%E0%B9%80%E0%B8%95%E0%B8%B2%E0%B8%9B%E0%B8%B9%E0%B8%99-%E0%B8%AD%E0%B8%B4%E0%B8%99%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B9%80%E0%B8%8A%E0%B8%99%E0%B8%88%E0%B9%8C-2bedroom-3317082
+593,เดอะ ไพรเวซี่ พาร์ค เตาปูน,2,https://www.livinginsider.com/detail/condo-for-sale-the-privacy-parc-taopoon-2bedroom-2902499
+594,แอสปาย รัชดา - วงศ์สว่าง,2,https://www.livinginsider.com/detail/condo-for-sale-condo-aspire-ratchada-wongsawang-1bedroom-3303120
+595,ศุภาลัย เวอเรนด้า รัชวิภา - ประชาชื่น,2,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-veranda-ratchavipha-prachachuen-1bedroom-2898014
+596,ซิลค์ เพลส พหลโยธิน - หลักสี่,2,https://www.livinginsider.com/detail/condo-for-sale-condo-silk-place-phaholyothin-laksi-1bedroom-3317361
+597,พลัมคอนโด แจ้งวัฒนะ - ดอนเมือง,2,https://www.livinginsider.com/detail/condo-for-sale-plum-condo-chaengwattana-donmuang-1bedroom-2832991
+598,ชาโตว์ อินทาวน์ วิภาวดี 10,2,https://www.livinginsider.com/detail/condo-for-sale-chateau-in-town-vibhavadi-10-1bedroom-3043215
+599,พาร์ค วิว วิภาวดี,2,https://www.livinginsider.com/detail/condo-for-sale-condo-parkview-viphavadi-2bedroom-3275063
+600,เจดับบลิว คอนโด แอด ดอนเมือง,2,https://www.livinginsider.com/detail/condo-for-sale-jw-condo-donmuang-1bedroom-3108241
+601,พลัมคอนโด สะพานใหม่ สเตชั่น,2,https://www.livinginsider.com/detail/condo-for-sale-plum-condo-saphanmai-station-1bedroom-3043146
+602,ฝักข้าวโพด,2,https://www.livinginsider.com/detail/condo-for-sale-fak-khao-pode-1bedroom-2922910
+603,ลุมพินี วิลล์ รามคำแหง 44,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-ramkhamhaeng-44-1bedroom-3108236
+604,ดิ อินสไปร์ เพลส เอแบค พระราม 9,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-inspire-place-abac-rama-9-studio-3108239
+605,วี คอนโด ลาดกระบัง,2,https://www.livinginsider.com/detail/condo-for-sale-v-condo-ladkrabang-1bedroom-3102898
+606,รีช พหลโยธิน 52,2,https://www.livinginsider.com/detail/condo-for-sale-condo-reach-phahonyothin-52-1bedroom-3314904
+607,ดิ อินดี๊ด คอนโด พหลโยธิน 48,2,https://www.livinginsider.com/detail/condo-for-sale-the-indeed-condo-phahonyothin-48-1bedroom-3302721
+608,ดิ ออริจิ้น พหลฯ - สะพานใหม่,2,https://www.livinginsider.com/detail/condo-for-sale-condo-the-origin-phahol-sapanmai-1bedroom-3303095
+609,เมซอง การ์เด้น แจ้งวัฒนะ,2,https://www.livinginsider.com/detail/condo-for-sale-condo-maison-garden-chaeng-watthana-1bedroom-3226313
+610,นิช ไพร์ด เตาปูน อินเตอร์เชนจ์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-niche-pride-taopoon-interchange-1bedroom-3018473
+611,ลุมพินี เพลส เตาปูน - อินเตอร์เชนจ์,2,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-taopoon-interchange-1bedroom-3152630
+612,อินซิโอ้,2,https://www.livinginsider.com/detail/condo-for-sale-condo-incio-serithai-1bedroom-3314017
+613,คลองจั่น เพลส,2,https://www.livinginsider.com/detail/condo-for-sale-klongjan-place-2bedroom-3087236
+614,อัสสกาญจน์เพลส รามคำแหง 107,2,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AD%E0%B8%B1%E0%B8%AA%E0%B8%AA%E0%B8%81%E0%B8%B2%E0%B8%8D%E0%B8%88%E0%B8%99%E0%B9%8C%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%AA-%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%84%E0%B8%B3%E0%B9%81%E0%B8%AB%E0%B8%87-107-1bedroom-3317167
+615,ดิ เอ็กเซ็กคิวทีฟ รีเจ้นท์,2,https://www.livinginsider.com/detail/condo-for-sale-the-executive-regent-2bedroom-3051852
+616,วิทโทริโอ สุขุมวิท 39,1,https://www.livinginsider.com/detail/condo-for-sale-condo-vittorio-sukhumvit-39-3bedroom-3314699
+617,วิลล่า สิกขรา,1,https://www.livinginsider.com/detail/condo-for-sale-villa-sikhara-2bedroom-3150167
+618,ดิ เอสเทลล์ พร้อมพงษ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-estelle-phromphong-1bedroom-3170011
+619,สราญใจ แมนชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-condo-saranjai-mansion-1bedroom-3267596
+620,ซีล บาย แสนสิริ เอกมัย,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ceil-by-sansiri-ekamai-1bedroom-3317260
+621,โนเบิล ออรา,1,https://www.livinginsider.com/detail/condo-for-sale-noble-ora-1bedroom-3317258
+622,แคนวาส สุขุมวิท 39,1,https://www.livinginsider.com/detail/condo-for-sale-canvas-sukhumvit-39-3bedroom-3053535
+623,อินเตอร์คอนติเนนตัล เรสซิเดนเซส กรุงเทพฯ อโศก,1,https://www.livinginsider.com/detail/condo-for-sale-intercontinental-residences-bangkok-asoke-3bedroom-3036724
+624,ลิฟ แอท 49,1,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-liv49-sukhumvit-49-2bedroom-3317189
+625,มีลเลอร์ สุขุมวิท 40,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A1%E0%B8%B5%E0%B8%A5%E0%B9%80%E0%B8%A5%E0%B8%AD%E0%B8%A3%E0%B9%8C-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-40-3bedroom-3317173
+626,เรนด์ สุขุมวิท 23,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%A3%E0%B8%99%E0%B8%94%E0%B9%8C-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-23-1bedroom-3317159
+627,ริทึ่ม สุขุมวิท 42,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A3%E0%B8%B4%E0%B8%97%E0%B8%B6%E0%B9%88%E0%B8%A1-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-42-2bedroom-3317126
+628,ดิ เอส อโศก,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-esse-asoke-1bedroom-2636221
+629,ณุศาศิริ แกรนด์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-nusasiri-grand-3bedroom-3210284
+630,รอยัล คาสเซอร์ สุขุมวิท 39,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A3%E0%B8%AD%E0%B8%A2%E0%B8%B1%E0%B8%A5-%E0%B8%84%E0%B8%B2%E0%B8%AA%E0%B9%80%E0%B8%8B%E0%B8%AD%E0%B8%A3%E0%B9%8C-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-39-3bedroom-3317068
+631,โนเบิล บี สุขุมวิท 33,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%82%E0%B8%99-%E0%B9%80%E0%B8%9A%E0%B8%B4%E0%B8%A5-%E0%B8%9A%E0%B8%B5-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-33-2bedroom-3317066
+632,ดิ แอลโคฟ ทองหล่อ 10,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%94%E0%B8%B4-%E0%B9%81%E0%B8%AD%E0%B8%A5%E0%B9%82%E0%B8%84%E0%B8%9F-%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%AB%E0%B8%A5%E0%B9%88%E0%B8%AD-10-1bedroom-3317000
+633,ไทดี้ ทองหล่อ,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%84%E0%B8%97%E0%B8%94%E0%B8%B5%E0%B9%89-%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%AB%E0%B8%A5%E0%B9%88%E0%B8%AD-1bedroom-3316972
+634,เอ็ม ทองหล่อ เท็น,1,https://www.livinginsider.com/detail/condo-for-sale-condo-m-thonglor-10-2bedroom-3210263
+635,รูเนะสุ ทองหล่อ 5,1,https://www.livinginsider.com/detail/condo-for-sale-condo-runesu-thonglor-5-1bedroom-3155293
+636,เดอะ เพรสซิเด้นท์ พาร์ค สุขุมวิท 24,1,https://www.livinginsider.com/detail/condo-for-sale-the-president-park-sukhumvit-24-3bedroom-2458921
+637,อกัสตัน สุขุมวิท 22,1,https://www.livinginsider.com/detail/condo-for-sale-condo-aguston-sukhumvit-22-3bedroom-3252191
+638,ทากะ เฮาส์ เอกมัย 12,1,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-taka-haus-ekamai-12-2bedroom-3251151
+639,เอ็กซ์ที เทน เอกมัย,1,https://www.livinginsider.com/detail/condo-for-sale-xt-10-ekkamai-1bedroom-3059231
+640,เดอะ รูม สุขุมวิท 38,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-room-sukhumvit-38-2bedroom-3005985
+641,ไอดีโอ มอร์ฟ 38,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-morph-38-1bedroom-2818666
+642,ดิ เอส สุขุมวิท 36,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-esse-sukhumvit-36-2bedroom-2572694
+643,โนเบิล รีมิกซ์ สุขุมวิท 36,1,https://www.livinginsider.com/detail/condo-for-sale-condo-noble-remix-sukhumvit-36-1bedroom-1991155
+644,คราม สุขุมวิท 26,1,https://www.livinginsider.com/detail/condo-for-sale-condo-kraam-sukhumvit-26-1bedroom-2001733
+645,โอกะ เฮ้าส์ สุขุมวิท 36,1,https://www.livinginsider.com/detail/condo-for-sale-condo-oka-haus-sukhumvit-36-1bedroom-1932390
+646,ไทดี้ ดีลักซ์ สุขุมวิท 34,1,https://www.livinginsider.com/detail/condo-for-sale-condo-tidy-deluxe-sukhumvit-34-1bedroom-3316906
+647,เดอะ ฮาบิแทต สุขุมวิท 53,1,https://www.livinginsider.com/detail/condo-for-sale-the-habitat-sukhumvit-53-4bedroom-3282175
+648,เดอะ ลุมพินี 24,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-lumpini-24-1bedroom-2899495
+649,วินด์ สุขุมวิท 23,1,https://www.livinginsider.com/detail/condo-for-sale-wind-sukhumvit-23-3bedroom-2931855
+650,สุขุมวิท เฮ้าส์,1,https://www.livinginsider.com/detail/condo-for-sale-sukhumvit-house-4bedroom-2867113
+651,ไซมิส เอ็กซ์คลูซีฟ สุขุมวิท 31,1,https://www.livinginsider.com/detail/condo-for-sale-condo-siamese-exclusive-sukhumvit-31-1bedroom-2887163
+652,ไซมิส เอ็กซ์คลูซีฟ สุขุมวิท 42,1,https://www.livinginsider.com/detail/condo-for-sale-condo-siamese-exclusive-sukhumvit-42-2bedroom-2991840
+653,เซอเลส อโศก,1,https://www.livinginsider.com/detail/condo-for-sale-condo-celes-asoke-1bedroom-3071476
+654,ดิ แอดเดรส สุขุมวิท 28,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-address-sukhumvit-28-1bedroom-2849276
+655,โนเบิล รีวิล,1,https://www.livinginsider.com/detail/condo-for-sale-condo-noble-reveal-1bedroom-2896694
+656,เอดจ์ บาย แสนสิริ สุขุมวิท 23,1,https://www.livinginsider.com/detail/condo-for-sale-condo-edge-by-sansiri-sukhumvit-23-1bedroom-2918940
+657,โนเบิล อราวน์ สุขุมวิท 33,1,https://www.livinginsider.com/detail/condo-for-sale-condo-noble-around-sukhumvit-33-1bedroom-2698042
+658,ไซมิส จอยญ่า สุขุมวิท 31,1,https://www.livinginsider.com/detail/condo-for-sale-condo-siamese-gioia-sukhumvit-31-1bedroom-2887955
+659,ปภาดา สีลม,1,https://www.livinginsider.com/detail/condo-for-sale-condo-pabhada-silom-1bedroom-963903
+660,ศาลาแดง โคโลเนด,1,https://www.livinginsider.com/detail/condo-for-sale-saladaeng-colonnade-2bedroom-1592247
+661,สีลม สุรวงศ์,1,https://www.livinginsider.com/detail/condo-for-sale-silom-surawong-2bedroom-3152579
+662,โฟคัส ออน ศาลาแดง,1,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-focus-on-saladaeng-1bedroom-2642670
+663,เดอะรูม สาทร - เซนต์หลุยส์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-room-sathorn-stlouis-2bedroom-3303068
+664,โฟร์ซีซั่นส์ ไพรเวท เรสซิเด้นซ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-four-seasons-private-residences-2bedroom-3317437
+665,ณุศา สเตท ทาวเวอร์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-nusa-state-tower-3bedroom-1803562
+666,เดอะ คอมพลีท นราธิวาส,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-complete-narathiwas-2bedroom-934617
+667,พิกุล เพลส คอนโดมิเนียม,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%9E%E0%B8%B4%E0%B8%81%E0%B8%B8%E0%B8%A5-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%AA-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94%E0%B8%A1%E0%B8%B4%E0%B9%80%E0%B8%99%E0%B8%B5%E0%B8%A2%E0%B8%A1-3bedroom-3317098
+668,เดอะ เชดด์ สาทร 1,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0-%E0%B9%80%E0%B8%8A%E0%B8%94%E0%B8%94%E0%B9%8C-%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%A3-1-1bedroom-3317079
+669,ริทึ่ม สาทร - นราธิวาส,1,https://www.livinginsider.com/detail/condo-for-sale-condo-rhythm-sathorn-narathiwas-2bedroom-2969748
+670,เดอะ ดิโพลแมท สาทร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-diplomat-sathorn-2bedroom-3159802
+671,เดอะ รีเซิร์ฟ สาทร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-reserve-sathorn-4bedroom-3246179
+672,ฟิวส์ จันทน์ - สาทร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-fuse-chan-sathorn-1bedroom-3192198
+673,สาทร นราธิวาส,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%A3-%E0%B8%99%E0%B8%A3%E0%B8%B2%E0%B8%98%E0%B8%B4%E0%B8%A7%E0%B8%B2%E0%B8%AA-3bedroom-3260933
+674,น็อตติ้ง ฮิลล์ ดิ เอ็กซ์คลูซีฟ เจริญกรุง,1,https://www.livinginsider.com/detail/condo-for-sale-notting-hill-the-exclusive-charoenkrung-2bedroom-3195109
+675,แบงค์คอก ฮอไรซอน สาทร - นราธิวาส,1,https://www.livinginsider.com/detail/condo-for-sale-condo-bangkok-horizon-lazi-sathorn-narathiwas-1bedroom-2927293
+676,เดอะ คิวบ์ เออร์เบิน สาทร - จันทน์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-cube-urban-sathorn-chan-1bedroom-2909217
+677,ไอวี่ สาทร 10,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ivy-sathon-10-1bedroom-3185239
+678,วัน อัลติจูด เจริญกรุง,1,https://www.livinginsider.com/detail/condo-for-sale-one-altitude-charoenkrung-2bedroom-3310008
+679,อัลติจูด ดีไฟน์,1,https://www.livinginsider.com/detail/condo-for-sale-rent-altitude-define-2bedroom-3317005
+680,เดอะ เนสท์ จุฬา - สามย่าน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-nest-chula-samyan-1bedroom-2252364
+681,วิช แอท สามย่าน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-wish-samyan-2bedroom-2676000
+682,เดอะ รีเซิร์ฟ เกษมสันต์ 3,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-reserve-kasemsan-3-1bedroom-2986796
+683,อัลติจูด สามย่าน - สีลม,1,https://www.livinginsider.com/detail/condo-for-sale-condo-altitude-samyan-silom-1bedroom-2815656
+684,ระเบียงจามจุรี,1,https://www.livinginsider.com/detail/condo-for-sale-condo-cu-terrace-2bedroom-2987032
+685,เดอะ เครสท์ ร่วมฤดี,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-crest-ruamrudee-1bedroom-2896287
+686,นิมิต ลุมพินี พาร์ค นอร์ท (นิมิต หลังสวน),1,https://www.livinginsider.com/detail/condo-for-sale-nimit-lumpini-park-north-nimit-langsuan-2bedroom-2252799
+687,โนเบิล อเบิฟ ไวร์เลส - ร่วมฤดี,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%82%E0%B8%99%E0%B9%80%E0%B8%9A%E0%B8%B4%E0%B8%A5-%E0%B8%AD%E0%B9%80%E0%B8%9A%E0%B8%B4%E0%B8%9F-%E0%B9%84%E0%B8%A7%E0%B8%A3%E0%B9%8C%E0%B9%80%E0%B8%A5%E0%B8%AA-%E0%B8%A3%E0%B9%88%E0%B8%A7%E0%B8%A1%E0%B8%A4%E0%B8%94%E0%B8%B5-1bedroom-3317101
+688,เดอะ เรสซิเดนซ์ แอท สินธร เคมปินสกี้,1,https://www.livinginsider.com/detail/condo-for-sale-the-residences-at-sindhorn-kempinski-hotel-bangkok-5bedroom-3136803
+689,แมนฮัตตั้น ชิดลม,1,https://www.livinginsider.com/detail/condo-for-sale-condo-manhattan-chidlom-1bedroom-2079533
+690,เดอะ เทมโป ร่วมฤดี,1,https://www.livinginsider.com/detail/condo-for-sale-condo-tempo-ruamrudee-2bedroom-3106383
+691,ไนน์ตี้เอท ไวร์เลส,1,https://www.livinginsider.com/detail/condo-for-sale-condo-98-wireless-2bedroom-3298372
+692,คิว หลังสวน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-q-langsuan-2bedroom-2866358
+693,วัน แบงค์ค็อก เรสซิเด้นท์ 187,1,https://www.livinginsider.com/detail/condo-for-sale-one-bangkok-residence-187-1bedroom-2882715
+694,วัน เอทตี้ไนน์ ไวร์เลส - วัน แบงค์ค็อก 189,1,https://www.livinginsider.com/detail/condo-for-sale-one89-wireless-one-bangkok-189-3bedroom-2982126
+695,อินเตอร์ ลักส์ พรีเมียร์ สุขุมวิท 13,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AD%E0%B8%B4%E0%B8%99%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C-%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%AA%E0%B9%8C-%E0%B8%9E%E0%B8%A3%E0%B8%B5%E0%B9%80%E0%B8%A1%E0%B8%B5%E0%B8%A2%E0%B8%A3%E0%B9%8C-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-13-1bedroom-3317039
+696,สิริ ออน 8 (สุขุมวิท 8),1,https://www.livinginsider.com/detail/condo-for-sale-condo-siri-on-8-sukhumvit-8-1bedroom-2927211
+697,คาลิสต้า แมนชั่น สุขุมวิท 11,1,https://www.livinginsider.com/detail/condo-for-sale-condo-kallista-mansion-sukhumvit-11-3bedroom-2372550
+698,บ้านสิริสุขุมวิท ซอย 10,1,https://www.livinginsider.com/detail/condo-for-sale-condo-baan-siri-sukhumvit-soi-10-1bedroom-3152278
+699,เดอะพีค เรสซิเด้นท์ สุขุมวิท 15,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-peak-residence-sukhumvit-15-2bedroom-3211973
+700,ลุมพินี เพลส พระราม 4 - รัชดาภิเษก,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-rama-4-ratchada-1bedroom-3195279
+701,เดอะ วอเตอร์ฟอร์ด พระราม 4,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-waterford-rama-4-2bedroom-3270167
+702,มูน ทาวเวอร์,1,https://www.livinginsider.com/detail/condo-for-sale-moon-tower-2bedroom-3316363
+703,บ้าน สามเสน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-baan-samsen-2bedroom-3171519
+704,ไซมิส นางลิ้นจี่,1,https://www.livinginsider.com/detail/condo-for-sale-condo-siamese-nanglinchee-1bedroom-3317419
+705,ลุมพินี เพลส พระราม 3 - ริเวอร์วิว,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-rama-3-riverview-1bedroom-3288548
+706,แซฟไฟร์ ลักซูเรียส คอนโด พระราม 3,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%81%E0%B8%8B%E0%B8%9F%E0%B9%84%E0%B8%9F%E0%B8%A3%E0%B9%8C-%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%8B%E0%B8%B9%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%AA-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1-3-2bedroom-3317107
+707,ลุมพินี เพลส รัชดา - สาธุ,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%A5%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%B4%E0%B8%99%E0%B8%B5-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%AA-%E0%B8%A3%E0%B8%B1%E0%B8%8A%E0%B8%94%E0%B8%B2-%E0%B8%AA%E0%B8%B2%E0%B8%98%E0%B8%B8-1bedroom-3316969
+708,ดีคอนโด สาธุประดิษฐ์ 49,1,https://www.livinginsider.com/detail/condo-for-sale-d-condo-sathupradit-49-1bedroom-3267625
+709,ลุมพินี เพลส วอเตอร์ คลิฟ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-water-cliff-1bedroom-2547751
+710,เดอะ พาร์โก,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parco-2bedroom-2719045
+711,พระราม 3 สาธุประดิษฐ์,1,https://www.livinginsider.com/detail/condo-for-sale-rama3-riversidesatupadit-4bedroom-2969722
+712,ลุมพินี สวีท รัชดา - พระราม 3,1,https://www.livinginsider.com/detail/condo-for-sale-lumpini-suite-ratchada-rama-3-3bedroom-3076307
+713,เดอะ นิช ตากสิน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-niche-taksin-2bedroom-2996501
+714,ณ รีวา เจริญนคร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-na-reva-charoennakhon-3bedroom-3252350
+715,เลิฟ เจริญนคร,1,https://www.livinginsider.com/detail/condo-for-sale-love-charoen-nakhon-2bedroom-3053358
+716,วงเวียนใหญ่ เจริญนคร,1,https://www.livinginsider.com/detail/condo-for-sale-wongwianyai-charoennakor-studio-3212236
+717,ไอดีโอ โมบิ สาทร,1,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-ideo-mobi-sathorn-studio-3249873
+718,ไอดีโอ สาทร - ตากสิน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-sathorn-taksin-2bedroom-3078033
+719,แบงค์คอก เฟ’ลิซ สาทร - ตากสิน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-bangkok-feliz-sathorn-taksin-1bedroom-1957009
+720,บันยัน ทรี เรสซิเดนซ์  ริเวอร์ไซด์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-banyan-tree-residence-riverside-1bedroom-3057508
+721,ยู ดีไลท์ แอท ตลาดพลู สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-condo-u-delight-talatphlu-station-1bedroom-3277187
+722,ซิตี้ โฮม สี่แยกท่าพระ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-city-home-tha-phra-1bedroom-3170638
+723,แอสปาย วุฒากาศ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-aspire-wutthakat-2bedroom-3317356
+724,ไอดีโอ ท่าพระ อินเตอร์เชนจ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-thaphra-interchange-studio-3317311
+725,เดอะ เพรสซิเดนท์ สาทร - ราชพฤกษ์ 2,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-president-sathorn-ratchaphruek-2-1bedroom-3163270
+726,อัลติจูด ยูนิคอร์น สาทร - ท่าพระ,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AD%E0%B8%B1%E0%B8%A5%E0%B8%95%E0%B8%B4%E0%B8%88%E0%B8%B9%E0%B8%94-%E0%B8%A2%E0%B8%B9%E0%B8%99%E0%B8%B4%E0%B8%84%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%99-%E0%B8%AA%E0%B8%B2%E0%B8%97%E0%B8%A3-%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B8%9E%E0%B8%A3%E0%B8%B0-2bedroom-3317072
+727,ไอดีโอ วุฒากาศ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-wutthakat-2bedroom-3107835
+728,เดอะ พาร์คแลนด์ แกรนด์ ตากสิน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parkland-grand-taksin-2bedroom-1797653
+729,เดอะ เพรสซิเดนท์ สาทร - ราชพฤกษ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-president-sathorn-ratchaphruek-1bedroom-2469949
+730,ลุมพินี เพลส รัชดา – ท่าพระ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-ratchada-thapra-2bedroom-3254865
+731,บีท บางหว้า อินเตอร์เชนจ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-beat-bangwa-interchange-1bedroom-2544975
+732,แอสปาย สาทร - ตากสิน (บริค โซน),1,https://www.livinginsider.com/detail/condo-for-sale-aspire-sathorn-taksin-brick-zone-1bedroom-2991001
+733,เดอะคีย์ วุฒากาศ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-key-wutthakat-2bedroom-3212138
+734,ปิ่นเกล้า พาวิลเลี่ยน,1,https://www.livinginsider.com/detail/condo-for-sale-pinklao-pavilion-1bedroom-2952358
+735,คอมมอนเวลธ์ ปิ่นเกล้า,1,https://www.livinginsider.com/detail/condo-for-sale-commonwealth-pinklao-2bedroom-3240652
+736,ชีวาทัย ปิ่นเกล้า,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chewathai-pinklao-1bedroom-2372567
+737,นิว โนเบิล ไฟฉาย - วังหลัง,1,https://www.livinginsider.com/detail/condo-for-sale-nue-noble-faichai-wang-lang-studio-3207391
+738,ดีคอนโด ธาร จรัญฯ,1,https://www.livinginsider.com/detail/condo-for-sale-d-condo-tann-charan-studio-3211298
+739,รัตนโกสินทร์ ไอส์แลนด์,1,https://www.livinginsider.com/detail/condo-for-sale-ratanakosin-island-1bedroom-3282444
+740,ลุมพินี เพลส ปิ่นเกล้า 2,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-pinklao-2-1bedroom-3024457
+741,ปิ่นเกล้า ริเวอร์ พาร์ค วิว,1,https://www.livinginsider.com/detail/condo-for-sale-pinklao-river-park-view-1bedroom-3141082
+742,ลุมพินี สวีท พระราม 8,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-suite-rama-8-1bedroom-3076408
+743,ชีวาทัย ฮอลล์มาร์ค จรัญ 13,1,https://www.livinginsider.com/detail/condo-for-sale-chewathai-hallmark-charan-13-1bedroom-3108199
+744,ธนา อาร์เคเดีย,1,https://www.livinginsider.com/detail/condo-for-sale-condo-thana-arcadia-1bedroom-3075004
+745,ลุมพินี เพลส บรมราชชนนี - ปิ่นเกล้า,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-borom-ratchachonni-pinklao-1bedroom-3213465
+746,บริกซ์ คอนโดมิเนียม,1,https://www.livinginsider.com/detail/condo-for-sale-brix-condominium-2bedroom-3299173
+747,บ้านสวนธน พุทธบูชา,1,https://www.livinginsider.com/detail/condo-for-sale-baan-suan-thon-phuttha-bucha-2bedroom-3176339
+748,นิช ไอดี พระราม 2 - ดาวคะนอง,1,https://www.livinginsider.com/detail/condo-for-sale-condo-niche-id-rama-2-daokhanong-1bedroom-2975705
+749,ราชพฤกษ์ คอนโด,1,https://www.livinginsider.com/detail/condo-for-sale-ratchapruek-condo-studio-3222270
+750,ทิวลิป สแควร์ @ อ้อมน้อย,1,https://www.livinginsider.com/detail/condo-for-sale-tu-lip-s-quare-om-noi-1bedroom-2737231
+751,เดอะ มูฟ พอว์ บางแค,1,https://www.livinginsider.com/detail/condo-for-sale-the-muve-paw-bangkhae-1bedroom-2828592
+752,เดอะเลค กัลปพฤกษ์ - วุฒากาศ,1,https://www.livinginsider.com/detail/condo-for-sale-the-lake-kallapraphruk-wutthakat-1bedroom-3303473
+753,นิช ไอดี เพชรเกษม - บางแค,1,https://www.livinginsider.com/detail/condo-for-sale-condo-niche-id-phetkasem-bang-khae-1bedroom-2949255
+754,แบงค์คอก ฮอไรซอน พี48,1,https://www.livinginsider.com/detail/condo-for-sale-bangkok-horizon-p48-2bedroom-3176830
+755,พลัมคอนโด บางแค,1,https://www.livinginsider.com/detail/condo-for-sale-plum-condo-bangkae-studio-3053150
+756,เดอะ วีว่า คอนโด เพชรเกษม 68,1,https://www.livinginsider.com/detail/condo-for-sale-the-viva-condo-petchkasem-68-1bedroom-3024353
+757,บางแค คอนโดทาวน์,1,https://www.livinginsider.com/detail/condo-for-sale-bangkhae-condotown-2bedroom-3109710
+758,แบงค์คอก ฮอไรซอน เพชรเกษม,1,https://www.livinginsider.com/detail/condo-for-sale-bangkok-horizon-petchkasem-1bedroom-3000189
+759,กรู๊ฟ สเคป ลาดพร้าว สุทธิสาร ( กรู๊ฟ สเคป 48 ),1,https://www.livinginsider.com/detail/condo-for-sale-groove-scape-ladprao-sutthisan-groove-scape-48-1bedroom-2688953
+760,ยู ทรี คอนโด @ แยกเกษตร,1,https://www.livinginsider.com/detail/condo-for-sale-you-3-condo-yak-kaset-1bedroom-3105299
+761,แอสปาย รัชโยธิน,1,https://www.livinginsider.com/detail/condo-for-sale-aspire-ratchayothin-1bedroom-2878496
+762,แวนเทจ รัชวิภา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-vantage-ratchavipha-1bedroom-2868809
+763,แชปเตอร์วัน เดอะ แคมปัส เกษตร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chapter-one-the-campus-2bedroom-3282404
+764,ศุภาลัย ซิตี้ รีสอร์ท รัชโยธิน - พหลโยธิน 32,1,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-city-resort-ratchayothin-phaholyothin-32-1bedroom-3148061
+765,ยู คอนโด,1,https://www.livinginsider.com/detail/condo-for-sale-you-condo-studio-3082143
+766,วิลมอร์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-wilmore-studio-3082121
+767,ลิสส์ รัชโยธิน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lyss-ratchayothin-1bedroom-3014292
+768,ชาโตว์ อิน ทาวน์ รัชดา 36,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chateau-in-town-ratchada-36-2bedroom-3283675
+769,ชาโตว์ อิน ทาวน์ วิภาวดี 30,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chateau-in-town-vibhavadi-30-1bedroom-3109110
+770,ไฮ เกษตร - เสนานิคม สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-hi-kaset-senanikhom-station-1bedroom-3258378
+771,ดิ ยูนีค เอกมัย - รามอินทรา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-unique-ekamai-ramintra-1bedroom-2737212
+772,ลุมพินีเซ็นเตอร์ นวมินทร์ (แฮปปี้แลนด์ เฟส 5),1,https://www.livinginsider.com/detail/condo-for-sale-lumpini-center-nawamin-happy-land-phase-5-1bedroom-3249762
+773,โคลเวอร์ ลาดพร้าว 83,1,https://www.livinginsider.com/detail/condo-for-sale-condo-clover-ladprao-83-1bedroom-2904642
+774,แอสปาย ลาดพร้าว 113,1,https://www.livinginsider.com/detail/condo-for-sale-condo-aspire-ladprao-113-1bedroom-2556306
+775,บลิซ คอนโดมิเนียม ลาดพร้าว 107,1,https://www.livinginsider.com/detail/condo-for-sale-bliz-condominium-ladprao-107-2bedroom-3024301
+776,ดิ ยูนีค เกษตร - นวมินทร์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-unique-kaset-navamin-1bedroom-1835004
+777,มนเทียรทิพย์ คอนโดทาวน์,1,https://www.livinginsider.com/detail/condo-for-sale-montiantip-condo-town-2bedroom-3250074
+778,ไอดีโอ มิกซ์ พหลโยธิน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mix-phaholyothin-2bedroom-2847476
+779,ลุมพินี พาร์ค วิภาวดี - จตุจักร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-park-vibhavadi-chatuchak-1bedroom-3003094
+780,เซนส์ พหลโยธิน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-sense-phaholyothin-1bedroom-2958299
+781,ไลฟ์ แอท พหล 18,1,https://www.livinginsider.com/detail/condo-for-sale-condo-life-phahon18-1bedroom-2849996
+782,น็อตติ้ง ฮิลล์ จตุจักร อินเตอร์เชนจ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-notting-hill-jatujak-interchange-1bedroom-2750491
+783,เดนิม จตุจักร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-denim-jatujak-1bedroom-2348429
+784,บีทีเอส เรสซิเด้นซ์,1,https://www.livinginsider.com/detail/condo-for-sale-bts-residence-1bedroom-3214079
+785,ลาดพร้าว เซ็นทรัลลาดพร้าว,1,https://www.livinginsider.com/detail/condo-for-sale-ladprao-central-ladprao-studio-3061860
+786,ซี เพลส ลาดพร้าว 18,1,https://www.livinginsider.com/detail/condo-for-sale-c-place-ladprao-18-1bedroom-3211722
+787,เดอะ เซสท คอนโด,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-zest-condo-2bedroom-2719051
+788,ยู วิภา - ลาดพร้าว,1,https://www.livinginsider.com/detail/condo-for-sale-condo-u-vipawadee-ladprao-1bedroom-3054362
+789,โชคชัย4 ลาดพร้าว71,1,https://www.livinginsider.com/detail/condo-for-sale-ladprao-48-chokchai-4-ladprao-71-2bedroom-3175441
+790,คอมมูน 80,1,https://www.livinginsider.com/detail/condo-for-sale-condo-commune-80-1bedroom-2927219
+791,กรู๊ฟ คอนโด รัชดา - ลาดพร้าว,1,https://www.livinginsider.com/detail/condo-for-sale-groove-condo-ratchada-ladprao-1bedroom-2737097
+792,เมอร์ราญา เพลส ลาดพร้าว 27,1,https://www.livinginsider.com/detail/condo-for-sale-condo-murraya-place-ladprao-27-1bedroom-2625712
+793,เดอะ เน็กซ์ ลาดพร้าว 44,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-next-ladprao-44-2bedroom-2850510
+794,ป.ธนา ทาวเวอร์ 2,1,https://www.livinginsider.com/detail/condo-for-sale-p-thana-tower-2-studio-3175616
+795,ลิฟวิ่ง เพลส ลาดพร้าว 138,1,https://www.livinginsider.com/detail/condo-for-sale-living-place-ladprao-138-studio-3237235
+796,ลีฟวิ่ง เพลส ลาดพร้าว 140,1,https://www.livinginsider.com/detail/condo-for-sale-living-place-ladprao-140-studio-2949982
+797,บางกะปิ คอนโดทาวน์,1,https://www.livinginsider.com/detail/condo-for-sale-bangkapi-condotown-1bedroom-3259277
+798,เท็นเดอร์ พาร์ค ลาดพร้าว 130,1,https://www.livinginsider.com/detail/condo-for-sale-tender-park-condo-lardprao-130-1bedroom-2956389
+799,แอนนา คอนโด ลาดพร้าว 130,1,https://www.livinginsider.com/detail/condo-for-sale-anna-condo-ladprao-130-1bedroom-3314244
+800,เดอะนิช ไอดี ลาดพร้าว 130,1,https://www.livinginsider.com/detail/condo-for-sale-the-niche-id-ladprao-130-1bedroom-3314240
+801,นิรันดร์ ซิตี้ ลาดพร้าว 101,1,https://www.livinginsider.com/detail/condo-for-sale-nirun-city-ladprao-101-1bedroom-3213734
+802,เดอะ นิช ซิตี้ ลาดพร้าว 130,1,https://www.livinginsider.com/detail/condo-for-sale-the-niche-citi-ladprao-130-studio-3313413
+803,เลียบทางด่วนรามอินทรา,1,https://www.livinginsider.com/detail/condo-for-sale-yothinpattanacdc-1bedroom-3302119
+804,ดิ แอลเลแกนซ์ ลาดพร้าว 1,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-elegant-ladprao-1-1bedroom-3317008
+805,เลิศ อุบล สกาย ไลฟ์ ทาวเวอร์,1,https://www.livinginsider.com/detail/condo-for-sale-lert-ubon-sky-life-tower-1bedroom-3240628
+806,พินน์ เกษตร,1,https://www.livinginsider.com/detail/condo-for-sale-pynn-kaset-1bedroom-3246883
+807,เคนซิงตัน เกษตร แคมปัส,1,https://www.livinginsider.com/detail/condo-for-sale-condo-kensington-kaset-campus-1bedroom-3317282
+808,ลุมพินี พาร์ค พหล 32,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-park-phahol-32-studio-972037
+809,ดับเบิ้ล ยู คอนโดมิเนียม ลาดพร้าว - วังหิน,1,https://www.livinginsider.com/detail/condo-for-sale-ดับเบิ้ล-ยู-คอนโดมิเนียม-ลาดพร้าว-วังหิน-1bedroom-3316967
+810,เดอะ ซีเล็คเต็ด เกษตร - งามวงศ์วาน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-selected-kaset-ngamwongwan-1bedroom-2719103
+811,เกษตรศาสตร์ รัชโยธิน,1,https://www.livinginsider.com/detail/condo-for-sale-kasetsart-ratchayothin-1bedroom-1090694
+812,ไฮ ไรส์ รัชโยธิน สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-hi-rise-ratchayothin-station-1bedroom-3258415
+813,วิวิด ทาวเวอร์,1,https://www.livinginsider.com/detail/condo-for-sale-vivid-tower-2bedroom-3285210
+814,เดอะ ทรี ดินแดง - ราชปรารภ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-tree-dindaeng-ratchaprarop-1bedroom-2933193
+815,สุพรีม คอนโด ราชวิถี 3,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%AA%E0%B8%B8%E0%B8%9E%E0%B8%A3%E0%B8%B5%E0%B8%A1-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%A7%E0%B8%B4%E0%B8%96%E0%B8%B5-3-1bedroom-3317184
+816,เดอะ ไลน์ ราชเทวี,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-line-ratchathewi-1bedroom-3044850
+817,ไอดีโอ โมบิ รางน้ำ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mobi-rangnam-1bedroom-3179001
+818,ดีคอนโด สุขุมวิท 109,1,https://www.livinginsider.com/detail/condo-for-sale-d-condo-sukhumvit-109-1bedroom-2870711
+819,เอ สเปซ มี บางนา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-a-space-me-bangna-1bedroom-2310825
+820,เอ็นเอส ทาวเวอร์ เซ็นทรัลซิตี้ บางนา,1,https://www.livinginsider.com/detail/condo-for-sale-ns-tower-central-city-bangna-1bedroom-3287996
+821,เซ็นทรัลซิตี้ บางนา อีสทาวเวอร์,1,https://www.livinginsider.com/detail/condo-for-sale-central-city-east-tower-4bedroom-3063510
+822,ดีคอนโด แคมปัส รีสอร์ท บางนา,1,https://www.livinginsider.com/detail/condo-for-sale-d-condo-campus-resort-bangna-1bedroom-3286136
+823,วิลล่า ลาซาล,1,https://www.livinginsider.com/detail/condo-for-sale-condo-villa-lasalle-2bedroom-2960322
+824,เดอะ แกลเลอรี่ แบริ่ง,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-gallery-bearing-2bedroom-2822451
+825,ดิ เอ็กเซล ไฮบริด ลาซาล 8,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-excel-hybrid-lasalle-8-1bedroom-2842312
+826,ดิ เอ็กเซล ไฮดะเวย์ ลาซาล 11,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-excel-hideaway-lasalle-11-1bedroom-2822070
+827,รีเจ้นท์ โฮม 7/2 ซอย สรรพวุธ 2,1,https://www.livinginsider.com/detail/condo-for-sale-regent-home-72-soi-sanphawut-2-2bedroom-2607707
+828,บริกซ์ตัน เพ็ทแอนด์เพลย์ สุขุมวิท 107,1,https://www.livinginsider.com/detail/condo-for-sale-brixton-petplay-sukhumvit-107-1bedroom-2511214
+829,เดอะ กรีน เพลส บางนา,1,https://www.livinginsider.com/detail/condo-for-sale-the-green-place-bangna-1bedroom-2794425
+830,บางนา เพลซ,1,https://www.livinginsider.com/detail/condo-for-sale-bang-na-place-1bedroom-3009845
+831,เอ สเปซ เมกา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-a-space-mega-1bedroom-3136002
+832,พอส สุขุมวิท 107,1,https://www.livinginsider.com/detail/condo-for-sale-condo-pause-sukhumvit-107-1bedroom-3285220
+833,เดอะรูม สุขุมวิท 62,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-room-sukhumvit-62-1bedroom-2460668
+834,อาทีมิส สุขุมวิท 77,1,https://www.livinginsider.com/detail/condo-for-sale-condo-artemis-sukhumvit-77-1bedroom-2284937
+835,แอสปาย อ่อนนุช สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%81%E0%B8%AD%E0%B8%AA%E0%B8%9B%E0%B8%B2%E0%B8%A2-%E0%B8%AD%E0%B9%88%E0%B8%AD%E0%B8%99%E0%B8%99%E0%B8%B8%E0%B8%8A-%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-2bedroom-3237237
+836,ซิลค์ พหลโยธิน 9,1,https://www.livinginsider.com/detail/condo-for-sale-condo-silk-phaholyothin-9-1bedroom-3267439
+837,พาร์ค พาวิลเลี่ยน,1,https://www.livinginsider.com/detail/condo-for-sale-park-pavillion-1bedroom-2998839
+838,นิช โมโน พระราม 9,1,https://www.livinginsider.com/detail/condo-for-sale-niche-mono-rama-9-1bedroom-3280377
+839,คลาวด์ ทองหล่อ - เพชรบุรี,1,https://www.livinginsider.com/detail/condo-for-sale-condo-cloud-thonglor-petchaburi-1bedroom-3308607
+840,มาย รีสอร์ต แบงค์คอก,1,https://www.livinginsider.com/detail/condo-for-sale-condo-my-resort-bangkok-2bedroom-3123466
+841,โค้บบ์ รัชดา - พระราม 9,1,https://www.livinginsider.com/detail/condo-for-sale-cobe-ratchada-rama-9-2bedroom-3247121
+842,คาซ่า คอนโด อโศก - ดินแดง,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%84%E0%B8%B2%E0%B8%8B%E0%B9%88%E0%B8%B2-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%AD%E0%B9%82%E0%B8%A8%E0%B8%81-%E0%B8%94%E0%B8%B4%E0%B8%99%E0%B9%81%E0%B8%94%E0%B8%87-1bedroom-3317188
+843,เดอะ ไลน์ อโศก รัชดา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-line-asoke-ratchada-2bedroom-2426463
+844,ดิ แอดเดรส อโศก,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%94%E0%B8%B4-%E0%B9%81%E0%B8%AD%E0%B8%94%E0%B9%80%E0%B8%94%E0%B8%A3%E0%B8%AA-%E0%B8%AD%E0%B9%82%E0%B8%A8%E0%B8%81-1bedroom-3317119
+845,พรีเมียร์ เพลส พระราม 9,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%9E%E0%B8%A3%E0%B8%B5%E0%B9%80%E0%B8%A1%E0%B8%B5%E0%B8%A2%E0%B8%A3%E0%B9%8C-%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%AA-%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%A1-9-2bedroom-3317106
+846,รอยัล ไนน์ เรสซิเดนท์,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94-%E0%B8%A3%E0%B8%AD%E0%B8%A2%E0%B8%B1%E0%B8%A5-%E0%B9%84%E0%B8%99%E0%B8%99%E0%B9%8C-%E0%B9%80%E0%B8%A3%E0%B8%AA%E0%B8%8B%E0%B8%B4%E0%B9%80%E0%B8%94%E0%B8%99%E0%B8%97%E0%B9%8C-1bedroom-3317083
+847,เดอะทรี พัฒนาการ - เอกมัย,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0%E0%B8%97%E0%B8%A3%E0%B8%B5-%E0%B8%9E%E0%B8%B1%E0%B8%92%E0%B8%99%E0%B8%B2%E0%B8%81%E0%B8%B2%E0%B8%A3-%E0%B9%80%E0%B8%AD%E0%B8%81%E0%B8%A1%E0%B8%B1%E0%B8%A2-1bedroom-3317042
+848,เดอะ พาร์คแลนด์ แกรนด์ อโศก - เพชรบุรี,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parkland-grand-asoke-phetchaburi-2bedroom-2911878
+849,ไอดีโอ โมบิ อโศก,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mobi-asoke-1bedroom-1961968
+850,เมโทร ลักซ์ โรสโกลด์ พหลฯ - สุทธิสาร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-metro-luxe-rose-gold-phahol-sutthisan-2bedroom-2282509
+851,ชาโตว์ อินทาวน์ รัชดา 17,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%8A%E0%B8%B2%E0%B9%82%E0%B8%95%E0%B8%A7%E0%B9%8C-%E0%B8%AD%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%B2%E0%B8%A7%E0%B8%99%E0%B9%8C-%E0%B8%A3%E0%B8%B1%E0%B8%8A%E0%B8%94%E0%B8%B2-17-1bedroom-3317134
+852,ชาโตว์ อินทาวน์ รัชดา 19,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chateau-in-town-ratchadapisek-19-1bedroom-3309041
+853,ไอดีโอ รัชดา - สุทธิสาร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-ratchada-sutthisan-2bedroom-3316930
+854,เจ ดับบลิว ซิตี้ รัชดาภิเษก 32,1,https://www.livinginsider.com/detail/condo-for-sale-jw-city-ratchada-32-2bedroom-2926786
+855,ศุภาลัย ซิตี้ รีสอร์ท รัชดา - ห้วยขวาง,1,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-city-resort-ratchada-huaikwang-2bedroom-3316872
+856,โซโห​ แบงค็อก​ รัชดา,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%82%E0%B8%8B%E0%B9%82%E0%B8%AB-%E0%B9%81%E0%B8%9A%E0%B8%87%E0%B8%84%E0%B9%87%E0%B8%AD%E0%B8%81-%E0%B8%A3%E0%B8%B1%E0%B8%8A%E0%B8%94%E0%B8%B2-1bedroom-3289591
+857,ปทุมวัน รีสอร์ท,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%9B%E0%B8%97%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B1%E0%B8%99-%E0%B8%A3%E0%B8%B5%E0%B8%AA%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%97-2bedroom-3252765
+858,มาเอสโตร 12,1,https://www.livinginsider.com/detail/condo-for-sale-condo-maestro-12-1bedroom-3202211
+859,เลต ไอซ์ ราชเทวี,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lette-ize-ratchatewi-1bedroom-2363887
+860,เดอะ คอมพลีท ราชปรารภ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-complete-rajprarop-2bedroom-3136336
+861,ดิ แอดเดรส พญาไท,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-address-phayathai-1bedroom-3036499
+862,โนเบิล เฮ้าส์ พญาไท,1,https://www.livinginsider.com/detail/condo-for-sale-condo-noble-house-phayathai-1bedroom-3247007
+863,เดอะ คีย์ อุดมสุข,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-key-udomsuk-1bedroom-3271069
+864,เดอะ ซีซันส์ - ศรีนครินทร์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-seasons-srinakarin-1bedroom-3133536
+865,อารีย์ อนุสาวรีย์,1,https://www.livinginsider.com/detail/condo-for-sale-ari-anusaowaree-1bedroom-3316429
+866,ผาสุข เพลส,1,https://www.livinginsider.com/detail/condo-for-sale-phasuk-place-2bedroom-3282393
+867,เดอะ เครสท์ พหลโยธิน 11,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0-%E0%B9%80%E0%B8%84%E0%B8%A3%E0%B8%AA%E0%B8%97%E0%B9%8C-%E0%B8%9E%E0%B8%AB%E0%B8%A5%E0%B9%82%E0%B8%A2%E0%B8%98%E0%B8%B4%E0%B8%99-11-2bedroom-3274027
+868,ณ วีรา พหลฯ - อารีย์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-na-veera-phahol-ari-1bedroom-2969440
+869,มารูน รัชดา 32,1,https://www.livinginsider.com/detail/condo-for-sale-maroon-ratchada-32-studio-3211962
+870,ไอวี่ รัชดา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ivy-ratchada-studio-2927226
+871,แฮปปี้ คอนโด รัชดา 18,1,https://www.livinginsider.com/detail/condo-for-sale-happy-condo-ratchada-18-1bedroom-2408037
+872,ชาโตว์ อินทาวน์ รัชดา 20-2,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chateau-in-town-ratchada-20-2-1bedroom-3137019
+873,ไลฟ์ แอท รัชดา - ห้วยขวาง,1,https://www.livinginsider.com/detail/condo-for-sale-condo-life-ratchada-huaikwang-1bedroom-3154666
+874,เดอะ เมเปิล แอท รัชดา 19,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-maple-ratchada-19-1bedroom-3187997
+875,ไดมอนด์ รัชดา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-diamond-ratchada-2bedroom-3313475
+876,ฮาสุ เฮาส์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-hasu-haus-2bedroom-3308674
+877,วิสซ์ดอม คอนเนค สุขุมวิท,1,https://www.livinginsider.com/detail/condo-for-sale-condo-whizdom-connect-sukhumvit-3bedroom-3313662
+878,เดอะ เพรสซิเดนท์ สุขุมวิท 81,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-president-sukhumvit-81-1bedroom-1469462
+879,เนีย บาย แสนสิริ,1,https://www.livinginsider.com/detail/condo-for-sale-rent-nia-by-sansiri-1bedroom-3317310
+880,เดอะ ลิ้งค์ สุขุมวิท 64,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-link-sukhumvit-64-1bedroom-3131322
+881,เอสแอนด์เอส สุขุมวิท คอนโดมิเนียม,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%AD%E0%B8%AA%E0%B9%81%E0%B8%AD%E0%B8%99%E0%B8%94%E0%B9%8C%E0%B9%80%E0%B8%AD%E0%B8%AA-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%82%E0%B8%94%E0%B8%A1%E0%B8%B4%E0%B9%80%E0%B8%99%E0%B8%B5%E0%B8%A2%E0%B8%A1-2bedroom-3317177
+882,แชมเบอร์ส อ่อนนุช สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%81%E0%B8%8A%E0%B8%A1%E0%B9%80%E0%B8%9A%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%AA-%E0%B8%AD%E0%B9%88%E0%B8%AD%E0%B8%99%E0%B8%99%E0%B8%B8%E0%B8%8A-%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B8%8A%E0%B8%B1%E0%B9%88%E0%B8%99-1bedroom-3317044
+883,เซ็นทริค ซีน สุขุมวิท 64,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%8B%E0%B9%87%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B8%B4%E0%B8%84-%E0%B8%8B%E0%B8%B5%E0%B8%99-%E0%B8%AA%E0%B8%B8%E0%B8%82%E0%B8%B8%E0%B8%A1%E0%B8%A7%E0%B8%B4%E0%B8%97-64-1bedroom-3316989
+884,เลอ ลักซ์ คอนโดมิเนียม,1,https://www.livinginsider.com/detail/condo-for-sale-condo-le-luk-condominium-1bedroom-3210830
+885,วิสซ์ดอม อินสไปร์ สุขุมวิท,1,https://www.livinginsider.com/detail/condo-for-sale-condo-whizdom-inspire-sukhumvit-1bedroom-3151774
+886,รีเจ้นท์ โฮม สุขุมวิท 97/1,1,https://www.livinginsider.com/detail/condo-for-sale-condo-regent-home-sukhumvit-971-1bedroom-2377878
+887,เดอะ เบส สุขุมวิท 50,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-base-sukhumvit-50-studio-2867137
+888,เรสซิเดนซ์ 52,1,https://www.livinginsider.com/detail/condo-for-sale-residence-52-3bedroom-3113680
+889,เดอะ ลอค 3 สุขุมวิท 101/1,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-log-3-sukhumvit-1011-1bedroom-3101305
+890,โมดิซ สุขุมวิท 50,1,https://www.livinginsider.com/detail/condo-for-sale-condo-modiz-sukhumvit-50-1bedroom-2185717
+891,โซ ออริจิ้น สุขุมวิท 105,1,https://www.livinginsider.com/detail/condo-for-sale-so-origin-sukhumvit-105-1bedroom-3291719
+892,มีสไตล์ แอท สุขุมวิท - บางนา,1,https://www.livinginsider.com/detail/condo-for-sale-mestyle-condo-sukhumvit-bangna-1bedroom-1845690
+893,เดอะ พาร์คแลนด์ ศรีนครินทร์ เลคไซด์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-parkland-srinakarin-lakeside-2bedroom-3303979
+894,เดคโค แอท แบริ่ง สุขุมวิท 70/5,1,https://www.livinginsider.com/detail/condo-for-sale-deco-condo-sukhumvit-705-2bedroom-665259
+895,แลนด์มาร์ค เรสซิเดนซ์ เอแบค บางนา,1,https://www.livinginsider.com/detail/condo-for-sale-landmark-residence-abac-bangna-studio-3057727
+896,แอปเปิ้ล คอนโด สุขุมวิท - แบริ่ง,1,https://www.livinginsider.com/detail/condo-for-sale-apple-condo-sukhumvit-bearing-1bedroom-3125222
+897,ลุมพินี เพลส บางนา กม.3,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-place-bangna-km3-studio-3031235
+898,เซ้นส์ ออฟ ลอนดอน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-sense-of-london-2bedroom-2586258
+899,พีจี พระรามเก้า คอนโดมิเนียม,1,https://www.livinginsider.com/detail/condo-for-sale-pg-rama-9-condominium-1bedroom-3316916
+900,เดอะ แคปิตอล เอกมัย - ทองหล่อ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-capital-eakamai-thonglor-2bedroom-2918956
+901,คอนโดเลต มิสท์ พระราม 9,1,https://www.livinginsider.com/detail/condo-for-sale-lette-midst-1bedroom-893677
+902,แอสปาย อโศก - รัชดา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-aspire-asoke-ratchada-studio-1964563
+903,ไอดีโอ นิว พระราม 9,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-new-rama-9-1bedroom-1772982
+904,ลุมพินี สวีท เพชรบุรี - มักกะสัน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-suite-phetchaburi-makkasan-2bedroom-1955441
+905,เซอร์เคิล คอนโดมิเนียม,1,https://www.livinginsider.com/detail/condo-for-sale-circle-condominium-2bedroom-2687302
+906,มาเอสโตร 03 รัชดา - พระราม 9,1,https://www.livinginsider.com/detail/condo-for-sale-condo-maestro-03-ratchada-rama-9-1bedroom-3109087
+907,ชีวาทัย รามคำแหง,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chewathai-ramkhamhaeng-1bedroom-3317277
+908,เดอะวันพลัส ดี หัวหมาก 12,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0%E0%B8%A7%E0%B8%B1%E0%B8%99%E0%B8%9E%E0%B8%A5%E0%B8%B1%E0%B8%AA-%E0%B8%94%E0%B8%B5-%E0%B8%AB%E0%B8%B1%E0%B8%A7%E0%B8%AB%E0%B8%A1%E0%B8%B2%E0%B8%81-12-2bedroom-3316987
+909,บ้านวดาพาร์ค,1,https://www.livinginsider.com/detail/condo-for-sale-baan-wada-park-1bedroom-3250065
+910,ฟิวส์ โมเบียส รามคำแหง สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-condo-fuse-mobius-ramkhamhaeng-station-1bedroom-3202053
+911,ไรย์ หัวหมาก 1,1,https://www.livinginsider.com/detail/condo-for-sale-rye-huamak-1-1bedroom-2436522
+912,ลุมพินี วิลล์ รามคำแหง 26,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-ramkamhaeng-26-1bedroom-3036416
+913,เดอะ วัน พลัส ศรีนครินทร์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-one-plus-srinakarin-2bedroom-3149333
+914,ดิ ออริจิ้น เศรษฐบุตร สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-the-origin-setthabut-station-1bedroom-2431419
+915,นิรันดร์ เรสซิเดนซ์ 8,1,https://www.livinginsider.com/detail/condo-for-sale-nirun-residence-8-2bedroom-3130556
+916,เวล่า รามคำแหง 186,1,https://www.livinginsider.com/detail/condo-for-sale-wela-ramkhamhaeng-186-1bedroom-2797890
+917,เดอะคิวบ์ นวมินทร์ - รามอินทรา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-cube-nawamin-ramintra-1bedroom-2839940
+918,เอชทู เมทัล,1,https://www.livinginsider.com/detail/condo-for-sale-h-2-metal-1bedroom-3271728
+919,เอช ทู โกล์ว,1,https://www.livinginsider.com/detail/condo-for-sale-condo-h2-glo-2bedroom-2591103
+920,แชมเบอร์ส เฌอ รัชดา - รามอินทรา,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chambers-cher-ratchada-ramintra-2bedroom-2407939
+921,เดอะคิวบ์ สเตชั่น รามอินทรา 109,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-cube-station-ramintra-109-1bedroom-3082211
+922,เจดับบลิว สเตชั่น แอท รามอินทรา,1,https://www.livinginsider.com/detail/condo-for-sale-rent-condo-jw-station-ramintra-1bedroom-2781493
+923,ดิ ออริจิ้น ปลั๊ก แอนด์ เพลย์ รามอินทรา,1,https://www.livinginsider.com/detail/condo-for-sale-the-origin-plug-play-ramintra-1bedroom-2945119
+924,แลนด์มาร์ค แอท แกรนด์ สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-landmark-grand-station-2bedroom-3189819
+925,สินธานี เรสซิเด้นท์ ทาวเวอร์,1,https://www.livinginsider.com/detail/condo-for-sale-sinthanee-residence-tower-1bedroom-2991629
+926,บลอสซั่ม คอนโด แอท แฟชั่น บียอนด์,1,https://www.livinginsider.com/detail/condo-for-sale-blossom-condo-fashion-beyond-1bedroom-3290428
+927,ออริจิ้น เพลย์ พหลฯ 50 สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-origin-play-phahol-50-station-1bedroom-3314004
+928,ชีวาทัย เรสซิเดนซ์ บางโพ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chewathai-residence-bang-pho-2bedroom-2312351
+929,เดอะ เบส วงศ์สว่าง,1,https://www.livinginsider.com/detail/condo-for-sale-the-base-wongsawang-1bedroom-3213789
+930,เรฟเฟอเรนซ์ เบย์ ริเวอร์ บางโพ,1,https://www.livinginsider.com/detail/condo-for-sale-reference-baie-river-bangpho-1bedroom-3245471
+931,เดอะทรี บางโพ สเตชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-tree-bangpo-station-1bedroom-3245325
+932,ชีวาทัย อินเตอร์เชนจ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chewathai-interchange-studio-3082554
+933,เดอะ เคลฟ  ริเวอร์ไรน์ เจ้าพระยา - วงศ์สว่าง,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-clev-riverline-chaophraya-wongsawang-1bedroom-3297637
+934,สมาร์ท ซี อ่อนนุช,1,https://www.livinginsider.com/detail/condo-for-sale-smart-z-onnut-1bedroom-3024440
+935,นิว คอนเน็กซ์ เฮาส์ ดอนเมือง,1,https://www.livinginsider.com/detail/condo-for-sale-%E0%B8%99%E0%B8%B4%E0%B8%A7-%E0%B8%84%E0%B8%AD%E0%B8%99%E0%B9%80%E0%B8%99%E0%B9%87%E0%B8%81%E0%B8%8B%E0%B9%8C-%E0%B9%80%E0%B8%AE%E0%B8%B2%E0%B8%AA%E0%B9%8C-%E0%B8%94%E0%B8%AD%E0%B8%99%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87-2bedroom-3317136
+936,แฮปปี้ คอนโด ดอนเมือง เดอะ เทอมินอล,1,https://www.livinginsider.com/detail/condo-for-sale-happy-condo-donmuang-the-terminal-1bedroom-2372565
+937,เคนซิงตัน พหลโยธิน 63,1,https://www.livinginsider.com/detail/condo-for-sale-condo-kensington-paholyothin-63-1bedroom-3106382
+938,บ้านสวนรัชธานี,1,https://www.livinginsider.com/detail/condo-for-sale-baan-suan-ratchathani-1bedroom-3316789
+939,เดอะคิวบ์ พลัส พหลโยธิน 56,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-cube-plus-phaholyothin-56-1bedroom-3276172
+940,บ้าน ประชานิเวศน์,1,https://www.livinginsider.com/detail/condo-for-sale-baan-prachaniwet-1bedroom-3037127
+941,วิภาวดี สวีท,1,https://www.livinginsider.com/detail/condo-for-sale-condo-vibhavadi-suite-2bedroom-3220070
+942,บ้านสุโขทัย รามคำแหง,1,https://www.livinginsider.com/detail/condo-for-sale-baan-sukhothai-ramkhamhaeng-2bedroom-3048521
+943,ลิปป์ รามคำแหง 43/1,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lib-ramkhamhaeng-431-studio-2980358
+944,เทมโป วัน รามคำแหง - พระราม 9,1,https://www.livinginsider.com/detail/condo-for-sale-condo-tempo-one-ramkhamhaeng-rama-9-1bedroom-2975201
+945,เดอะ ลิฟวิ่น รามคำแหง,1,https://www.livinginsider.com/detail/condo-for-sale-the-livin-ramkhamhaeng-2bedroom-3303761
+946,เดอะ เวลลิงตัน คอนโด,1,https://www.livinginsider.com/detail/condo-for-sale-the-wellington-condominium-1bedroom-2933521
+947,แอทโมซ ซีซั่น ลาดกระบัง,1,https://www.livinginsider.com/detail/condo-for-sale-atmoz-season-ladkrabang-1bedroom-3307687
+948,เสนา คิทท์ ฉลองกรุง - ลาดกระบัง,1,https://www.livinginsider.com/detail/condo-for-sale-sena-kith-chalong-krung-ladkrabang-2bedroom-3314827
+949,พฤกษาธานี ฟิฟ คอนโดเทล,1,https://www.livinginsider.com/detail/condo-for-sale-pluksa-thani-fifth-condotel-1bedroom-3160945
+950,ริชพาร์ค เทอร์มินอล พหลโยธิน 59,1,https://www.livinginsider.com/detail/condo-for-sale-condo-rich-park-terminal-phaholyothin-59-1bedroom-3245450
+951,เสนาคิทท์ บีทีเอส สะพานใหม่,1,https://www.livinginsider.com/detail/condo-for-sale-sena-kith-bts-saphanmai-1bedroom-3245380
+952,สุชารี ไลฟ์ หลักสี่ - แจ้งวัฒนะ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-sucharee-life-laksi-chaengwattana-1bedroom-2971663
+953,แฮปปี้ คอนโด (ช่างอากาศอุทิศ),1,https://www.livinginsider.com/detail/condo-for-sale-happy-condo-chang-akat-uthit-1bedroom-3072469
+954,เคนซิงตัน เพลส,1,https://www.livinginsider.com/detail/condo-for-sale-condo-kensington-place-1bedroom-3120575
+955,ไนท์บริดจ์ สกายซิตี้ สะพานใหม่,1,https://www.livinginsider.com/detail/condo-for-sale-condo-knightsbridge-skycity-saphanmai-1bedroom-2974877
+956,บราวน์ คอนโด พหลโยธิน 67,1,https://www.livinginsider.com/detail/condo-for-sale-brown-condo-phaholyothin-67-2bedroom-3225868
+957,เดอะ สเตจ เตาปูน อินเตอร์เชนจ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-stage-taopoon-interchange-1bedroom-2821994
+958,ไอดีโอ โมบิ บางซื่อ แกรนด์ อินเตอร์เชนจ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mobi-bangsue-grand-interchange-1bedroom-2749491
+959,ริชพาร์ค 2 แอท เตาปูน อินเตอร์เชนจ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-rich-park-2-taopoon-interchange-1bedroom-3316568
+960,แชปเตอร์ วัน โฟลว์ บางโพ,1,https://www.livinginsider.com/detail/condo-for-sale-condo-chapter-one-flow-bangpo-1bedroom-3316559
+961,ไอดีโอ โมบิ วงศ์สว่าง อินเตอร์เชนจ์,1,https://www.livinginsider.com/detail/condo-for-sale-condo-ideo-mobi-wongsawang-interchange-1bedroom-3197400
+962,รีเจ้นท์ โฮม 6/2 ประชาชื่น,1,https://www.livinginsider.com/detail/condo-for-sale-condo-regent-home-6-2-prachachuen-studio-3043755
+963,ริชพาร์ค แอท บางซ่อน,1,https://www.livinginsider.com/detail/condo-for-sale-condo-rich-park-bangson-station-1bedroom-3291269
+964,เดอะทรี พริวาต้า,1,https://www.livinginsider.com/detail/condo-for-sale-condo-the-tree-privata-studio-3118088
+965,ลุมพินี วิลล์ ประชาชื่น - พงษ์เพชร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-lumpini-ville-prachachuen-pongpetch-1bedroom-3051017
+966,ไมล์สโตน เสรีไทย,1,https://www.livinginsider.com/detail/condo-for-sale-milestone-serithai-studio-3242993
+967,ลำสาลี แมนชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-lamsali-mansion-1bedroom-3257004
+968,จุลดิศ ริเวอร์ แมนชั่น,1,https://www.livinginsider.com/detail/condo-for-sale-juldis-river-mansion-1bedroom-2957717
+969,ศุภาลัย พรีเมียร์ นราธิวาส - สาทร,1,https://www.livinginsider.com/detail/condo-for-sale-condo-supalai-premier-narathiwas-sathorn-studio-3299484
+970,รีเจ้นท์ ออร์คิด ตลาดพลู,1,https://www.livinginsider.com/detail/condo-for-sale-condo-regent-orchid-talad-plu-1bedroom-3152892
+971,คาซ่า คอนโด รัชดา - ราชพฤกษ์,1,https://www.livinginsider.com/detail/condo-for-sale-casa-condo-ratchada-ratchaphruek-2bedroom-3149358
