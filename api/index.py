@@ -71,7 +71,9 @@ def health() -> dict[str, Any]:
 def get_meta(response: Response) -> dict[str, Any]:
     bundle = _require_bundle()
     forecast = load_forecast_cached()
-    response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
+    response.headers["Cache-Control"] = (
+        "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate"
+    )
     return serialize_metadata(bundle, forecast)
 
 
