@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from sklearn.cluster import KMeans
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.neighbors import KNeighborsRegressor
 
 from src.models import ffbp
@@ -29,6 +29,15 @@ def test_linear_regression_matches_sklearn(data):
     X, y = data
     W = lr.fit(X, y)
     reference = LinearRegression().fit(X, y)
+    np.testing.assert_allclose(W[:-1], reference.coef_, rtol=1e-8)
+    np.testing.assert_allclose(W[-1], reference.intercept_, rtol=1e-8)
+    np.testing.assert_allclose(lr.predict(X, W), reference.predict(X), rtol=1e-8)
+
+
+def test_linear_regression_ridge_matches_sklearn(data):
+    X, y = data
+    W = lr.fit(X, y, l2=2.5)
+    reference = Ridge(alpha=2.5).fit(X, y)
     np.testing.assert_allclose(W[:-1], reference.coef_, rtol=1e-8)
     np.testing.assert_allclose(W[-1], reference.intercept_, rtol=1e-8)
     np.testing.assert_allclose(lr.predict(X, W), reference.predict(X), rtol=1e-8)
@@ -103,3 +112,68 @@ def test_neighbourhood_price_ignores_own_building():
     # A's nearest other building is B, never A itself
     assert level.iloc[0] == pytest.approx(np.log(100000.0))
     assert level.iloc[2] == pytest.approx(np.log(200000.0))
+
+
+def test_clean_coordinates_nulls_out_of_bangkok():
+    import pandas as pd
+    from src.features.build import clean_coordinates
+
+    df = pd.DataFrame({
+        "latitude": [13.75, 100.55, 13.09],
+        "longitude": [100.55, 100.55, 100.91],
+    })
+    cleaned = clean_coordinates(df)
+    assert cleaned["latitude"].iloc[0] == pytest.approx(13.75)
+    assert pd.isna(cleaned["latitude"].iloc[1]) and pd.isna(cleaned["longitude"].iloc[1])
+    assert pd.isna(cleaned["latitude"].iloc[2]) and pd.isna(cleaned["longitude"].iloc[2])
+
+
+def test_manual_building_input_uses_median_for_mall_km():
+    import pandas as pd
+    from src.features.build import BuildingFeatures
+
+    train = pd.DataFrame({
+        "complete_year": [2018.0, 2020.0],
+        "total_unit": [300.0, 500.0],
+        "total_floor": [20.0, 30.0],
+        "facility_count": [8.0, 10.0],
+        "nearest_rail_km": [0.4, 0.8],
+        "nearest_mall_km": [0.5, 0.7],
+        "has_building_info": [True, True],
+    })
+    bf = BuildingFeatures.fit(train)
+    manual = pd.DataFrame({
+        "complete_year": [2019.0],
+        "total_unit": [np.nan],
+        "total_floor": [np.nan],
+        "facility_count": [np.nan],
+        "nearest_rail_km": [0.5],
+        "nearest_mall_km": [np.nan],
+        "has_building_info": [True],
+        "manual_building_input": [True],
+    })
+    transformed = bf.transform(manual)
+    assert transformed["mall_km"].iloc[0] == pytest.approx(0.6)
+    assert transformed["has_building_info"].iloc[0] == pytest.approx(1.0)
+
+
+def test_multiscale_neighbourhood_ignores_own_building_and_bad_coords():
+    import pandas as pd
+    from src.features.build import MultiScaleNeighbourhood
+
+    train = pd.DataFrame({
+        "project_name": ["A", "A", "B", "C", "Bad"],
+        "zone_no": [1, 1, 1, 1, 1],
+        "latitude": [13.73, 13.73, 13.74, 13.85, 100.55],
+        "longitude": [100.56, 100.56, 100.56, 100.56, 100.56],
+        "complete_year": [2020.0, 2020.0, 2015.0, 2010.0, 2018.0],
+        "price_per_sqm": [200000.0, 200000.0, 100000.0, 50000.0, 999999.0],
+    })
+    nb = MultiScaleNeighbourhood.fit(train, k_local=1, k_broad=2, k_age=1)
+    out = nb.transform(train)
+    # A ignores itself and Bad (corrupt lat=100.55), so its nearest building is B
+    assert out["nb_idw_k5"].iloc[0] == pytest.approx(np.log(100000.0))
+    # A (age 6) minus B (age 11) = -5 years newer than neighbor
+    assert out["nb_age_diff"].iloc[0] == pytest.approx(-5.0)
+    # Bad falls back to zone median price/sqm and 0.0 age diff
+    assert out["nb_age_diff"].iloc[4] == pytest.approx(0.0)

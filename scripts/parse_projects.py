@@ -71,8 +71,9 @@ def find_object(text: str, key: str) -> dict | None:
     return json_object_at(text, position + len(key) + 3) if position >= 0 else None
 
 
-def nearest(items: list[dict], category: str) -> dict | None:
-    candidates = [item for item in items if item.get("category") == category and item.get("distance") is not None]
+def nearest(items: list[dict], *categories: str) -> dict | None:
+    allowed = set(categories)
+    candidates = [item for item in items if item.get("category") in allowed and item.get("distance") is not None]
     return min(candidates, key=lambda item: item["distance"]) if candidates else None
 
 
@@ -118,7 +119,7 @@ def parse_file(path: Path) -> dict | None:
         "nearest_rail_line": rail_line(rail["icon"]) if rail else "",
         "nearest_mall_km": (nearest(nearby, "mall") or {}).get("distance"),
         "nearest_hospital_km": (nearest(nearby, "hospital") or {}).get("distance"),
-        "nearest_school_km": (nearest(nearby, "school") or {}).get("distance"),
+        "nearest_school_km": (nearest(nearby, "school", "academy") or {}).get("distance"),
         "source_url": saved_from.group(1) if saved_from else "",
         "source_file": path.name,
     }

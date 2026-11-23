@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import pandas as pd
 from sklearn.metrics import silhouette_score
-from sklearn.model_selection import GroupShuffleSplit, KFold, train_test_split
+from sklearn.model_selection import GroupKFold, GroupShuffleSplit, KFold, train_test_split
 
 from src.models import linear_regression as lr
 from src.models.fuzzy_cmeans import fuzzy_cmeans
@@ -31,8 +31,41 @@ ZONE_STAT_COLUMNS = ["median_log_price_per_sqm", "median_area_sqm", "share_new_u
 K_RANGE = range(2, 9)
 BASE_YEAR = 2026  # year the listings were collected
 NEARBY_LIMIT_KM = 3.0
-# one degree of longitude is shorter than one degree of latitude; at Bangkok (13.75 N) the ratio is cos(13.75)
+# Valid Bangkok bounding box (matches scripts/check_data.py)
+BKK_LAT_BOUNDS = (13.5, 14.0)
+BKK_LON_BOUNDS = (100.3, 100.95)
+# One degree of latitude is ~111 km; longitude shrinks by cos(13.75 deg) at Bangkok
+KM_PER_LAT_DEG = 111.0
 LONGITUDE_SCALE = float(np.cos(np.radians(13.75)))
+IDW_EPS_KM = 0.25
+# Ploenchit / Siam / Asok central business district reference point
+CBD_LAT = 13.743
+CBD_LON = 100.549
+
+
+def cv_splits(
+    frame: pd.DataFrame | np.ndarray,
+    groups: pd.Series | np.ndarray | None = None,
+    n_splits: int = CV_FOLDS,
+) -> list[tuple[np.ndarray, np.ndarray]]:
+    """Use GroupKFold when evaluating unseen-building splits so units from the same project
+    never straddle training and validation folds."""
+    if groups is not None:
+        return list(GroupKFold(n_splits=n_splits, shuffle=True, random_state=SEED).split(frame, groups=groups))
+    return list(KFold(n_splits=n_splits, shuffle=True, random_state=SEED).split(frame))
+
+
+def clean_coordinates(frame: pd.DataFrame) -> pd.DataFrame:
+    """Replace out-of-Bangkok coordinates (data entry / geocoding errors) with NaN."""
+    cleaned = frame.copy()
+    if "latitude" not in cleaned.columns or "longitude" not in cleaned.columns:
+        return cleaned
+    lat = pd.to_numeric(cleaned["latitude"], errors="coerce")
+    lon = pd.to_numeric(cleaned["longitude"], errors="coerce")
+    valid = lat.between(*BKK_LAT_BOUNDS) & lon.between(*BKK_LON_BOUNDS)
+    cleaned["latitude"] = lat.where(valid)
+    cleaned["longitude"] = lon.where(valid)
+    return cleaned
 
 
 def split_random(listings: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -116,14 +149,18 @@ def mean_absolute_percentage_error(actual: np.ndarray, predicted: np.ndarray) ->
     return float(100 * np.mean(np.abs(predicted - actual) / actual))
 
 
-def choose_zone_clustering(train: pd.DataFrame, metric: str = "euclidean") -> ZoneClustering:
+def choose_zone_clustering(
+    train: pd.DataFrame,
+    metric: str = "euclidean",
+    groups: pd.Series | np.ndarray | None = None,
+) -> ZoneClustering:
     """Pick k by the cross-validated error of the main Linear Regression, and record
     silhouette and inertia for every k so the choice can be shown and questioned."""
-    folds = KFold(n_splits=CV_FOLDS, shuffle=True, random_state=SEED)
+    folds = cv_splits(train, groups=groups)
     scan = []
     for k in K_RANGE:
         fold_errors = []
-        for train_index, valid_index in folds.split(train):
+        for train_index, valid_index in folds:
             fold_train, fold_valid = train.iloc[train_index], train.iloc[valid_index]
             clustering, _, _ = cluster_zones(zone_statistics(fold_train), k, metric)
             fold_valid = fold_valid[fold_valid["zone_no"].isin(clustering.zone_table["zone_no"])]
@@ -177,13 +214,27 @@ class ProjectPriceLevels:
 
 
 def attach_buildings(listings: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
-    """Add each listing's building data (from its project page) by project name."""
-    table = projects.assign(key=project_key(projects["project_name"])).drop_duplicates("key")
-    columns = ["complete_year", "total_unit", "total_floor", "facility_count", "nearest_rail_km", "nearest_mall_km",
-               "latitude", "longitude"]
+    """Add each listing's building data (from its project page) by project name, cleaning
+    out-of-Bangkok coordinates so geocoding errors do not corrupt distance features."""
+    table = clean_coordinates(projects).assign(key=project_key(projects["project_name"])).drop_duplicates("key")
+    candidate_columns = [
+        "complete_year", "total_unit", "total_floor", "total_building", "facility_count",
+        "has_pool", "has_gym", "has_parking", "nearest_rail_km", "nearest_rail_line",
+        "nearest_mall_km", "nearest_hospital_km", "latitude", "longitude",
+    ]
+    columns = [col for col in candidate_columns if col in table.columns]
     merged = listings.assign(key=project_key(listings["project_name"])).merge(table[["key", *columns]], on="key", how="left")
     merged["has_building_info"] = merged["key"].isin(table["key"])
     return merged.drop(columns="key")
+
+
+def _nearby_checked_mask(listings: pd.DataFrame) -> pd.Series:
+    """True when the listing came from a saved project page whose nearby-places list was checked.
+    Manual web inputs set manual_building_input=True so unentered mall/hospital distances stay NaN
+    and fall back to the training median instead of being capped at 3 km."""
+    if "manual_building_input" in listings.columns:
+        return listings["has_building_info"] & (~listings["manual_building_input"].fillna(False).astype(bool))
+    return listings["has_building_info"]
 
 
 @dataclass
@@ -195,15 +246,16 @@ class BuildingFeatures:
 
     @staticmethod
     def raw(listings: pd.DataFrame) -> pd.DataFrame:
-        # the site lists places within about 3 km; no rail station or mall listed means
-        # the nearest one is farther than that, so the gap is capped at 3 km, not imputed
+        # the site lists places within about 3 km; for a real saved project page, no rail station
+        # or mall listed means the nearest one is farther than 3 km, so the gap is capped at 3 km
+        nearby_checked = _nearby_checked_mask(listings)
         return pd.DataFrame({
             "building_age": (BASE_YEAR - listings["complete_year"]).clip(lower=0),
             "log_total_unit": np.log(listings["total_unit"].where(listings["total_unit"] > 0)),
             "total_floor": listings["total_floor"].where(listings["total_floor"] > 0),
             "facility_count": listings["facility_count"],
-            "rail_km": listings["nearest_rail_km"].where(~listings["has_building_info"], listings["nearest_rail_km"].fillna(NEARBY_LIMIT_KM)),
-            "mall_km": listings["nearest_mall_km"].where(~listings["has_building_info"], listings["nearest_mall_km"].fillna(NEARBY_LIMIT_KM)),
+            "rail_km": listings["nearest_rail_km"].where(~nearby_checked, listings["nearest_rail_km"].fillna(NEARBY_LIMIT_KM)),
+            "mall_km": listings["nearest_mall_km"].where(~nearby_checked, listings["nearest_mall_km"].fillna(NEARBY_LIMIT_KM)),
         }).astype(float)
 
     @classmethod
@@ -217,11 +269,85 @@ class BuildingFeatures:
 
 
 @dataclass
+class ExtendedBuildingFeatures:
+    """Base building features plus domain features derived from already-parsed project data:
+    building density (units per floor), high-rise flag, relative floor height, room spaciousness,
+    non-linear rail/age terms, CBD distance, rail line tier (BTS/MRT), hospital distance, and
+    core amenities (pool, gym, parking)."""
+
+    base: BuildingFeatures
+    medians: dict[str, float]
+
+    @staticmethod
+    def _extra_raw(listings: pd.DataFrame, base_frame: pd.DataFrame) -> pd.DataFrame:
+        nearby_checked = _nearby_checked_mask(listings)
+        cleaned = clean_coordinates(listings)
+        lat = cleaned["latitude"].to_numpy(dtype=float) if "latitude" in cleaned.columns else np.full(len(listings), np.nan)
+        lon = cleaned["longitude"].to_numpy(dtype=float) if "longitude" in cleaned.columns else np.full(len(listings), np.nan)
+        cbd_km = np.sqrt(((lat - CBD_LAT) * KM_PER_LAT_DEG) ** 2 + ((lon - CBD_LON) * KM_PER_LAT_DEG * LONGITUDE_SCALE) ** 2)
+
+        total_floor = listings["total_floor"].where(listings["total_floor"] > 0)
+        total_unit = listings["total_unit"].where(listings["total_unit"] > 0)
+        units_per_floor_log = np.log(np.maximum(total_unit / total_floor, 1.0))
+        is_high_rise = (total_floor > 8).where(total_floor.notna())
+        floor_ratio = (listings["floor"].astype(float) / total_floor.astype(float)).clip(lower=0.0, upper=1.0)
+        area_per_room_log = np.log(listings["area_sqm"].to_numpy(dtype=float) / (listings["bedrooms"].to_numpy(dtype=float) + 1.0))
+
+        if "nearest_hospital_km" in listings.columns:
+            hospital_km = listings["nearest_hospital_km"].where(
+                ~nearby_checked, listings["nearest_hospital_km"].fillna(NEARBY_LIMIT_KM)
+            )
+        else:
+            hospital_km = pd.Series(np.nan, index=listings.index)
+
+        if "nearest_rail_line" in listings.columns:
+            rail_line = listings["nearest_rail_line"].fillna("").astype(str)
+            is_bts = (rail_line == "bts").astype(float).where(nearby_checked)
+            is_mrt = (rail_line == "mrt").astype(float).where(nearby_checked)
+        else:
+            is_bts = pd.Series(np.nan, index=listings.index)
+            is_mrt = pd.Series(np.nan, index=listings.index)
+
+        amenities = {}
+        for col in ("has_pool", "has_gym", "has_parking"):
+            if col in listings.columns:
+                amenities[col] = listings[col].where(nearby_checked).astype(float)
+            else:
+                amenities[col] = pd.Series(np.nan, index=listings.index)
+
+        return pd.DataFrame({
+            "units_per_floor_log": units_per_floor_log,
+            "is_high_rise": is_high_rise.astype(float),
+            "floor_ratio": floor_ratio,
+            "area_per_room_log": area_per_room_log,
+            "log_rail_km": np.log1p(base_frame["rail_km"].to_numpy(dtype=float)),
+            "log_age": np.log1p(base_frame["building_age"].to_numpy(dtype=float)),
+            "log_cbd_km": np.log1p(cbd_km),
+            "hospital_km": hospital_km,
+            "is_bts": is_bts,
+            "is_mrt": is_mrt,
+            **amenities,
+        }).astype(float)
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame) -> ExtendedBuildingFeatures:
+        base = BuildingFeatures.fit(train)
+        base_frame = base.transform(train)
+        extra = cls._extra_raw(train, base_frame)
+        return cls(base=base, medians=extra.median().to_dict())
+
+    def transform(self, listings: pd.DataFrame) -> pd.DataFrame:
+        base_frame = self.base.transform(listings).reset_index(drop=True)
+        extra_frame = self._extra_raw(listings.reset_index(drop=True), base_frame).fillna(self.medians)
+        return pd.concat([base_frame, extra_frame], axis=1)
+
+
+@dataclass
 class NeighbourhoodPrice:
-    """Mean log price per sqm of the k nearest other buildings in the training data, found by
-    building coordinates. K-Means gives the price level of the zone; this gives the level of the
-    few streets around the building. The unit's own building is never used, so a training row
-    cannot see its own price, and the value means the same for a new building."""
+    """Distance-weighted mean log price per sqm of the k nearest other buildings in the
+    training data, found by validated Bangkok coordinates. The unit's own building is never
+    used, so a training row cannot see its own price, and the value means the same for a
+    new building."""
 
     keys: np.ndarray
     coordinates: np.ndarray
@@ -231,32 +357,117 @@ class NeighbourhoodPrice:
 
     @classmethod
     def fit(cls, train: pd.DataFrame, k: int = 10) -> NeighbourhoodPrice:
-        located = train.dropna(subset=["latitude", "longitude"])
+        located = clean_coordinates(train).dropna(subset=["latitude", "longitude"])
         buildings = located.groupby(project_key(located["project_name"])).agg(
             latitude=("latitude", "first"), longitude=("longitude", "first"),
             level=("price_per_sqm", lambda prices: float(np.log(prices).mean())),
         )
         return cls(
             keys=buildings.index.to_numpy(),
-            coordinates=buildings[["latitude", "longitude"]].to_numpy() * [1.0, LONGITUDE_SCALE],
+            coordinates=buildings[["latitude", "longitude"]].to_numpy() * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE],
             levels=buildings["level"].to_numpy(),
             zone_fallback=np.log(train["price_per_sqm"]).groupby(train["zone_no"]).median(),
             k=k,
         )
 
     def transform(self, listings: pd.DataFrame) -> pd.DataFrame:
-        keys = project_key(listings["project_name"]).to_numpy()
-        points = listings[["latitude", "longitude"]].to_numpy(dtype=float) * [1.0, LONGITUDE_SCALE]
-        levels = np.full(len(listings), np.nan)
+        cleaned = clean_coordinates(listings)
+        keys = project_key(cleaned["project_name"]).to_numpy()
+        points = cleaned[["latitude", "longitude"]].to_numpy(dtype=float) * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE]
+        levels = np.full(len(cleaned), np.nan)
         for row, (key, point) in enumerate(zip(keys, points)):
-            if np.isnan(point).any():
+            if np.isnan(point).any() or len(self.coordinates) == 0:
                 continue
-            distance = np.sum((self.coordinates - point) ** 2, axis=1)
+            distance = np.sqrt(np.sum((self.coordinates - point) ** 2, axis=1))
             distance[self.keys == key] = np.inf
-            levels[row] = self.levels[np.argsort(distance)[: self.k]].mean()
-        # no coordinates: use the zone median, the same information the K-Means tiers start from
-        fallback = listings["zone_no"].map(self.zone_fallback).fillna(float(self.zone_fallback.median())).to_numpy()
+            order = np.argsort(distance)[: self.k]
+            finite = np.isfinite(distance[order])
+            if not np.any(finite):
+                continue
+            order = order[finite]
+            weights = 1.0 / (distance[order] + IDW_EPS_KM)
+            levels[row] = float(np.sum(weights * self.levels[order]) / np.sum(weights))
+        # no valid coordinates: use the zone median, the same information the K-Means tiers start from
+        fallback = cleaned["zone_no"].map(self.zone_fallback).fillna(float(self.zone_fallback.median())).to_numpy()
         return pd.DataFrame({"neighbourhood_log_price_per_sqm": np.where(np.isnan(levels), fallback, levels)})
+
+
+@dataclass
+class MultiScaleNeighbourhood:
+    """Multi-scale IDW neighbourhood context from validated Bangkok coordinates:
+    - nb_idw_k5: hyper-local price level (5 nearest other buildings)
+    - nb_idw_k20: broader corridor price level (20 nearest other buildings)
+    - nb_age_diff: building age minus IDW age of 10 nearest other buildings."""
+
+    keys: np.ndarray
+    coordinates: np.ndarray
+    levels: np.ndarray
+    ages: np.ndarray
+    zone_fallback: pd.Series
+    k_local: int = 5
+    k_broad: int = 20
+    k_age: int = 10
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame, k_local: int = 5, k_broad: int = 20, k_age: int = 10) -> MultiScaleNeighbourhood:
+        located = clean_coordinates(train).dropna(subset=["latitude", "longitude"])
+        age_series = (BASE_YEAR - located["complete_year"]).clip(lower=0) if "complete_year" in located.columns else pd.Series(np.nan, index=located.index)
+        located = located.assign(_age=age_series)
+        buildings = located.groupby(project_key(located["project_name"])).agg(
+            latitude=("latitude", "first"),
+            longitude=("longitude", "first"),
+            level=("price_per_sqm", lambda prices: float(np.log(prices).mean())),
+            age=("_age", "first"),
+        )
+        return cls(
+            keys=buildings.index.to_numpy(),
+            coordinates=buildings[["latitude", "longitude"]].to_numpy() * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE],
+            levels=buildings["level"].to_numpy(),
+            ages=buildings["age"].to_numpy(dtype=float),
+            zone_fallback=np.log(train["price_per_sqm"]).groupby(train["zone_no"]).median(),
+            k_local=k_local,
+            k_broad=k_broad,
+            k_age=k_age,
+        )
+
+    def transform(self, listings: pd.DataFrame) -> pd.DataFrame:
+        cleaned = clean_coordinates(listings)
+        keys = project_key(cleaned["project_name"]).to_numpy()
+        points = cleaned[["latitude", "longitude"]].to_numpy(dtype=float) * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE]
+        listing_age = (BASE_YEAR - cleaned["complete_year"]).clip(lower=0).to_numpy(dtype=float) if "complete_year" in cleaned.columns else np.full(len(cleaned), np.nan)
+
+        local_level = np.full(len(cleaned), np.nan)
+        broad_level = np.full(len(cleaned), np.nan)
+        age_diff = np.full(len(cleaned), np.nan)
+
+        for row, (key, point) in enumerate(zip(keys, points)):
+            if np.isnan(point).any() or len(self.coordinates) == 0:
+                continue
+            distance = np.sqrt(np.sum((self.coordinates - point) ** 2, axis=1))
+            distance[self.keys == key] = np.inf
+            order = np.argsort(distance)
+
+            for k, target in ((self.k_local, local_level), (self.k_broad, broad_level)):
+                idx = order[:k]
+                idx = idx[np.isfinite(distance[idx])]
+                if len(idx):
+                    w = 1.0 / (distance[idx] + IDW_EPS_KM)
+                    target[row] = float(np.sum(w * self.levels[idx]) / np.sum(w))
+
+            if not np.isnan(listing_age[row]):
+                idx_age = order[: self.k_age]
+                idx_age = idx_age[np.isfinite(distance[idx_age]) & ~np.isnan(self.ages[idx_age])]
+                if len(idx_age):
+                    w_age = 1.0 / (distance[idx_age] + IDW_EPS_KM)
+                    nb_age = float(np.sum(w_age * self.ages[idx_age]) / np.sum(w_age))
+                    age_diff[row] = listing_age[row] - nb_age
+
+        fallback = cleaned["zone_no"].map(self.zone_fallback).fillna(float(self.zone_fallback.median())).to_numpy()
+        return pd.DataFrame({
+            "nb_idw_k5": np.where(np.isnan(local_level), fallback, local_level),
+            "nb_idw_k20": np.where(np.isnan(broad_level), fallback, broad_level),
+            "nb_age_diff": np.where(np.isnan(age_diff), 0.0, age_diff),
+        })
 
 
 def feature_frame(

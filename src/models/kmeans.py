@@ -23,7 +23,7 @@ def init_plus_plus(X, K, metric, rng):
     return np.array(C, dtype=float)
 
 
-def kmeans(X, K, metric='euclidean', n_init=10, max_iter=300, seed=42):
+def kmeans(X, K, metric='euclidean', n_init=30, max_iter=300, seed=42):
     rng = np.random.default_rng(seed)
     best = (None, None, np.inf)
     for _ in range(n_init):
@@ -33,7 +33,8 @@ def kmeans(X, K, metric='euclidean', n_init=10, max_iter=300, seed=42):
             Cold = C.copy()
             for k in range(K):
                 if np.any(idx == k):
-                    C[k] = np.mean(X[idx == k], axis=0)
+                    # L1 distance is minimised by the coordinate-wise median; L2 by the mean
+                    C[k] = np.median(X[idx == k], axis=0) if metric == 'manhattan' else np.mean(X[idx == k], axis=0)
             if np.sum(np.abs(Cold - C)) == 0:
                 break
         idx, d = assign(X, C, metric)
