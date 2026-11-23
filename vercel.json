@@ -7,6 +7,21 @@
       "excludeFiles": "{data/**,docs/**,scripts/**,tests/**,reports/figures/**,reports/benchmark*.json,reports/*.csv,.streamlit/**,public/**}"
     }
   },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/(|index.html|app.js|styles.css)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.py" }
   ]
