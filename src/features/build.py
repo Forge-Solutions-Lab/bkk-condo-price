@@ -31,6 +31,8 @@ ZONE_STAT_COLUMNS = ["median_log_price_per_sqm", "median_area_sqm", "share_new_u
 K_RANGE = range(2, 9)
 BASE_YEAR = 2026  # year the listings were collected
 NEARBY_LIMIT_KM = 3.0
+# one degree of longitude is shorter than one degree of latitude; at Bangkok (13.75 N) the ratio is cos(13.75)
+LONGITUDE_SCALE = float(np.cos(np.radians(13.75)))
 
 
 def split_random(listings: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -177,7 +179,8 @@ class ProjectPriceLevels:
 def attach_buildings(listings: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
     """Add each listing's building data (from its project page) by project name."""
     table = projects.assign(key=project_key(projects["project_name"])).drop_duplicates("key")
-    columns = ["complete_year", "total_unit", "total_floor", "facility_count", "nearest_rail_km", "nearest_mall_km"]
+    columns = ["complete_year", "total_unit", "total_floor", "facility_count", "nearest_rail_km", "nearest_mall_km",
+               "latitude", "longitude"]
     merged = listings.assign(key=project_key(listings["project_name"])).merge(table[["key", *columns]], on="key", how="left")
     merged["has_building_info"] = merged["key"].isin(table["key"])
     return merged.drop(columns="key")
@@ -213,12 +216,56 @@ class BuildingFeatures:
         return frame
 
 
+@dataclass
+class NeighbourhoodPrice:
+    """Mean log price per sqm of the k nearest other buildings in the training data, found by
+    building coordinates. K-Means gives the price level of the zone; this gives the level of the
+    few streets around the building. The unit's own building is never used, so a training row
+    cannot see its own price, and the value means the same for a new building."""
+
+    keys: np.ndarray
+    coordinates: np.ndarray
+    levels: np.ndarray
+    zone_fallback: pd.Series
+    k: int = 10
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame, k: int = 10) -> NeighbourhoodPrice:
+        located = train.dropna(subset=["latitude", "longitude"])
+        buildings = located.groupby(project_key(located["project_name"])).agg(
+            latitude=("latitude", "first"), longitude=("longitude", "first"),
+            level=("price_per_sqm", lambda prices: float(np.log(prices).mean())),
+        )
+        return cls(
+            keys=buildings.index.to_numpy(),
+            coordinates=buildings[["latitude", "longitude"]].to_numpy() * [1.0, LONGITUDE_SCALE],
+            levels=buildings["level"].to_numpy(),
+            zone_fallback=np.log(train["price_per_sqm"]).groupby(train["zone_no"]).median(),
+            k=k,
+        )
+
+    def transform(self, listings: pd.DataFrame) -> pd.DataFrame:
+        keys = project_key(listings["project_name"]).to_numpy()
+        points = listings[["latitude", "longitude"]].to_numpy(dtype=float) * [1.0, LONGITUDE_SCALE]
+        levels = np.full(len(listings), np.nan)
+        for row, (key, point) in enumerate(zip(keys, points)):
+            if np.isnan(point).any():
+                continue
+            distance = np.sum((self.coordinates - point) ** 2, axis=1)
+            distance[self.keys == key] = np.inf
+            levels[row] = self.levels[np.argsort(distance)[: self.k]].mean()
+        # no coordinates: use the zone median, the same information the K-Means tiers start from
+        fallback = listings["zone_no"].map(self.zone_fallback).fillna(float(self.zone_fallback.median())).to_numpy()
+        return pd.DataFrame({"neighbourhood_log_price_per_sqm": np.where(np.isnan(levels), fallback, levels)})
+
+
 def feature_frame(
     listings: pd.DataFrame,
     clustering: ZoneClustering,
     use_location: bool = True,
     project_levels: pd.DataFrame | None = None,
     buildings: pd.DataFrame | None = None,
+    neighbourhood: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     frame = pd.DataFrame({
         "log_area_sqm": np.log(listings["area_sqm"].to_numpy(dtype=float)),
@@ -236,6 +283,8 @@ def feature_frame(
         frame[project_levels.columns] = project_levels.to_numpy()
     if buildings is not None:
         frame[buildings.columns] = buildings.to_numpy()
+    if neighbourhood is not None:
+        frame[neighbourhood.columns] = neighbourhood.to_numpy()
     return frame
 
 

@@ -32,6 +32,7 @@ from sklearn.model_selection import KFold
 from src.features.build import (
     SEED,
     BuildingFeatures,
+    NeighbourhoodPrice,
     ProjectPriceLevels,
     Standardizer,
     ZoneClustering,
@@ -64,6 +65,7 @@ LEARNING_FRACTIONS = [0.1, 0.25, 0.5, 0.75, 1.0]
 FILTER_AREA_TOLERANCE = 0.10
 METRICS = ["euclidean", "manhattan"]
 WEIGHTS = ["uniform", "distance"]
+NEIGHBOUR_COUNTS = [5, 10, 20]
 FFBP_SETTINGS = [{"H": H, "epochs": epochs} for H in (4, 8, 16) for epochs in (3000, 10000)]
 GOLD = "#FFC000"
 WHITE = "#FFFFFF"
@@ -78,6 +80,10 @@ BUILDING_KNN = "KNN Regression + building features"
 MAIN_FFBP = "FFBP neural network (K-Means tiers)"
 BUILDING_FFBP = "FFBP neural network + building features"
 FUZZY_LR = "Linear Regression (Fuzzy C-Means memberships)"
+NEIGHBOUR_LR = "Linear Regression + building + neighbourhood price"
+NEIGHBOUR_FFBP = "FFBP neural network + building + neighbourhood price"
+NEIGHBOUR_GB = "Gradient Boosting + building + neighbourhood price (reference)"
+BLEND = "Blend: Linear Regression + {partner} (building + neighbourhood price)"
 FUZZY_BUILDING_LR = "Linear Regression + building features (Fuzzy C-Means memberships)"
 
 
@@ -210,6 +216,50 @@ class FittedFfbp:
         return np.exp(ffbp.predict(self.scaler.transform(features), self.W0, self.W1) * self.y_std + self.y_mean)
 
 
+def mape_pct(actual: np.ndarray, predicted: np.ndarray) -> float:
+    return float(100 * np.mean(np.abs(predicted - actual) / actual))
+
+
+def choose_neighbour_count(train: pd.DataFrame, clustering: ZoneClustering, buildings: BuildingFeatures) -> tuple[int, list[dict[str, float]]]:
+    """k nearest buildings for the neighbourhood price, chosen by the CV error of Linear Regression.
+    The neighbourhood table is rebuilt inside every fold from that fold's training rows only."""
+    folds = list(KFold(n_splits=CV_FOLDS, shuffle=True, random_state=SEED).split(train))
+    scan = []
+    for k in NEIGHBOUR_COUNTS:
+        errors = []
+        for train_index, valid_index in folds:
+            fold_train, fold_valid = train.iloc[train_index], train.iloc[valid_index]
+            neighbourhood = NeighbourhoodPrice.fit(fold_train, k)
+            x_fit = feature_frame(fold_train, clustering, buildings=buildings.transform(fold_train),
+                                  neighbourhood=neighbourhood.transform(fold_train)).to_numpy()
+            x_valid = feature_frame(fold_valid, clustering, buildings=buildings.transform(fold_valid),
+                                    neighbourhood=neighbourhood.transform(fold_valid)).to_numpy()
+            W = lr.fit(x_fit, np.log(fold_train["price_thb"].to_numpy()))
+            errors.append(mape_pct(fold_valid["price_thb"].to_numpy(), np.exp(lr.predict(x_valid, W))))
+        scan.append({"k": k, "cv_mape_pct": float(np.mean(errors))})
+    return int(min(scan, key=lambda row: row["cv_mape_pct"])["k"]), scan
+
+
+def choose_blend_partner(features: np.ndarray, log_price: np.ndarray, ffbp_setting: dict[str, int]) -> tuple[str, dict[str, float]]:
+    """Average Linear Regression with a second model (geometric mean of the two prices). The
+    partner with the lowest 5-fold CV error on the training data is used."""
+    folds = list(KFold(n_splits=CV_FOLDS, shuffle=True, random_state=SEED).split(features))
+    errors: dict[str, list[float]] = {"Linear Regression alone": [], "FFBP": [], "Gradient Boosting": []}
+    for train_index, valid_index in folds:
+        x_fit, x_valid, y_fit = features[train_index], features[valid_index], log_price[train_index]
+        actual = np.exp(log_price[valid_index])
+        log_lr = lr.predict(x_valid, lr.fit(x_fit, y_fit))
+        W0, W1, scaler, y_mean, y_std = FittedFfbp.train(x_fit, y_fit, ffbp_setting)
+        log_ffbp = ffbp.predict(scaler.transform(x_valid), W0, W1) * y_std + y_mean
+        log_gb = HistGradientBoostingRegressor(random_state=SEED).fit(x_fit, y_fit).predict(x_valid)
+        errors["Linear Regression alone"].append(mape_pct(actual, np.exp(log_lr)))
+        errors["FFBP"].append(mape_pct(actual, np.exp((log_lr + log_ffbp) / 2)))
+        errors["Gradient Boosting"].append(mape_pct(actual, np.exp((log_lr + log_gb) / 2)))
+    scores = {name: float(np.mean(values)) for name, values in errors.items()}
+    partner = min(("FFBP", "Gradient Boosting"), key=scores.get)
+    return partner, scores
+
+
 def best_zone_clustering(train: pd.DataFrame) -> tuple[ZoneClustering, list[dict[str, object]]]:
     candidates = [choose_zone_clustering(train, metric) for metric in METRICS]
     rows = []
@@ -271,6 +321,21 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     xfb_test = pd.concat([xf_test, buildings.transform(test)], axis=1).to_numpy()
     W_fuzzy = lr.fit(xf_train.to_numpy(), y_train_log)
     W_fuzzy_building = lr.fit(xfb_train, y_train_log)
+    neighbour_count, neighbour_scan = choose_neighbour_count(train, clustering, buildings)
+    neighbourhood = NeighbourhoodPrice.fit(train, neighbour_count)
+    xn_train_frame = feature_frame(train, clustering, buildings=buildings.transform(train),
+                                   neighbourhood=neighbourhood.transform(train))
+    xn_train = xn_train_frame.to_numpy()
+    xn_test = feature_frame(test, clustering, buildings=buildings.transform(test),
+                            neighbourhood=neighbourhood.transform(test)).to_numpy()
+    W_neighbour = lr.fit(xn_train, y_train_log)
+    network_neighbour = FittedFfbp.fit(xn_train, y_train_log)
+    boosting_neighbour = HistGradientBoostingRegressor(random_state=SEED).fit(xn_train, y_train_log)
+    partner, blend_scores = choose_blend_partner(xn_train, y_train_log, network_neighbour.setting)
+    log_lr_neighbour = lr.predict(xn_test, W_neighbour)
+    log_partner = (np.log(network_neighbour.predict(xn_test)) if partner == "FFBP"
+                   else boosting_neighbour.predict(xn_test))
+    blend_name = BLEND.format(partner=partner)
     network = FittedFfbp.fit(x_train, y_train_log)
     network_building = FittedFfbp.fit(xb_train, y_train_log)
     boosting = HistGradientBoostingRegressor(random_state=SEED).fit(x_train, y_train_log)
@@ -296,6 +361,10 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         FUZZY_LR: np.exp(lr.predict(xf_test.to_numpy(), W_fuzzy)),
         BUILDING_LR: np.exp(lr.predict(xb_test, W_building)),
         FUZZY_BUILDING_LR: np.exp(lr.predict(xfb_test, W_fuzzy_building)),
+        NEIGHBOUR_LR: np.exp(log_lr_neighbour),
+        NEIGHBOUR_FFBP: network_neighbour.predict(xn_test),
+        NEIGHBOUR_GB: np.exp(boosting_neighbour.predict(xn_test)),
+        blend_name: np.exp((log_lr_neighbour + log_partner) / 2),
         BUILDING_KNN: knn_building.predict(xb_test),
         BUILDING_FFBP: network_building.predict(xb_test),
         "Random Forest + building features (reference)": np.exp(forest_building.predict(xb_test)),
@@ -316,6 +385,10 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
                  for name, model in ((MAIN_FFBP, network), (BUILDING_FFBP, network_building))},
         "buildings": buildings, "building_feature_names": list(xb_train_frame.columns),
         "memberships": memberships,
+        "neighbourhood": neighbourhood, "neighbour_scan": neighbour_scan, "W_neighbour": W_neighbour,
+        "neighbour_feature_names": list(xn_train_frame.columns),
+        "network_neighbour": network_neighbour, "boosting_neighbour": boosting_neighbour,
+        "blend": {"name": blend_name, "partner": partner, "cv_mape_pct": blend_scores, "neighbour_k": neighbour_count},
         "building_project_feature_names": list(xbp_train_frame.columns),
         "residual_std_log_building": float(np.std(y_train_log - lr.predict(xb_train, W_building))),
         "residual_std_log_building_project": float(np.std(y_train_log - lr.predict(xbp_train, W_building_project))),
@@ -462,6 +535,19 @@ def plot_knn_experiment(random_rows: list[dict[str, object]], project_rows: list
     save_figure(figure, "knn_distance_voting.png")
 
 
+def zone_errors(test: pd.DataFrame, predicted: np.ndarray) -> pd.DataFrame:
+    """Error of one model per zone: median signed error shows if a zone is priced too low or too
+    high on average, MAPE shows how far off a single unit usually is."""
+    error = (predicted - test["price_thb"].to_numpy()) / test["price_thb"].to_numpy()
+    frame = pd.DataFrame({"zone_no": test["zone_no"], "zone_slug": test["zone_slug"], "error": error})
+    return frame.groupby(["zone_no", "zone_slug"]).agg(
+        test_units=("error", "size"),
+        median_signed_error_pct=("error", lambda e: float(100 * np.median(e))),
+        mape_pct=("error", lambda e: float(100 * np.mean(np.abs(e)))),
+        within_20pct=("error", lambda e: float(100 * np.mean(np.abs(e) <= 0.2))),
+    ).reset_index()
+
+
 def fuzzy_summary(memberships: pd.DataFrame, clustering: ZoneClustering) -> dict[str, object]:
     columns = [column for column in memberships.columns if column.startswith("member_")]
     strongest = memberships[columns].max(axis=1)
@@ -542,6 +628,10 @@ def main() -> None:
             "knn_project_split": project_run["knn_experiment"],
         },
         "fuzzy_cmeans": fuzzy_summary(main_run["memberships"], clustering),
+        "neighbourhood_random_split": {"k": main_run["blend"]["neighbour_k"], "scan": main_run["neighbour_scan"]},
+        "neighbourhood_project_split": {"k": project_run["blend"]["neighbour_k"], "scan": project_run["neighbour_scan"]},
+        "blend_random_split": main_run["blend"],
+        "blend_project_split": project_run["blend"],
         "ffbp_random_split": main_run["ffbp"],
         "ffbp_project_split": project_run["ffbp"],
         "features": main_run["feature_names"],
@@ -565,6 +655,9 @@ def main() -> None:
     memberships = main_run["memberships"].merge(clustering.zone_table[["zone_no", "tier"]], on="zone_no")
     memberships.sort_values("median_price_per_sqm").to_csv(REPORTS_DIR / "zone_fuzzy_memberships.csv", index=False)
     plot_fuzzy_memberships(memberships)
+    for split_name, run in (("random_split", main_run), ("project_split", project_run)):
+        errors = zone_errors(run["test"], run["predictions"][run["blend"]["name"]])
+        errors.to_csv(REPORTS_DIR / f"zone_errors_{split_name}.csv", index=False)
 
     plot_cluster_scan(clustering)
     plot_zone_tiers(clustering)
