@@ -115,6 +115,8 @@ python3 -m venv .venv
 ```
 แล้วเปิด http://localhost:8501
 
+**ขึ้นเว็บออนไลน์ (Live demo):** ทำตามขั้นตอนใน [docs/deploy.md](docs/deploy.md) ด้วย Streamlit Community Cloud
+
 **ฝึกและประเมินโมเดลใหม่** จากข้อมูลที่ทำความสะอาดแล้ว:
 ```bash
 .venv/bin/python -m src.evaluate.run
