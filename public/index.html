@@ -104,7 +104,7 @@
 
         <div class="field slider-field" id="year-slider-wrapper">
           <div class="slider-header">
-            <label for="year-slider">ปีที่ต้องการดูราคา</label>
+            <label for="year-slider">ปีที่ต้องการดูราคา (เลื่อนแล้วราคาเปลี่ยนทันที)</label>
             <span id="year-value" class="slider-value">2026</span>
           </div>
           <input id="year-slider" name="year" type="range" min="2026" max="2036" step="1" value="2026" />
@@ -121,6 +121,7 @@
     </section>
 
     <section id="results-section" class="results hidden" aria-live="polite">
+      <div id="stale-note" class="alert alert-warn hidden" role="status">ข้อมูลห้องเปลี่ยนแล้ว กด "ประเมินราคา" อีกครั้งเพื่อคำนวณราคาใหม่</div>
       <div id="input-warnings" class="warnings-stack"></div>
 
       <div class="result-grid">
@@ -137,6 +138,22 @@
           <div id="tier-row" class="value-note"></div>
         </div>
       </div>
+
+      <section id="future-section" class="hidden">
+        <div class="panel-deep">
+          <div id="future-label" class="micro-label">คาดการณ์ราคา</div>
+          <div id="future-price" class="price-second">-</div>
+          <div id="future-note" class="value-note"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-legend">
+            <span class="legend-item"><span class="swatch swatch-gold"></span>ราคาคาดการณ์</span>
+            <span class="legend-item"><span class="swatch swatch-white"></span>สูง</span>
+            <span class="legend-item"><span class="swatch swatch-ash"></span>ต่ำ</span>
+          </div>
+          <div id="forecast-chart" class="chart-wrap"></div>
+        </div>
+      </section>
 
       <div class="panel-deep">
         <div class="micro-label">ราคานี้เชื่อได้แค่ไหน</div>
@@ -183,21 +200,6 @@
         </div>
       </section>
 
-      <section id="future-section" class="hidden">
-        <div class="panel-deep">
-          <div id="future-label" class="micro-label">คาดการณ์ราคา</div>
-          <div id="future-price" class="price-second">-</div>
-          <div id="future-note" class="value-note"></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-legend">
-            <span class="legend-item"><span class="swatch swatch-gold"></span>ราคาคาดการณ์</span>
-            <span class="legend-item"><span class="swatch swatch-white"></span>สูง</span>
-            <span class="legend-item"><span class="swatch swatch-ash"></span>ต่ำ</span>
-          </div>
-          <div id="forecast-chart" class="chart-wrap"></div>
-        </div>
-      </section>
     </section>
 
     <section class="table-section quality-section">

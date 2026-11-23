@@ -6,6 +6,8 @@
     projects: [],
     selectedProject: null,
     activeOptionIndex: -1,
+    // last prediction from the server; the year slider re-reads its forecast series without a new request
+    lastPrediction: null,
   };
 
   const els = {
@@ -45,6 +47,7 @@
     modelBreakdownBody: document.getElementById("model-breakdown-body"),
     neighboursBody: document.getElementById("neighbours-body"),
     futureSection: document.getElementById("future-section"),
+    staleNote: document.getElementById("stale-note"),
     futureLabel: document.getElementById("future-label"),
     futurePrice: document.getElementById("future-price"),
     futureNote: document.getElementById("future-note"),
@@ -84,7 +87,12 @@
     });
   }
 
+  function markStale() {
+    if (state.lastPrediction) els.staleNote.classList.remove("hidden");
+  }
+
   function setSelectedProject(name) {
+    if ((name || null) !== state.selectedProject) markStale();
     state.selectedProject = name || null;
     if (state.selectedProject) {
       els.projectSearch.value = state.selectedProject;
@@ -327,10 +335,39 @@
     els.forecastChart.appendChild(svg);
   }
 
+  function baseYear(data) {
+    return data.forecast_series ? data.forecast_series.base_year : 2026;
+  }
+
+  // Price for the year on the slider, from the forecast series the server already sent.
+  function renderFuture(year) {
+    const data = state.lastPrediction;
+    const series = data && data.forecast_series;
+    if (!series || year <= series.base_year) {
+      els.futureSection.classList.add("hidden");
+      return;
+    }
+    const row = series.years.find((item) => item.year === year);
+    if (!row) {
+      els.futureSection.classList.add("hidden");
+      return;
+    }
+    const horizon = year - series.base_year;
+    els.futureLabel.textContent = `คาดการณ์ราคาปี ${year} (แนวโน้มตลาด จากราคาวันนี้ ${formatBaht(data.price)})`;
+    els.futurePrice.textContent = formatBaht(row.price);
+    const errText = row.backtest_mape_pct !== null && row.backtest_mape_pct !== undefined
+      ? ` | ทดสอบย้อนหลังทายล่วงหน้า ${horizon} ปี คลาดเคลื่อนเฉลี่ย ${Number(row.backtest_mape_pct).toFixed(1)}%`
+      : "";
+    els.futureNote.textContent =
+      `ช่วงที่น่าจะเป็น ${formatBaht(row.low)} - ${formatBaht(row.high)} ` +
+      `| แนวโน้ม ${Number(series.annual_growth_pct).toFixed(1)}% ต่อปี จากดัชนีราคาที่อยู่อาศัยกรุงเทพฯ 1991-2026${errText}`;
+    renderForecastChart(series.years.filter((item) => item.year <= year));
+    els.futureSection.classList.remove("hidden");
+  }
+
   function renderPrediction(data) {
     renderWarnings(els.inputWarnings, data.input_warnings);
 
-    els.mainModelLabel.textContent = `${data.main_title} (โมเดลหลัก)`;
     els.mainPrice.textContent = formatBaht(data.price);
     els.mainRange.textContent =
       `ถ้าทายพลาดไม่เกิน 20% ราคาจริงอยู่ระหว่าง ${formatBaht(data.range_low)} - ${formatBaht(data.range_high)} ` +
@@ -402,22 +439,10 @@
       els.neighboursBody.appendChild(tr);
     });
 
-    if (data.future) {
-      const f = data.future;
-      els.futureLabel.textContent = `คาดการณ์ราคาปี ${f.year} (แนวโน้มตลาด)`;
-      els.futurePrice.textContent = formatBaht(f.price);
-      const errText = f.backtest_mape_pct !== null && f.backtest_mape_pct !== undefined
-        ? ` | ทดสอบย้อนหลังทายล่วงหน้า ${f.horizon_years} ปี คลาดเคลื่อนเฉลี่ย ${Number(f.backtest_mape_pct).toFixed(1)}%`
-        : "";
-      els.futureNote.textContent =
-        `ช่วงที่น่าจะเป็น ${formatBaht(f.low)} - ${formatBaht(f.high)} ` +
-        `| แนวโน้ม ${Number(f.annual_growth_pct).toFixed(1)}% ต่อปี จากดัชนีราคาที่อยู่อาศัยกรุงเทพฯ 1991-2026${errText}`;
-      renderForecastChart(f.series);
-      els.futureSection.classList.remove("hidden");
-    } else {
-      els.futureSection.classList.add("hidden");
-    }
-
+    state.lastPrediction = data;
+    els.staleNote.classList.add("hidden");
+    els.mainModelLabel.textContent = `ราคาวันนี้ (ปี ${baseYear(data)}) · ${data.main_title}`;
+    renderFuture(Number(els.yearSlider.value || baseYear(data)));
     els.resultsSection.classList.remove("hidden");
   }
 
@@ -501,6 +526,14 @@
 
   els.yearSlider.addEventListener("input", () => {
     els.yearValue.textContent = els.yearSlider.value;
+    renderFuture(Number(els.yearSlider.value));
+  });
+  // any change to the room itself makes the shown price out of date (the year slider does not)
+  els.form.addEventListener("input", (e) => {
+    if (e.target !== els.yearSlider && e.target !== els.projectSearch) markStale();
+  });
+  els.form.addEventListener("change", (e) => {
+    if (e.target !== els.yearSlider && e.target !== els.projectSearch) markStale();
   });
   els.form.addEventListener("submit", handleSubmit);
   setupCombobox();
