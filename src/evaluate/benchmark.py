@@ -6,7 +6,11 @@ are optimistic. This benchmark:
   other buildings for the known-building case) that is scored only with --final;
 - scores every decision on the rest with grouped 5-fold CV repeated over several seeds;
 - keeps near-duplicate listings (the same unit posted twice) in the same fold, so a unit is never
-  tested against its own twin;
+  tested against its own twin (src/clean/clean.py now removes most of them before this);
+- picks the holdout by a hash of the building name / listing id, so later data cleaning does not
+  reshuffle which rows are locked away;
+- lets listings from pages beyond the per-zone cap into the known-building history only, never
+  into validation or the unseen-building model;
 - compares each web model with a simple baseline it has to beat.
 
 Run: python -m src.evaluate.benchmark          (CV on the development rows)
@@ -18,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import zlib
 import logging
 from dataclasses import dataclass
 from pathlib import Path
@@ -26,12 +31,13 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingRegressor
 
+from src.clean.clean import twin_groups
 from src.evaluate.run import (
     CLEAN_CSV, MAX_PAGES_PER_ZONE, PROJECTS_CSV, REPORTS_DIR, best_zone_clustering,
     choose_extended_settings, make_extended_gb,
 )
 from src.features.build import (
-    BuildingFeatures, ExtendedBuildingFeatures, MultiScaleNeighbourhood, ProjectPriceLevels,
+    BuildingFeatures, ExtendedBuildingFeatures, KnownBuildingPrice, MultiScaleNeighbourhood, ProjectPriceLevels,
     ZoneClustering, attach_buildings, feature_frame, project_key,
 )
 from src.models import linear_regression as lr
@@ -50,36 +56,26 @@ MIN_ZONE_UNITS = 20
 GB_SEED = 42
 
 
+def prepare(rows: pd.DataFrame) -> pd.DataFrame:
+    # a cleared project name (zone name typed as project) is read back from CSV as NaN
+    rows = rows.assign(project_name=rows["project_name"].fillna(""))
+    rows = attach_buildings(rows.reset_index(drop=True), pd.read_csv(PROJECTS_CSV))
+    keys = project_key(rows["project_name"])
+    # a listing without a project name is its own one-unit "building" for grouping
+    rows["building"] = np.where(keys == "", "__listing_" + rows["listing_id"].astype(str), keys)
+    rows["twin_group"] = twin_groups(rows)
+    return rows
+
+
 def load_listings() -> pd.DataFrame:
     listings = pd.read_csv(CLEAN_CSV, dtype={"listing_id": str})
-    listings = listings[listings["page"] <= MAX_PAGES_PER_ZONE].reset_index(drop=True)
-    listings = attach_buildings(listings, pd.read_csv(PROJECTS_CSV))
-    listings["building"] = project_key(listings["project_name"]).to_numpy()
-    listings["twin_group"] = twin_groups(listings)
-    return listings
+    return prepare(listings[listings["page"] <= MAX_PAGES_PER_ZONE])
 
 
-def twin_groups(listings: pd.DataFrame) -> np.ndarray:
-    """Group id per row; near-duplicate listings of one unit share an id."""
-    parent = np.arange(len(listings))
-
-    def root(i: int) -> int:
-        while parent[i] != i:
-            parent[i] = parent[parent[i]]
-            i = parent[i]
-        return i
-
-    keys = project_key(listings["project_name"]).to_numpy()
-    area, floor, price = (listings[c].to_numpy(dtype=float) for c in ("area_sqm", "floor", "price_thb"))
-    for key in pd.unique(keys):
-        rows = np.flatnonzero(keys == key)
-        for a, i in enumerate(rows):
-            for j in rows[a + 1:]:
-                same_floor = floor[i] == floor[j] or (np.isnan(floor[i]) and np.isnan(floor[j]))
-                if (abs(area[i] - area[j]) <= TWIN_AREA_SQM and same_floor
-                        and abs(price[i] - price[j]) <= TWIN_PRICE_SHARE * price[i]):
-                    parent[root(j)] = root(i)
-    return np.array([root(i) for i in range(len(listings))])
+def load_extra_rows() -> pd.DataFrame:
+    """Listings from pages beyond the per-zone cap (zones 1 and 2 were saved to more pages)."""
+    listings = pd.read_csv(CLEAN_CSV, dtype={"listing_id": str})
+    return prepare(listings[listings["page"] > MAX_PAGES_PER_ZONE])
 
 
 def group_folds(groups: np.ndarray, n_folds: int, seed: int) -> np.ndarray:
@@ -90,18 +86,26 @@ def group_folds(groups: np.ndarray, n_folds: int, seed: int) -> np.ndarray:
     return np.array([fold_of[g] for g in groups])
 
 
+def stable_share(values: pd.Series, salt: str) -> np.ndarray:
+    """A number in [0, 1) per value that depends only on the value, so a row stays in or out of
+    the holdout whatever other rows are added or removed."""
+    return np.array([zlib.crc32(f"{salt}:{value}".encode()) % 10_000 / 10_000 for value in values])
+
+
 def split_holdout(listings: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """(development, unseen-building holdout, known-building holdout)."""
-    rng = np.random.default_rng(HOLDOUT_SEED)
-    buildings = pd.unique(listings["building"])
-    held_buildings = set(rng.choice(buildings, int(HOLDOUT_BUILDING_SHARE * len(buildings)), replace=False))
-    in_unseen = listings["building"].isin(held_buildings).to_numpy()
-    rest = listings[~in_unseen]
-    groups = pd.unique(rest["twin_group"])
-    held_groups = set(rng.choice(groups, int(HOLDOUT_KNOWN_UNIT_SHARE * len(groups)), replace=False))
-    in_known = listings["twin_group"].isin(held_groups).to_numpy() & ~in_unseen
+    in_unseen = stable_share(listings["building"], "building") < HOLDOUT_BUILDING_SHARE
+    # a unit and its twins share the smallest listing id of the group
+    group_id = listings.groupby("twin_group")["listing_id"].transform("min")
+    in_known = (stable_share(group_id, "unit") < HOLDOUT_KNOWN_UNIT_SHARE) & ~in_unseen
     return (listings[~in_unseen & ~in_known].reset_index(drop=True),
             listings[in_unseen].reset_index(drop=True), listings[in_known].reset_index(drop=True))
+
+
+def usable_extra(extra: pd.DataFrame, held_out: pd.DataFrame) -> pd.DataFrame:
+    """Extra-page listings that may join a training history: none from a building that is being
+    tested as unseen, and none of the tested units themselves."""
+    return extra[~extra["building"].isin(held_out["building"]) & ~extra["listing_id"].isin(held_out["listing_id"])]
 
 
 @dataclass
@@ -118,10 +122,12 @@ class WebModels:
     gb_extended: HistGradientBoostingRegressor
     w_lr: float
     zone_price_per_sqm: pd.Series
+    known_model: KnownBuildingPrice
+    history_levels: ProjectPriceLevels
 
     @classmethod
-    def fit(cls, train: pd.DataFrame) -> WebModels:
-        groups = train["project_name"]
+    def fit(cls, train: pd.DataFrame, extra_history: pd.DataFrame | None = None) -> WebModels:
+        groups = train["building"]
         clustering, _ = best_zone_clustering(train, groups=groups)
         buildings = BuildingFeatures.fit(train)
         levels = ProjectPriceLevels.fit(train)
@@ -134,7 +140,7 @@ class WebModels:
         neighbourhood = MultiScaleNeighbourhood.fit(train)
         x_extended = feature_frame(train, clustering, buildings=extended_buildings.transform(train),
                                    neighbourhood=neighbourhood.transform(train)).to_numpy()
-        return cls(
+        models = cls(
             clustering=clustering, buildings=buildings, extended_buildings=extended_buildings,
             levels=levels, neighbourhood=neighbourhood,
             W_project=lr.fit(x_project, log_price),
@@ -142,7 +148,19 @@ class WebModels:
             gb_extended=make_extended_gb().fit(x_extended, log_ppsqm),
             w_lr=float(ext_settings["w_lr"]),
             zone_price_per_sqm=train.groupby("zone_no")["price_per_sqm"].median(),
+            known_model=None, history_levels=None,
         )
+        history = train if extra_history is None else pd.concat([train, extra_history], ignore_index=True)
+        models.history_levels = ProjectPriceLevels.fit(history)
+        models.known_model = KnownBuildingPrice.fit(train, models.unseen_log_ppsqm(train), extra_history)
+        return models
+
+    def unseen_log_ppsqm(self, listings: pd.DataFrame) -> np.ndarray:
+        """Log price per sqm from the unseen-building blend, the prior for the known-building model."""
+        x_extended = feature_frame(listings, self.clustering, buildings=self.extended_buildings.transform(listings),
+                                   neighbourhood=self.neighbourhood.transform(listings)).to_numpy()
+        log_lr = lr.predict(x_extended, self.W_extended) - np.log(listings["area_sqm"].to_numpy())
+        return self.w_lr * log_lr + (1.0 - self.w_lr) * self.gb_extended.predict(x_extended)
 
     def predict(self, listings: pd.DataFrame) -> pd.DataFrame:
         buildings = self.buildings.transform(listings)
@@ -154,13 +172,18 @@ class WebModels:
         area = listings["area_sqm"].to_numpy()
         log_lr = lr.predict(x_extended, self.W_extended)
         log_gb = self.gb_extended.predict(x_extended) + np.log(area)
-        known = levels["has_project_history"].to_numpy() > 0
+        blend_log = self.w_lr * log_lr + (1.0 - self.w_lr) * log_gb
+        known_price = self.known_model.predict(listings, blend_log - np.log(area))
+        history = self.history_levels.transform(listings, leave_one_out=False)
+        known = np.isfinite(known_price)
         return pd.DataFrame({
-            "blend": np.exp(self.w_lr * log_lr + (1.0 - self.w_lr) * log_gb),
-            "project_level": np.where(known, np.exp(lr.predict(x_project, self.W_project)), np.nan),
-            # baselines the models must beat
+            "blend": np.exp(blend_log),
+            "project_level": known_price,
+            "project_level_lr": np.where(levels["has_project_history"].to_numpy() > 0,
+                                         np.exp(lr.predict(x_project, self.W_project)), np.nan),
+            # baselines the models must beat; same history as the known-building model
             "zone_median": listings["zone_no"].map(self.zone_price_per_sqm).to_numpy() * area,
-            "same_building_mean": np.where(known, np.exp(levels["project_log_price_per_sqm"].to_numpy()) * area, np.nan),
+            "same_building_mean": np.where(known, np.exp(history["project_log_price_per_sqm"].to_numpy()) * area, np.nan),
             "known_building": known,
         })
 
@@ -171,12 +194,12 @@ def score(actual: np.ndarray, predicted: np.ndarray) -> dict[str, float]:
             "within_20pct": float(100 * np.mean(ape <= 0.2)), "mae_thb": float(np.mean(np.abs(predicted - actual)))}
 
 
-def out_of_fold(dev: pd.DataFrame, group_column: str, seed: int) -> pd.DataFrame:
+def out_of_fold(dev: pd.DataFrame, extra: pd.DataFrame, group_column: str, seed: int) -> pd.DataFrame:
     folds = group_folds(dev[group_column].to_numpy(), CV_FOLDS, seed)
     parts = []
     for fold in range(CV_FOLDS):
         train, valid = dev[folds != fold], dev[folds == fold]
-        models = WebModels.fit(train)
+        models = WebModels.fit(train, usable_extra(extra, valid))
         valid = valid[valid["zone_no"].isin(models.clustering.zone_table["zone_no"])]
         parts.append(pd.concat([valid.reset_index(drop=True), models.predict(valid)], axis=1))
     return pd.concat(parts, ignore_index=True)
@@ -206,20 +229,20 @@ def summarise(per_seed: list[dict[str, object]]) -> dict[str, object]:
     return walk(per_seed)
 
 
-def development_cv(dev: pd.DataFrame) -> dict[str, object]:
+def development_cv(dev: pd.DataFrame, extra: pd.DataFrame) -> dict[str, object]:
     unseen, known = [], []
     for seed in CV_SEEDS:
         LOG.info("seed %s: unseen-building folds", seed)
-        frame = out_of_fold(dev, "building", seed)
+        frame = out_of_fold(dev, extra, "building", seed)
         unseen.append(case_scores(frame, "blend", "zone_median", np.ones(len(frame), dtype=bool)))
         LOG.info("seed %s: known-building folds", seed)
-        frame = out_of_fold(dev, "twin_group", seed)
+        frame = out_of_fold(dev, extra, "twin_group", seed)
         known.append(case_scores(frame, "project_level", "same_building_mean", frame["known_building"].to_numpy()))
     return {"unseen_building": summarise(unseen), "known_building": summarise(known)}
 
 
-def final_holdout(dev: pd.DataFrame, unseen: pd.DataFrame, known: pd.DataFrame) -> dict[str, object]:
-    models = WebModels.fit(dev)
+def final_holdout(dev: pd.DataFrame, extra: pd.DataFrame, unseen: pd.DataFrame, known: pd.DataFrame) -> dict[str, object]:
+    models = WebModels.fit(dev, usable_extra(extra, known))
     zones = models.clustering.zone_table["zone_no"]
     unseen, known = unseen[unseen["zone_no"].isin(zones)], known[known["zone_no"].isin(zones)]
     unseen = pd.concat([unseen.reset_index(drop=True), models.predict(unseen)], axis=1)
@@ -236,15 +259,18 @@ def main() -> None:
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     dev, unseen, known = split_holdout(load_listings())
+    # extra-page rows of a locked unseen-holdout building would make it a known building
+    extra = usable_extra(load_extra_rows(), unseen)
     LOG.info("development %s rows | holdout: unseen buildings %s rows, known buildings %s rows",
              len(dev), len(unseen), len(known))
     report: dict[str, object] = {
-        "rows": {"development": len(dev), "holdout_unseen": len(unseen), "holdout_known": len(known)},
-        "cv": development_cv(dev),
+        "rows": {"development": len(dev), "holdout_unseen": len(unseen), "holdout_known": len(known),
+                 "extra_history": len(extra)},
+        "cv": development_cv(dev, extra),
     }
     (REPORTS_DIR / "benchmark.json").write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
     if args.final:
-        holdout = final_holdout(dev, unseen, known)
+        holdout = final_holdout(dev, extra, unseen, known)
         (REPORTS_DIR / "benchmark_holdout.json").write_text(json.dumps(holdout, indent=2, sort_keys=True), encoding="utf-8")
     for case, values in report["cv"].items():
         model, base = values["model"], values["baseline"]

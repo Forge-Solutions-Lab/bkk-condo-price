@@ -34,6 +34,7 @@ from src.features.build import (
     ExtendedBuildingFeatures,
     MultiScaleNeighbourhood,
     NeighbourhoodPrice,
+    KnownBuildingPrice,
     ProjectPriceLevels,
     Standardizer,
     ZoneClustering,
@@ -819,6 +820,8 @@ def plot_learning_curve(rows: list[dict[str, float]]) -> None:
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     all_listings = pd.read_csv(CLEAN_CSV, dtype={"listing_id": str})
+    # a cleared project name (zone name typed as project) is read back from CSV as NaN
+    all_listings["project_name"] = all_listings["project_name"].fillna("")
     projects = pd.read_csv(PROJECTS_CSV)
     # Same collection rule for every zone: zone 01 was saved to 38 pages, others to 2,
     # so without this cap one zone would dominate the training data.
@@ -892,20 +895,6 @@ def main() -> None:
     for split_name, run in (("random_split", main_run), ("project_split", project_run)):
         errors = zone_errors(run["test"], run["predictions"][EXTENDED_BLEND])
         errors.to_csv(REPORTS_DIR / f"zone_errors_{split_name}.csv", index=False)
-    # the web app uses the project-level model only for a building that has other listings in the
-    # data, so its accuracy is measured on those test units only
-    known = main_run["levels"].transform(main_run["test"], leave_one_out=False)["has_project_history"].to_numpy() > 0
-    web_reliability = {
-        "project_level": reliability(main_run["test"][known], main_run["predictions"][BUILDING_PROJECT_LR][known]),
-        # a building the app cannot price from its own listings is an unseen building: the
-        # by-project split measures the exact extended unseen-building blend deployed in the app
-        "blend_unseen": reliability(project_run["test"], project_run["predictions"][EXTENDED_BLEND]),
-    }
-    for name, table in web_reliability.items():
-        table["bands"].to_csv(REPORTS_DIR / f"price_band_errors_{name}.csv", index=False)
-    metrics["web_reliability"] = {name: {key: value for key, value in table.items() if key not in ("zones", "bands")}
-                                  for name, table in web_reliability.items()}
-    (REPORTS_DIR / "metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True), encoding="utf-8")
 
     plot_cluster_scan(clustering)
     plot_zone_tiers(clustering)
@@ -926,6 +915,32 @@ def main() -> None:
     )
     W_unseen_web = lr.fit(xe_web_frame.to_numpy(), np.log(main_run["train"]["price_thb"].to_numpy()), l2=unseen_l2)
     gb_unseen_web = make_extended_gb().fit(xe_web_frame.to_numpy(), np.log(main_run["train"]["price_per_sqm"].to_numpy()))
+
+    # Known-building model for the web app: the building's own listings (including pages beyond
+    # the per-zone cap, which only move their own building's level), shrunk toward the
+    # unseen-building blend above and adjusted for floor and size within the building.
+    def unseen_log_ppsqm(frame: pd.DataFrame) -> np.ndarray:
+        x = feature_frame(frame, clustering, buildings=main_run["extended_buildings"].transform(frame),
+                          neighbourhood=main_run["multiscale_neighbourhood"].transform(frame))[xe_web_frame.columns].to_numpy()
+        log_lr = lr.predict(x, W_unseen_web) - np.log(frame["area_sqm"].to_numpy())
+        return unseen_w_lr * log_lr + (1.0 - unseen_w_lr) * gb_unseen_web.predict(x)
+
+    extra_history = attach_buildings(all_listings[all_listings["page"] > MAX_PAGES_PER_ZONE].reset_index(drop=True), projects)
+    extra_history = extra_history[~extra_history["listing_id"].isin(main_run["test"]["listing_id"])]
+    known_model = KnownBuildingPrice.fit(main_run["train"], unseen_log_ppsqm(main_run["train"]), extra_history)
+    known_test_price = known_model.predict(main_run["test"], unseen_log_ppsqm(main_run["test"]))
+    known = np.isfinite(known_test_price)
+    web_reliability = {
+        "project_level": reliability(main_run["test"][known], known_test_price[known]),
+        # a building the app cannot price from its own listings is an unseen building: the
+        # by-project split measures the exact extended unseen-building blend deployed in the app
+        "blend_unseen": reliability(project_run["test"], project_run["predictions"][EXTENDED_BLEND]),
+    }
+    for name, table in web_reliability.items():
+        table["bands"].to_csv(REPORTS_DIR / f"price_band_errors_{name}.csv", index=False)
+    metrics["web_reliability"] = {name: {key: value for key, value in table.items() if key not in ("zones", "bands")}
+                                  for name, table in web_reliability.items()}
+    (REPORTS_DIR / "metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True), encoding="utf-8")
 
     # Exclude fake unlinked project names that equal a zone name (no real project page)
     zone_names = set(listings["zone_name_th"].dropna().str.strip())
@@ -977,6 +992,7 @@ def main() -> None:
             # keep legacy single-scale neighbourhood object for reference / backward compatibility
             "neighbourhood": main_run["neighbourhood"],
         },
+        "known_building": known_model,
         "reliability": web_reliability,
         "knn_building": {key: getattr(main_run["knn_building"], key) for key in ("X", "y", "scaler", "k", "metric", "weight")},
         "projects": projects,

@@ -34,6 +34,10 @@ MIN_AREA_SQM = 15.0
 MAX_AREA_SQM = 500.0
 MIN_PRICE_THB = 500_000.0
 IQR_MULTIPLIER = 1.5
+# the same unit posted again by another agent: same building, floor and bedrooms, area within
+# 1 sqm and price within 3% (an exact re-post is already removed by the rule before it)
+TWIN_AREA_SQM = 1.0
+TWIN_PRICE_SHARE = 0.03
 
 
 def parse_price(text: str) -> float:
@@ -92,6 +96,47 @@ def label_listings(raw: pd.DataFrame, zone_labels: pd.DataFrame) -> pd.DataFrame
     return labeled
 
 
+def normalised_name(names: pd.Series) -> pd.Series:
+    return names.fillna("").str.replace(r"[\s\-]+", "", regex=True).str.lower()
+
+
+def twin_groups(listings: pd.DataFrame) -> np.ndarray:
+    """Group id per row; listings of one unit posted more than once share an id. Rows without a
+    project name are never grouped, because there is no building to compare within."""
+    parent = np.arange(len(listings))
+
+    def root(i: int) -> int:
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    keys = normalised_name(listings["project_name"]).to_numpy()
+    area, floor, price, bedrooms = (listings[c].to_numpy(dtype=float) for c in ("area_sqm", "floor", "price_thb", "bedrooms"))
+    for key in pd.unique(keys[keys != ""]):
+        rows = np.flatnonzero(keys == key)
+        for a, i in enumerate(rows):
+            for j in rows[a + 1:]:
+                same_floor = floor[i] == floor[j] or (np.isnan(floor[i]) and np.isnan(floor[j]))
+                if (same_floor and bedrooms[i] == bedrooms[j] and abs(area[i] - area[j]) <= TWIN_AREA_SQM
+                        and abs(price[i] - price[j]) <= TWIN_PRICE_SHARE * price[i]):
+                    parent[root(j)] = root(i)
+    return np.array([root(i) for i in range(len(listings))])
+
+
+def unlink_area_names(frame: pd.DataFrame, log: list[dict[str, object]]) -> pd.DataFrame:
+    """Some agents type the zone name (for example "มีนบุรี-ร่มเกล้า") as the project. Those rows
+    are different buildings, so the name is cleared instead of treating them as one building."""
+    is_area_name = normalised_name(frame["project_name"]) == normalised_name(frame["zone_name_th"])
+    frame = frame.copy()
+    frame["project_is_area_name"] = is_area_name
+    frame.loc[is_area_name, "project_name"] = ""
+    log.append({"rule": "project name is the zone name: name cleared (rows kept)", "changed": int(is_area_name.sum()),
+                "remaining": len(frame)})
+    LOG.info("project name is the zone name: cleared %s", int(is_area_name.sum()))
+    return frame
+
+
 def drop_rows(frame: pd.DataFrame, mask: pd.Series, rule: str, log: list[dict[str, object]]) -> pd.DataFrame:
     log.append({"rule": rule, "removed": int(mask.sum()), "remaining": int((~mask).sum())})
     LOG.info("%s: removed %s, remaining %s", rule, int(mask.sum()), int((~mask).sum()))
@@ -107,6 +152,9 @@ def clean_listings(labeled: pd.DataFrame) -> tuple[pd.DataFrame, list[dict[str, 
         "same unit re-posted (project, area, price, floor, bedrooms)",
         log,
     )
+    frame = unlink_area_names(frame, log)
+    frame = drop_rows(frame, pd.Series(twin_groups(frame), index=frame.index).duplicated(),
+                      "same unit posted again (same building, floor, bedrooms; area +-1 sqm; price +-3%)", log)
     frame = drop_rows(frame, frame["is_down_payment"], "down-payment listing (price is not full price)", log)
     required = ["price_thb", "area_sqm", "bedrooms", "bathrooms", "district_th"]
     frame = drop_rows(frame, frame[required].isna().any(axis=1), "missing required field", log)
@@ -140,7 +188,7 @@ def main() -> None:
     clean, log = clean_listings(labeled)
     columns = [
         "listing_id", "zone_no", "zone_slug", "page", "zone_name_th", "district_th", "label_confidence",
-        "project_name", "room_type", "bedrooms", "bathrooms", "floor", "floor_is_range", "area_sqm",
+        "project_name", "project_is_area_name", "room_type", "bedrooms", "bathrooms", "floor", "floor_is_range", "area_sqm",
         "is_new_unit", "is_sale_and_rent", "price_thb", "price_per_sqm",
     ]
     CLEAN_CSV.parent.mkdir(parents=True, exist_ok=True)

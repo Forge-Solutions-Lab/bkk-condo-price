@@ -13,8 +13,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from src.clean.clean import unlink_area_names
 from src.evaluate import benchmark as bm
-from src.features.build import ProjectPriceLevels
+from src.features.build import KnownBuildingPrice, ProjectPriceLevels, drop_building_outliers
 
 ROOT = Path(__file__).resolve().parents[1]
 BENCHMARK = ROOT / "reports" / "benchmark.json"
@@ -26,9 +27,10 @@ LARGE_UNSEEN_MIN_WITHIN_20 = 62.0
 MAX_ZONE_BIAS = 15.0
 
 
-def listing(project, area, floor, price, zone=1):
+def listing(project, area, floor, price, zone=1, bedrooms=1, listing_id=None, is_new=False):
     return {"project_name": project, "area_sqm": area, "floor": floor, "price_thb": price, "zone_no": zone,
-            "price_per_sqm": price / area}
+            "price_per_sqm": price / area, "bedrooms": bedrooms, "is_new_unit": is_new,
+            "listing_id": listing_id or f"{project}-{area}-{floor}-{price}"}
 
 
 # ---------- leakage ----------
@@ -39,10 +41,12 @@ def test_twins_are_grouped_and_different_units_are_not():
         listing("A", 30.0, 6, 3_000_000),  # other floor: a different unit
         listing("A", 45.0, 5, 3_000_000),  # other size
         listing("B", 30.0, 5, 3_000_000),  # other building
+        listing("A", 30.0, 5, 3_000_000, bedrooms=0),  # other layout
+        listing("", 30.0, 5, 3_000_000), listing("", 30.0, 5, 3_000_000, listing_id="x"),  # no building
     ])
     groups = bm.twin_groups(rows)
     assert groups[0] == groups[1]
-    assert len({groups[0], groups[2], groups[3], groups[4]}) == 4
+    assert len({groups[0], groups[2], groups[3], groups[4], groups[5], groups[6], groups[7]}) == 7
 
 
 def test_group_folds_never_split_a_group():
@@ -71,6 +75,71 @@ def test_project_level_never_sees_its_own_price():
     levels = ProjectPriceLevels.fit(rows).transform(rows, leave_one_out=True)
     # each row only sees the other row's price per sqm
     assert np.allclose(np.exp(levels["project_log_price_per_sqm"]), [200_000, 100_000])
+
+
+def test_holdout_does_not_move_when_rows_are_removed(listings):
+    _, unseen, known = bm.split_holdout(listings)
+    _, unseen_less, known_less = bm.split_holdout(listings.iloc[::2].reset_index(drop=True))
+    assert set(unseen_less["listing_id"]) <= set(unseen["listing_id"])
+    assert set(known_less["listing_id"]) <= set(known["listing_id"]) | set(unseen["listing_id"])
+
+
+def test_extra_pages_never_add_history_to_a_tested_unseen_building(listings):
+    _, unseen, _ = bm.split_holdout(listings)
+    extra = bm.usable_extra(bm.load_extra_rows(), unseen)
+    assert not set(extra["building"]) & set(unseen["building"])
+
+
+def test_area_name_is_not_a_building():
+    rows = pd.DataFrame([listing("มีนบุรี-ร่มเกล้า", 30, 5, 2_000_000), listing("Real Tower", 30, 5, 2_000_000)])
+    rows["zone_name_th"] = "มีนบุรี ร่มเกล้า"
+    cleaned = unlink_area_names(rows, [])
+    assert cleaned["project_name"].tolist() == ["", "Real Tower"]
+    assert ProjectPriceLevels.fit(cleaned).counts.index.tolist() == ["real tower"]
+
+
+# ---------- known-building model ----------
+
+def known_rows():
+    rows = [listing("A", 30, f, 3_000_000 + 10_000 * f, listing_id=f"a{f}") for f in range(1, 9)]
+    rows += [listing("B", 30, 5, 6_000_000, listing_id="b1")]
+    rows += [listing("A", 30, 9, 9_000_000, listing_id="typo")]  # 3x the others: a typing error
+    return pd.DataFrame(rows)
+
+
+def test_a_typing_error_does_not_enter_the_building_history():
+    history = drop_building_outliers(known_rows())
+    assert "typo" not in set(history["listing_id"])
+    assert len(history) == 9
+
+
+def test_known_model_never_sees_its_own_listing():
+    rows = known_rows()
+    model = KnownBuildingPrice.fit(rows, np.log(rows["price_per_sqm"].to_numpy()))
+    stats = model.building_stats(rows, leave_one_out=True)
+    # B has one listing: without its own row it has no history
+    assert stats.loc[rows["listing_id"] == "b1", "n"].item() == 0
+    assert stats.loc[rows["listing_id"] == "a1", "n"].item() == 7
+
+
+def test_few_listings_lean_on_the_prior_more():
+    rows = known_rows()
+    model = KnownBuildingPrice.fit(rows, np.full(len(rows), np.log(100_000)))
+    model.W_adjust = np.zeros_like(model.W_adjust)  # look at the shrunk level only
+    prior = np.log(50_000.0)
+    unit = pd.DataFrame([listing("A", 30, 5, 1, listing_id="new1"), listing("B", 30, 5, 1, listing_id="new2")])
+    price_per_sqm = model.predict(unit, np.full(2, prior)) / 30
+    a_level, b_level = 101_500, 200_000
+    # A (8 listings) stays near its own level; B (1 listing) moves a third of the way to the prior
+    assert abs(price_per_sqm[0] - a_level) / a_level < 0.1
+    assert price_per_sqm[1] < b_level * 0.85
+
+
+def test_unknown_building_gets_no_known_price():
+    rows = known_rows()
+    model = KnownBuildingPrice.fit(rows, np.log(rows["price_per_sqm"].to_numpy()))
+    unit = pd.DataFrame([listing("C", 30, 5, 1), listing("", 30, 5, 1)])
+    assert np.isnan(model.predict(unit, np.zeros(2))).all()
 
 
 def test_unseen_building_has_no_project_history(listings):
