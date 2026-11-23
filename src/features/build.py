@@ -338,6 +338,52 @@ class KnownBuildingPrice:
         return np.where(has, np.exp(log_ppsqm) * listings["area_sqm"].to_numpy(), np.nan)
 
 
+# a building completed in this year or later counts as a recent launch
+RECENT_BUILDING_YEAR = 2013
+RECENT_NEIGHBOURS = 5
+
+
+@dataclass
+class RecentNeighbourLevel:
+    """Inverse-distance level of log price per sqm of the nearest other buildings completed since
+    RECENT_BUILDING_YEAR. A new project is priced against recent launches nearby more than against
+    old stock, which the age-adjusted all-building level understates in mixed old/new areas."""
+
+    keys: np.ndarray
+    coordinates: np.ndarray
+    levels: np.ndarray
+    k: int = RECENT_NEIGHBOURS
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame) -> RecentNeighbourLevel:
+        located = clean_coordinates(train).dropna(subset=["latitude", "longitude"])
+        located = located[_column(located, "complete_year") >= RECENT_BUILDING_YEAR]
+        grouped = located.groupby(project_key(located["project_name"]))
+        buildings = grouped.agg(latitude=("latitude", "first"), longitude=("longitude", "first"))
+        buildings["level"] = grouped["price_per_sqm"].apply(lambda prices: float(np.median(np.log(prices))))
+        return cls(keys=buildings.index.to_numpy(),
+                   coordinates=buildings[["latitude", "longitude"]].to_numpy() * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE],
+                   levels=buildings["level"].to_numpy())
+
+    def transform(self, listings: pd.DataFrame) -> np.ndarray:
+        """NaN where the unit has no coordinates or no recent building is known."""
+        cleaned = clean_coordinates(listings)
+        keys = project_key(cleaned["project_name"]).to_numpy()
+        points = cleaned[["latitude", "longitude"]].to_numpy(dtype=float) * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE]
+        out = np.full(len(cleaned), np.nan)
+        for row, (key, point) in enumerate(zip(keys, points)):
+            if np.isnan(point).any() or len(self.levels) == 0:
+                continue
+            distance = np.sqrt(np.sum((self.coordinates - point) ** 2, axis=1))
+            distance[self.keys == key] = np.inf
+            nearest = np.argsort(distance)[: self.k]
+            nearest = nearest[np.isfinite(distance[nearest])]
+            if len(nearest):
+                weight = 1.0 / (distance[nearest] + IDW_EPS_KM)
+                out[row] = float(np.sum(weight * self.levels[nearest]) / np.sum(weight))
+        return out
+
+
 # words that start many project names without naming the developer's series
 GENERIC_NAME_WORDS = frozenset({"เดอะ", "เดอ", "เลอ", "ดิ", "the", "บ้าน", "คอนโด"})
 # how many buildings' worth of weight the "no premium" prior gets (chosen by grouped CV from 1 and 3)
