@@ -34,6 +34,7 @@
     submitBtn: document.getElementById("submit-btn"),
     resetBtn: document.getElementById("reset-btn"),
     resultsSection: document.getElementById("results-section"),
+    copySummaryBtn: document.getElementById("copy-summary-btn"),
     inputWarnings: document.getElementById("input-warnings"),
     mainModelLabel: document.getElementById("main-model-label"),
     mainPrice: document.getElementById("main-price"),
@@ -578,6 +579,43 @@
       markStale();
     }
   }
+
+  function buildSummaryText() {
+    const data = state.lastPrediction;
+    if (!data) return "";
+    const zoneLabel = els.zoneSelect.options[els.zoneSelect.selectedIndex]?.textContent || "";
+    const bedLabel = els.bedroomsSelect.options[els.bedroomsSelect.selectedIndex]?.textContent || "";
+    const projPart = state.selectedProject ? `โครงการ: ${state.selectedProject}` : `โซน: ${zoneLabel}`;
+    const lines = [
+      "BKK Condo Price — สรุปผลการประเมิน",
+      `${projPart} | ${els.areaInput.value} ตร.ม. | ${bedLabel} | ${els.bathroomsSelect.value} ห้องน้ำ | ชั้น ${els.floorInput.value}`,
+      `ราคาวันนี้ (ปี ${baseYear(data)}): ${formatBaht(data.price)} (${formatNumber(Math.round(data.price_per_sqm), 0)} บาท/ตร.ม.)`,
+      `ช่วง ±20%: ${formatBaht(data.range_low)} - ${formatBaht(data.range_high)}`,
+      `KNN เปรียบเทียบ: ${formatBaht(data.knn)} | ระดับทำเล ${data.tier}/${data.n_clusters}`,
+    ];
+    const sliderYear = Number(els.yearSlider.value || baseYear(data));
+    if (data.forecast_series && sliderYear > data.forecast_series.base_year) {
+      const row = data.forecast_series.years.find((item) => item.year === sliderYear);
+      if (row) {
+        lines.push(`คาดการณ์ปี ${sliderYear}: ${formatBaht(row.price)} (${formatBaht(row.low)} - ${formatBaht(row.high)})`);
+      }
+    }
+    return lines.join("\n");
+  }
+
+  els.copySummaryBtn.addEventListener("click", async () => {
+    const text = buildSummaryText();
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      els.copySummaryBtn.textContent = "คัดลอกแล้ว";
+      setTimeout(() => {
+        els.copySummaryBtn.textContent = "คัดลอกสรุปราคา";
+      }, 1800);
+    } catch {
+      showGlobalError("เบราว์เซอร์ไม่อนุญาตให้คัดลอกอัตโนมัติ");
+    }
+  });
 
   els.resetBtn.addEventListener("click", resetToDefaults);
 

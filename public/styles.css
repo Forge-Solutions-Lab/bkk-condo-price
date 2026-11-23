@@ -362,6 +362,14 @@ input[type="range"] {
   margin-bottom: 36px;
 }
 
+.results-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
 .result-grid {
   display: grid;
   grid-template-columns: 3fr 2fr;
