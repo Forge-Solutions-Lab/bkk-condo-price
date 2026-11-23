@@ -42,7 +42,10 @@ IDW_EPS_KM = 0.25
 # kilometre apart (Rat Burana vs Rama 3, Charoen Nakhon vs Silom), so in the neighbourhood price
 # a building on the other bank counts as if it were this much farther away.
 WEST_BANK_ZONES = frozenset({32, 33, 34, 35, 36, 37, 38})
-RIVER_CROSSING_KM = 5.0
+# Extra distance for a neighbour on the other bank of the Chao Phraya. Off: the bank is taken from
+# the zone, and zones such as 29 (Rama 8) have buildings on both banks, so the penalty pushed real
+# neighbours away. Grouped CV (3 seeds) with 0 km: zone bias 17.5% vs 27.9% at 5 km, same MAPE.
+RIVER_CROSSING_KM = 0.0
 # Before averaging, each neighbour's price level is moved to the unit's building: newer, taller
 # and larger-unit buildings sell for more per sqm within the same area. Slopes in log price per
 # sqm, close to a within-zone building regression on the development rows and chosen by grouped
