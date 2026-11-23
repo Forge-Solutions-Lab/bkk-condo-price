@@ -302,10 +302,12 @@ def make_extended_gb() -> HistGradientBoostingRegressor:
 def choose_neighbour_count(
     train: pd.DataFrame,
     clustering: ZoneClustering,
+    buildings: BuildingFeatures | None = None,
     groups: pd.Series | np.ndarray | None = None,
 ) -> tuple[int, list[dict[str, float]]]:
     """k nearest buildings for the neighbourhood price, chosen by the CV error of Linear Regression.
     Both BuildingFeatures and NeighbourhoodPrice are rebuilt inside every fold from training rows only."""
+    _ = buildings  # kept optional for backward compatibility; refit per fold below to avoid leakage
     folds = cv_splits(train, groups=groups)
     scan = []
     for k in NEIGHBOUR_COUNTS:

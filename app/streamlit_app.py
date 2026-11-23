@@ -55,16 +55,15 @@ def zone_label(row: pd.Series) -> str:
 def build_input(
     bundle: dict, zone_no: int, area: float, bedrooms: int, bathrooms: int, floor: int, is_new: bool,
     project: str | None, complete_year: int, rail_km: float,
-) -> tuple[pd.DataFrame, tuple[int, int] | None]:
-    zone_mismatch: tuple[int, int] | None = None
-    effective_zone = zone_no
+) -> pd.DataFrame:
+    effective_zone = int(zone_no)
     if project:
         expected_zone = bundle.get("project_zones", {}).get(project_key(pd.Series([project])).iloc[0])
-        if expected_zone is not None and int(expected_zone) != int(zone_no):
-            zone_mismatch = (int(zone_no), int(expected_zone))
+        if expected_zone is not None and int(expected_zone) != effective_zone:
             effective_zone = int(expected_zone)
     listing = pd.DataFrame([{
-        "zone_no": effective_zone, "area_sqm": area, "bedrooms": bedrooms, "bathrooms": bathrooms,
+        "zone_no": effective_zone, "requested_zone_no": int(zone_no),
+        "area_sqm": area, "bedrooms": bedrooms, "bathrooms": bathrooms,
         "floor": floor, "is_new_unit": is_new, "project_name": project or "",
     }])
     listing = attach_buildings(listing, bundle["projects"])
@@ -76,18 +75,17 @@ def build_input(
         listing["manual_building_input"] = True
     else:
         listing["manual_building_input"] = False
-    return listing, zone_mismatch
+    return listing
 
 
 def input_warnings(
     listing: pd.DataFrame,
     zone_labels: dict[int, str] | None = None,
-    zone_mismatch: tuple[int, int] | None = None,
 ) -> list[str]:
     row = listing.iloc[0]
     warnings = []
-    if zone_mismatch is not None:
-        chosen, actual = zone_mismatch
+    if "requested_zone_no" in listing.columns and int(row["requested_zone_no"]) != int(row["zone_no"]):
+        chosen, actual = int(row["requested_zone_no"]), int(row["zone_no"])
         chosen_name = zone_labels.get(chosen, f"โซน {chosen}") if zone_labels else f"โซน {chosen}"
         actual_name = zone_labels.get(actual, f"โซน {actual}") if zone_labels else f"โซน {actual}"
         warnings.append(f"โครงการที่เลือกอยู่ใน '{actual_name}' (ไม่ใช่ '{chosen_name}') ระบบจึงปรับใช้โซนจริงของโครงการให้อัตโนมัติ")
@@ -378,9 +376,9 @@ def main() -> None:
         submitted = st.form_submit_button("ประเมินราคา")
     if submitted:
         project = None if project_choice == NO_PROJECT else project_choice
-        listing, zone_mismatch = build_input(bundle, zone_no, area, bedrooms, bathrooms, floor, is_new, project,
-                                             complete_year, rail_km)
-        for warning in input_warnings(listing, zone_labels=labels, zone_mismatch=zone_mismatch):
+        listing = build_input(bundle, zone_no, area, bedrooms, bathrooms, floor, is_new, project,
+                              complete_year, rail_km)
+        for warning in input_warnings(listing, zone_labels=labels):
             st.warning(warning)
         result = predict(bundle, listing)
         render_result(result, area, bundle)

@@ -27,11 +27,12 @@ import pandas as pd
 from sklearn.ensemble import HistGradientBoostingRegressor
 
 from src.evaluate.run import (
-    CLEAN_CSV, MAX_PAGES_PER_ZONE, PROJECTS_CSV, REPORTS_DIR, best_zone_clustering, choose_neighbour_count,
+    CLEAN_CSV, MAX_PAGES_PER_ZONE, PROJECTS_CSV, REPORTS_DIR, best_zone_clustering,
+    choose_extended_settings, make_extended_gb,
 )
 from src.features.build import (
-    BuildingFeatures, NeighbourhoodPrice, ProjectPriceLevels, ZoneClustering, attach_buildings, feature_frame,
-    project_key,
+    BuildingFeatures, ExtendedBuildingFeatures, MultiScaleNeighbourhood, ProjectPriceLevels,
+    ZoneClustering, attach_buildings, feature_frame, project_key,
 )
 from src.models import linear_regression as lr
 
@@ -109,43 +110,53 @@ class WebModels:
 
     clustering: ZoneClustering
     buildings: BuildingFeatures
+    extended_buildings: ExtendedBuildingFeatures
     levels: ProjectPriceLevels
-    neighbourhood: NeighbourhoodPrice
+    neighbourhood: MultiScaleNeighbourhood
     W_project: np.ndarray
-    W_neighbour: np.ndarray
-    boosting: HistGradientBoostingRegressor
+    W_extended: np.ndarray
+    gb_extended: HistGradientBoostingRegressor
+    w_lr: float
     zone_price_per_sqm: pd.Series
 
     @classmethod
     def fit(cls, train: pd.DataFrame) -> WebModels:
-        clustering, _ = best_zone_clustering(train)
+        groups = train["project_name"]
+        clustering, _ = best_zone_clustering(train, groups=groups)
         buildings = BuildingFeatures.fit(train)
         levels = ProjectPriceLevels.fit(train)
         log_price = np.log(train["price_thb"].to_numpy())
+        log_ppsqm = np.log(train["price_per_sqm"].to_numpy())
         x_project = feature_frame(train, clustering, project_levels=levels.transform(train, leave_one_out=True),
                                   buildings=buildings.transform(train)).to_numpy()
-        k, _ = choose_neighbour_count(train, clustering, buildings)
-        neighbourhood = NeighbourhoodPrice.fit(train, k)
-        x_neighbour = feature_frame(train, clustering, buildings=buildings.transform(train),
-                                    neighbourhood=neighbourhood.transform(train)).to_numpy()
+        ext_settings = choose_extended_settings(train, clustering, groups=groups)
+        extended_buildings = ExtendedBuildingFeatures.fit(train)
+        neighbourhood = MultiScaleNeighbourhood.fit(train)
+        x_extended = feature_frame(train, clustering, buildings=extended_buildings.transform(train),
+                                   neighbourhood=neighbourhood.transform(train)).to_numpy()
         return cls(
-            clustering=clustering, buildings=buildings, levels=levels, neighbourhood=neighbourhood,
-            W_project=lr.fit(x_project, log_price), W_neighbour=lr.fit(x_neighbour, log_price),
-            boosting=HistGradientBoostingRegressor(random_state=GB_SEED).fit(x_neighbour, log_price),
+            clustering=clustering, buildings=buildings, extended_buildings=extended_buildings,
+            levels=levels, neighbourhood=neighbourhood,
+            W_project=lr.fit(x_project, log_price),
+            W_extended=lr.fit(x_extended, log_price, l2=ext_settings["l2"]),
+            gb_extended=make_extended_gb().fit(x_extended, log_ppsqm),
+            w_lr=float(ext_settings["w_lr"]),
             zone_price_per_sqm=train.groupby("zone_no")["price_per_sqm"].median(),
         )
 
     def predict(self, listings: pd.DataFrame) -> pd.DataFrame:
         buildings = self.buildings.transform(listings)
+        extended_buildings = self.extended_buildings.transform(listings)
         levels = self.levels.transform(listings, leave_one_out=False)
         x_project = feature_frame(listings, self.clustering, project_levels=levels, buildings=buildings).to_numpy()
-        x_neighbour = feature_frame(listings, self.clustering, buildings=buildings,
-                                    neighbourhood=self.neighbourhood.transform(listings)).to_numpy()
-        log_lr = lr.predict(x_neighbour, self.W_neighbour)
-        known = levels["has_project_history"].to_numpy() > 0
+        x_extended = feature_frame(listings, self.clustering, buildings=extended_buildings,
+                                   neighbourhood=self.neighbourhood.transform(listings)).to_numpy()
         area = listings["area_sqm"].to_numpy()
+        log_lr = lr.predict(x_extended, self.W_extended)
+        log_gb = self.gb_extended.predict(x_extended) + np.log(area)
+        known = levels["has_project_history"].to_numpy() > 0
         return pd.DataFrame({
-            "blend": np.exp((log_lr + self.boosting.predict(x_neighbour)) / 2),
+            "blend": np.exp(self.w_lr * log_lr + (1.0 - self.w_lr) * log_gb),
             "project_level": np.where(known, np.exp(lr.predict(x_project, self.W_project)), np.nan),
             # baselines the models must beat
             "zone_median": listings["zone_no"].map(self.zone_price_per_sqm).to_numpy() * area,

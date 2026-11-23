@@ -12,11 +12,11 @@ from app.streamlit_app import build_input, input_warnings, load_bundle, predict,
 def test_app_predict_manual_input_and_leasehold_advisory() -> None:
     bundle = load_bundle()
     # Zone 5 = Witthayu / Ploenchit / Langsuan (leasehold advisory zone)
-    listing, mismatch = build_input(
+    listing = build_input(
         bundle, zone_no=5, area=55.0, bedrooms=1, bathrooms=1, floor=15,
         is_new=False, project=None, complete_year=2018, rail_km=0.4,
     )
-    assert mismatch is None
+    assert int(listing["requested_zone_no"].iloc[0]) == 5
     assert bool(listing["manual_building_input"].iloc[0]) is True
     # Verify mall_km falls back to training median rather than the 3.0 km cap
     bf = bundle["building_features"].transform(listing)
@@ -41,13 +41,13 @@ def test_app_auto_syncs_mismatched_zone_for_known_project() -> None:
         if bundle["project_zones"].get(name.strip().lower(), 25) != 25
     )
     expected_zone = bundle["project_zones"][sample_project.strip().lower()]
-    listing, mismatch = build_input(
+    listing = build_input(
         bundle, zone_no=25, area=35.0, bedrooms=1, bathrooms=1, floor=10,
         is_new=False, project=sample_project, complete_year=2016, rail_km=0.5,
     )
-    assert mismatch == (25, expected_zone)
+    assert int(listing["requested_zone_no"].iloc[0]) == 25
     assert int(listing["zone_no"].iloc[0]) == expected_zone
-    warnings = input_warnings(listing, zone_mismatch=mismatch)
+    warnings = input_warnings(listing)
     assert any("ปรับใช้โซนจริง" in w for w in warnings)
 
     result = predict(bundle, listing)
