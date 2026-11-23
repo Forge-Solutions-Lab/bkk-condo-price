@@ -17,6 +17,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from app.inference import (  # noqa: E402
     BUNDLE_PATH,
+    FORECAST_PATH,
     load_bundle_cached,
     load_forecast_cached,
     serialize_metadata,
@@ -61,9 +62,14 @@ def _require_bundle() -> dict[str, Any]:
 
 @app.get("/api/health")
 def health() -> dict[str, Any]:
+    bundle_exists = BUNDLE_PATH.exists()
+    bundle_size_mb = round(BUNDLE_PATH.stat().st_size / (1024 * 1024), 2) if bundle_exists else None
     return {
         "status": "ok",
-        "bundle_exists": BUNDLE_PATH.exists(),
+        "bundle_exists": bundle_exists,
+        "bundle_size_mb": bundle_size_mb,
+        "forecast_exists": FORECAST_PATH.exists(),
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
     }
 
 
