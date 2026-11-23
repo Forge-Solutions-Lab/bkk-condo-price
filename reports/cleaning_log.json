@@ -15,28 +15,38 @@
     "remaining": 5149
   },
   {
+    "rule": "project name is the zone name: name cleared (rows kept)",
+    "changed": 81,
+    "remaining": 5149
+  },
+  {
+    "rule": "same unit posted again (same building, floor, bedrooms; area +-1 sqm; price +-3%)",
+    "removed": 266,
+    "remaining": 4883
+  },
+  {
     "rule": "down-payment listing (price is not full price)",
-    "removed": 93,
-    "remaining": 5056
+    "removed": 85,
+    "remaining": 4798
   },
   {
     "rule": "missing required field",
     "removed": 15,
-    "remaining": 5041
+    "remaining": 4783
   },
   {
     "rule": "area outside 15-500 sqm",
-    "removed": 14,
-    "remaining": 5027
+    "removed": 13,
+    "remaining": 4770
   },
   {
     "rule": "price below 500,000 THB",
     "removed": 5,
-    "remaining": 5022
+    "remaining": 4765
   },
   {
     "rule": "price per sqm outlier (1.5 IQR on log scale, per zone)",
-    "removed": 104,
-    "remaining": 4918
+    "removed": 97,
+    "remaining": 4668
   }
 ]
