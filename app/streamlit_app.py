@@ -159,12 +159,10 @@ def predict(bundle: dict, listing: pd.DataFrame) -> dict[str, object]:
     log_knn = knn(knn_model["X"], knn_model["y"], z, knn_model["k"], knn_model["metric"], knn_model["weight"])
     vote = "ถ่วงน้ำหนักตามระยะ" if knn_model["weight"] == "distance" else "โหวตเท่ากัน"
     blended = blend_price(bundle, listing, clustering, buildings)
-    levels = bundle["project_levels"].transform(listing, leave_one_out=False)
-    project_price = None
-    if levels["has_project_history"].iloc[0] > 0:
-        project_features = feature_frame(listing, clustering, project_levels=levels, buildings=buildings)
-        project_features = project_features[bundle["building_project_feature_names"]].to_numpy()
-        project_price = float(np.exp(lr.predict(project_features, bundle["W_building_project"])[0]))
+    # building's own listings, shrunk toward the unseen-building blend (src/features/build.py)
+    area = float(listing["area_sqm"].iloc[0])
+    known_price = bundle["known_building"].predict(listing, np.array([np.log(blended["blend"] / area)]))[0]
+    project_price = float(known_price) if np.isfinite(known_price) else None
     # a building with other listings in the data is priced from them (most accurate on known
     # buildings); any other building is an unseen building, where the blend is most accurate
     if project_price is not None:
@@ -199,8 +197,11 @@ def render_header() -> None:
 
 def main_model_label(result: dict[str, object], bundle: dict) -> tuple[str, str]:
     if result["main_model"] == "project_level":
-        return ("Linear Regression + ราคาห้องอื่นในโครงการเดียวกัน",
-                "ตึกนี้มีประกาศห้องอื่นในข้อมูล ระบบจึงใช้ราคาต่อตร.ม. ของห้องเหล่านั้นเป็นหลัก")
+        known = bundle["known_building"]
+        count = int(known.building_stats(result["building"].to_frame().T, leave_one_out=False)["n"].iloc[0])
+        return ("ราคาห้องอื่นในโครงการเดียวกัน + Bayesian shrinkage",
+                f"ตึกนี้มีประกาศห้องอื่นในข้อมูล {count} ห้อง ระบบใช้ราคาต่อตร.ม. ของห้องเหล่านั้นเป็นหลัก "
+                "(ตึกที่มีประกาศน้อยจะถูกดึงเข้าหาราคาประเมินจากย่านมากขึ้น) แล้วปรับตามชั้นและขนาดห้อง")
     blend = bundle["blend"]
     if blend.get("mode") == "extended_multiscale":
         w_pct = int(round(100 * blend["w_lr"]))
@@ -292,7 +293,7 @@ def render_result(result: dict[str, object], area: float, bundle: dict) -> None:
         {"โมเดล": "เฉลี่ย 2 ตัวบน", "ราคา (บาท)": blended["blend"]},
     ]
     if result["project_price"] is not None:
-        rows.append({"โมเดล": "Linear Regression + ราคาห้องอื่นในโครงการ", "ราคา (บาท)": result["project_price"]})
+        rows.append({"โมเดล": "ราคาห้องอื่นในโครงการ + shrinkage", "ราคา (บาท)": result["project_price"]})
     rows.append({"โมเดล": "KNN Regression + ข้อมูลตึก", "ราคา (บาท)": result["knn"]})
     st.markdown("### ราคาจากแต่ละโมเดล")
     st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True,

@@ -1,9 +1,9 @@
 {
   "blend_project_split": {
     "cv_mape_pct": {
-      "FFBP": 20.200511284815406,
-      "Gradient Boosting": 19.35334807226281,
-      "Linear Regression alone": 20.502976060922375
+      "FFBP": 20.68461581552299,
+      "Gradient Boosting": 20.108269763801395,
+      "Linear Regression alone": 21.16677022080632
     },
     "name": "Blend: Linear Regression + Gradient Boosting (building + neighbourhood price)",
     "neighbour_k": 20,
@@ -11,9 +11,9 @@
   },
   "blend_random_split": {
     "cv_mape_pct": {
-      "FFBP": 17.431242495416143,
-      "Gradient Boosting": 16.059905439054923,
-      "Linear Regression alone": 19.9421952779786
+      "FFBP": 18.213859901011865,
+      "Gradient Boosting": 16.520490490802967,
+      "Linear Regression alone": 20.45423662996783
     },
     "name": "Blend: Linear Regression + Gradient Boosting (building + neighbourhood price)",
     "neighbour_k": 20,
@@ -42,212 +42,212 @@
   ],
   "building_linear_regression": {
     "bathrooms": {
-      "coef_log": 0.04071214124059162,
-      "effect_pct": 4.155224245206979
+      "coef_log": 0.06440017318194143,
+      "effect_pct": 6.651910572160791
     },
     "bedrooms": {
-      "coef_log": 0.009852054871795522,
-      "effect_pct": 0.9900746136028982
+      "coef_log": 0.012209610283856715,
+      "effect_pct": 1.2284451860826495
     },
     "building_age": {
-      "coef_log": -0.02831560228818075,
-      "effect_pct": -2.7918472770133596
+      "coef_log": -0.028784662872648515,
+      "effect_pct": -2.8374330978529483
     },
     "facility_count": {
-      "coef_log": 0.008164689125581192,
-      "effect_pct": 0.8198111097922567
+      "coef_log": 0.015883420227902068,
+      "effect_pct": 1.6010232260282642
     },
     "floor": {
-      "coef_log": 0.00454196012712486,
-      "effect_pct": 0.45522904620913796
+      "coef_log": 0.004331690343238199,
+      "effect_pct": 0.4341085674843814
     },
     "has_building_info": {
-      "coef_log": 0.42651846003060945,
-      "effect_pct": 53.1914805876005
+      "coef_log": 0.4126920044952528,
+      "effect_pct": 51.08796101365498
     },
     "is_new_unit": {
-      "coef_log": 0.03705222508113981,
-      "effect_pct": 3.7747215855525873
+      "coef_log": 0.0626233910806383,
+      "effect_pct": 6.4625816143467185
     },
     "log_area_sqm": {
-      "coef_log": 1.1188643153032987,
-      "effect_pct": 206.1375471022103
+      "coef_log": 1.0755358271487507,
+      "effect_pct": 193.15632909667957
     },
     "log_total_unit": {
-      "coef_log": -0.004752019972234961,
-      "effect_pct": -0.47407469888763876
+      "coef_log": -0.002838857626545735,
+      "effect_pct": -0.2834831880641375
     },
     "mall_km": {
-      "coef_log": -0.008671205377023478,
-      "effect_pct": -0.8633718904893617
+      "coef_log": -0.024541920641197472,
+      "effect_pct": -2.4243216288998837
     },
     "rail_km": {
-      "coef_log": -0.06905457219465384,
-      "effect_pct": -6.672425221730272
+      "coef_log": -0.06688053782448689,
+      "effect_pct": -6.46930715364924
     },
     "tier_2": {
-      "coef_log": 0.009487010646936352,
-      "effect_pct": 0.9532154981100494
+      "coef_log": -0.050772730768980076,
+      "effect_pct": -4.950533582144134
     },
     "tier_3": {
-      "coef_log": 0.20970616857213456,
-      "effect_pct": 23.331561982161887
+      "coef_log": 0.10201309535539323,
+      "effect_pct": 10.739797340300438
     },
     "tier_4": {
-      "coef_log": 0.3413411766793075,
-      "effect_pct": 40.68331376509613
+      "coef_log": 0.45986362387554963,
+      "effect_pct": 58.38579698535542
     },
     "tier_5": {
-      "coef_log": 0.5536568853976728,
-      "effect_pct": 73.96029288910111
+      "coef_log": 0.5962609368045103,
+      "effect_pct": 81.53185043371842
     },
     "tier_6": {
-      "coef_log": 0.468220751897588,
-      "effect_pct": 59.714993765370906
+      "coef_log": 0.5496109938322453,
+      "effect_pct": 73.25789028791105
     },
     "tier_7": {
-      "coef_log": 0.7257822853303624,
-      "effect_pct": 106.63469407590034
+      "coef_log": 0.44638670524824997,
+      "effect_pct": 56.26556368442752
     },
     "tier_8": {
-      "coef_log": 1.060893555258681,
-      "effect_pct": 188.89512738856834
+      "coef_log": 1.1084096691515455,
+      "effect_pct": 202.95365958195347
     },
     "total_floor": {
-      "coef_log": 0.004524010008427046,
-      "effect_pct": 0.4534258791075274
+      "coef_log": 0.00400460629849294,
+      "effect_pct": 0.4012635448579882
     }
   },
   "distance_experiment": {
     "kmeans_project_split": [
       {
-        "cv_mape_pct": 30.076456626831362,
+        "cv_mape_pct": 30.13970959023278,
         "k": 8,
         "metric": "euclidean",
-        "silhouette": 0.3939196729249894
+        "silhouette": 0.3621944818137428
       },
       {
-        "cv_mape_pct": 30.281523298001,
-        "k": 8,
+        "cv_mape_pct": 31.28163394709795,
+        "k": 7,
         "metric": "manhattan",
-        "silhouette": 0.3732939195215231
+        "silhouette": 0.37029678138923
       }
     ],
     "kmeans_random_split": [
       {
-        "cv_mape_pct": 28.921905473414636,
+        "cv_mape_pct": 29.52451890728953,
         "k": 8,
         "metric": "euclidean",
-        "silhouette": 0.3909519807045648
+        "silhouette": 0.38888578055470413
       },
       {
-        "cv_mape_pct": 29.293268537476614,
+        "cv_mape_pct": 29.632694631293173,
         "k": 8,
         "metric": "manhattan",
-        "silhouette": 0.36613179417354
+        "silhouette": 0.40508013501919665
       }
     ],
     "knn_project_split": [
       {
-        "cv_mape_pct": 31.175139666614154,
-        "k": 12,
+        "cv_mape_pct": 32.2563988096569,
+        "k": 17,
         "metric": "euclidean",
-        "test_mape_pct": 33.83755016531754,
+        "test_mape_pct": 30.195122666558373,
         "weight": "uniform"
       },
       {
-        "cv_mape_pct": 31.619218730923222,
-        "k": 22,
+        "cv_mape_pct": 32.690543226115025,
+        "k": 28,
         "metric": "euclidean",
-        "test_mape_pct": 32.87728899600786,
+        "test_mape_pct": 29.989791898485347,
         "weight": "distance"
       },
       {
-        "cv_mape_pct": 30.767934412395668,
-        "k": 18,
+        "cv_mape_pct": 32.07944382856183,
+        "k": 19,
         "metric": "manhattan",
-        "test_mape_pct": 33.59685123912352,
+        "test_mape_pct": 30.37519072532482,
         "weight": "uniform"
       },
       {
-        "cv_mape_pct": 31.31657578693204,
-        "k": 30,
+        "cv_mape_pct": 32.62866312266287,
+        "k": 22,
         "metric": "manhattan",
-        "test_mape_pct": 32.691632477346374,
+        "test_mape_pct": 29.934729943217402,
         "weight": "distance"
       }
     ],
     "knn_random_split": [
       {
-        "cv_mape_pct": 28.73829908042889,
-        "k": 8,
+        "cv_mape_pct": 30.070064589106245,
+        "k": 11,
         "metric": "euclidean",
-        "test_mape_pct": 28.138814835187674,
+        "test_mape_pct": 30.10966970541311,
         "weight": "uniform"
       },
       {
-        "cv_mape_pct": 28.219953064333176,
+        "cv_mape_pct": 30.315051671771748,
         "k": 21,
         "metric": "euclidean",
-        "test_mape_pct": 27.550971363110577,
+        "test_mape_pct": 29.168479752885617,
         "weight": "distance"
       },
       {
-        "cv_mape_pct": 28.50162506487654,
-        "k": 9,
+        "cv_mape_pct": 30.039086165929767,
+        "k": 16,
         "metric": "manhattan",
-        "test_mape_pct": 27.843022043783368,
+        "test_mape_pct": 30.528351487271465,
         "weight": "uniform"
       },
       {
-        "cv_mape_pct": 28.240939091567963,
-        "k": 27,
+        "cv_mape_pct": 30.194057391801017,
+        "k": 30,
         "metric": "manhattan",
-        "test_mape_pct": 27.883870484652768,
+        "test_mape_pct": 29.20488965566041,
         "weight": "distance"
       }
     ]
   },
   "extended_blend_project_split": {
-    "blend_cv_mape_pct": 18.571026003814115,
-    "gb_cv_mape_pct": 19.32739216474016,
-    "l2": 0.0,
+    "blend_cv_mape_pct": 19.319136394245877,
+    "gb_cv_mape_pct": 20.427314814981727,
+    "l2": 1.0,
     "l2_scan": {
-      "0.0": 19.634157534804466,
-      "1.0": 19.64652377874621,
-      "5.0": 19.781113300734233
+      "0.0": 19.878055228732574,
+      "1.0": 19.859149949661536,
+      "5.0": 19.963303005836714
     },
-    "lr_cv_mape_pct": 19.634157534804466,
+    "lr_cv_mape_pct": 19.859149949661536,
     "w_lr": 0.5,
     "weight_scan": {
-      "0.0": 19.32739216474016,
-      "0.25": 18.722295569228955,
-      "0.35": 18.61023878524974,
-      "0.5": 18.571026003814115,
-      "0.65": 18.692426244657252,
-      "0.75": 18.868487368111566,
-      "1.0": 19.634157534804466
+      "0.0": 20.427314814981727,
+      "0.25": 19.653125924765018,
+      "0.35": 19.467217716444566,
+      "0.5": 19.319136394245877,
+      "0.65": 19.31941199048789,
+      "0.75": 19.393353735462256,
+      "1.0": 19.859149949661536
     }
   },
   "extended_blend_random_split": {
-    "blend_cv_mape_pct": 14.423122331069987,
-    "gb_cv_mape_pct": 14.423122331069987,
+    "blend_cv_mape_pct": 14.947313208572258,
+    "gb_cv_mape_pct": 14.947313208572258,
     "l2": 0.0,
     "l2_scan": {
-      "0.0": 18.23601768426763,
-      "1.0": 18.27208618771807,
-      "5.0": 18.452696393654115
+      "0.0": 18.609902103058495,
+      "1.0": 18.6455373463154,
+      "5.0": 18.84782196719991
     },
-    "lr_cv_mape_pct": 18.23601768426763,
+    "lr_cv_mape_pct": 18.609902103058495,
     "w_lr": 0.0,
     "weight_scan": {
-      "0.0": 14.423122331069987,
-      "0.25": 14.720935569345318,
-      "0.35": 14.986683995698275,
-      "0.5": 15.518780616251107,
-      "0.65": 16.190538537699133,
-      "0.75": 16.71374836297502,
-      "1.0": 18.23601768426763
+      "0.0": 14.947313208572258,
+      "0.25": 15.19452297762522,
+      "0.35": 15.434959198507936,
+      "0.5": 15.942097008031746,
+      "0.65": 16.602320169873355,
+      "0.75": 17.10843608434528,
+      "1.0": 18.609902103058495
     }
   },
   "extended_features": [
@@ -289,144 +289,144 @@
   ],
   "extended_linear_regression": {
     "area_per_room_log": {
-      "coef_log": 0.11233440482548027,
-      "effect_pct": 11.888695928971638
+      "coef_log": 0.039145694845677904,
+      "effect_pct": 3.992198388644752
     },
     "bathrooms": {
-      "coef_log": 0.06347480928075286,
-      "effect_pct": 6.553264392970326
+      "coef_log": 0.08379896563982647,
+      "effect_pct": 8.74102650067401
     },
     "bedrooms": {
-      "coef_log": 0.07946445884673552,
-      "effect_pct": 8.270707818740085
+      "coef_log": 0.04035104779475318,
+      "effect_pct": 4.117621265885485
     },
     "building_age": {
-      "coef_log": -0.0018970911775259736,
-      "effect_pct": -0.18952928374428302
+      "coef_log": -0.003350525694507624,
+      "effect_pct": -0.3344918946891484
     },
     "facility_count": {
-      "coef_log": 0.021139296538341828,
-      "effect_pct": 2.136431424231433
+      "coef_log": 0.02501304746180218,
+      "effect_pct": 2.532849837157247
     },
     "floor": {
-      "coef_log": 0.005266918480049098,
-      "effect_pct": 0.5280813078381907
+      "coef_log": 0.005196364040949769,
+      "effect_pct": 0.5209888556527265
     },
     "floor_ratio": {
-      "coef_log": -0.07432406755742568,
-      "effect_pct": -7.162920976700427
+      "coef_log": -0.07150227382932693,
+      "effect_pct": -6.9005839329370655
     },
     "has_building_info": {
-      "coef_log": 0.24442751487717018,
-      "effect_pct": 27.689010333382335
+      "coef_log": 0.20417617665736146,
+      "effect_pct": 22.65142175979853
     },
     "has_gym": {
-      "coef_log": -0.11149664770964975,
-      "effect_pct": -10.550560999684622
+      "coef_log": -0.12027358574229036,
+      "effect_pct": -11.332217887927687
     },
     "has_parking": {
-      "coef_log": -0.04141598349760692,
-      "effect_pct": -4.057006009678988
+      "coef_log": -0.039988309066145124,
+      "effect_pct": -3.919932825623562
     },
     "has_pool": {
-      "coef_log": 0.005571250207447014,
-      "effect_pct": 0.5586798482917876
+      "coef_log": -0.02088440461431992,
+      "effect_pct": -2.066783569410824
     },
     "hospital_km": {
-      "coef_log": -0.010725865314374243,
-      "effect_pct": -1.066854832879427
+      "coef_log": -0.013803983058704379,
+      "effect_pct": -1.3709144967218645
     },
     "is_bts": {
-      "coef_log": 0.046440893442140516,
-      "effect_pct": 4.753616098196045
+      "coef_log": 0.07611510648975169,
+      "effect_pct": 7.90867768999024
     },
     "is_high_rise": {
-      "coef_log": -0.058431051851726,
-      "effect_pct": -5.675672696525136
+      "coef_log": -0.05325725317394599,
+      "effect_pct": -5.186392990719757
     },
     "is_mrt": {
-      "coef_log": 0.04849932678122136,
-      "effect_pct": 4.969466514592691
+      "coef_log": 0.08760135053601124,
+      "effect_pct": 9.15528883072776
     },
     "is_new_unit": {
-      "coef_log": 0.006173369601421472,
-      "effect_pct": 0.619246411982366
+      "coef_log": 0.01158823047639117,
+      "effect_pct": 1.1655634130581793
     },
     "log_age": {
-      "coef_log": 0.007474224285786207,
-      "effect_pct": 0.7502226020397407
+      "coef_log": 0.001081442812423955,
+      "effect_pct": 0.10820277825538405
     },
     "log_area_sqm": {
-      "coef_log": 0.9098059420854239,
-      "effect_pct": 148.3840477709726
+      "coef_log": 0.9707826558231297,
+      "effect_pct": 164.00098700937994
     },
     "log_cbd_km": {
-      "coef_log": 0.0502469972743503,
-      "effect_pct": 5.153078954186396
+      "coef_log": 0.025332242383272238,
+      "effect_pct": 2.5655830259650125
     },
     "log_rail_km": {
-      "coef_log": -1.035374761801118,
-      "effect_pct": -64.49067194113498
+      "coef_log": -0.96220506376692,
+      "effect_pct": -61.795048706696655
     },
     "log_total_unit": {
-      "coef_log": 0.05194591441537817,
-      "effect_pct": 5.331877161117071
+      "coef_log": 0.0501184168193136,
+      "effect_pct": 5.13955919265312
     },
     "mall_km": {
-      "coef_log": 0.011182880713914701,
-      "effect_pct": 1.124564286012486
+      "coef_log": 0.009198393319463122,
+      "effect_pct": 0.9240828551481561
     },
     "nb_age_diff": {
-      "coef_log": -0.026956234658727072,
-      "effect_pct": -2.659615805654192
+      "coef_log": -0.026145365621799702,
+      "effect_pct": -2.58065349234744
     },
     "nb_idw_k20": {
-      "coef_log": 0.4168551802348384,
-      "effect_pct": 51.71827789708006
+      "coef_log": 0.4982393345304775,
+      "effect_pct": 64.58209780617175
     },
     "nb_idw_k5": {
-      "coef_log": 0.2597376568554939,
-      "effect_pct": 29.65898905746387
+      "coef_log": 0.21115110282181762,
+      "effect_pct": 23.509896790144992
     },
     "rail_km": {
-      "coef_log": 0.40353601262617733,
-      "effect_pct": 49.71091460401802
+      "coef_log": 0.3759286614883071,
+      "effect_pct": 45.63432367061786
     },
     "tier_2": {
-      "coef_log": -0.00328810092902245,
-      "effect_pct": -0.3282701045238423
+      "coef_log": -0.048034506533266935,
+      "effect_pct": -4.689910169778477
     },
     "tier_3": {
-      "coef_log": 0.0209496420300596,
-      "effect_pct": 2.117062626299937
+      "coef_log": -0.06434157990423124,
+      "effect_pct": -6.231534941168338
     },
     "tier_4": {
-      "coef_log": 0.06635145257267991,
-      "effect_pct": 6.860221417477663
+      "coef_log": 0.01721095923579146,
+      "effect_pct": 1.7359921160134517
     },
     "tier_5": {
-      "coef_log": 0.11484344106541867,
-      "effect_pct": 12.169781201005115
+      "coef_log": 0.03520699575240565,
+      "effect_pct": 3.5834099868707225
     },
     "tier_6": {
-      "coef_log": 0.051080651397521194,
-      "effect_pct": 5.240776801777769
+      "coef_log": 0.01850453809572149,
+      "effect_pct": 1.8676808011949708
     },
     "tier_7": {
-      "coef_log": 0.18655321676384234,
-      "effect_pct": 20.50887513027937
+      "coef_log": -0.07542334027924617,
+      "effect_pct": -7.264918173604984
     },
     "tier_8": {
-      "coef_log": 0.2896087690765101,
-      "effect_pct": 33.590473852970625
+      "coef_log": 0.15662667384333734,
+      "effect_pct": 16.95589054574782
     },
     "total_floor": {
-      "coef_log": 0.0004636198867496542,
-      "effect_pct": 0.04637273750598414
+      "coef_log": 0.0009146442532973661,
+      "effect_pct": 0.09150626679095275
     },
     "units_per_floor_log": {
-      "coef_log": -0.08737758633691711,
-      "effect_pct": -8.366896377575983
+      "coef_log": -0.0899803408090413,
+      "effect_pct": -8.605084740446657
     }
   },
   "features": [
@@ -445,36 +445,36 @@
   ],
   "ffbp_project_split": {
     "FFBP neural network (K-Means tiers)": {
-      "cv_mape_pct": 29.669487661805437,
+      "cv_mape_pct": 29.076095408694847,
       "epochs": 3000,
-      "hidden": 4
+      "hidden": 8
     },
     "FFBP neural network + building + neighbourhood price": {
-      "cv_mape_pct": 20.777806933827133,
+      "cv_mape_pct": 21.220838623687442,
       "epochs": 3000,
       "hidden": 4
     },
     "FFBP neural network + building features": {
-      "cv_mape_pct": 23.94065114052206,
-      "epochs": 10000,
-      "hidden": 16
+      "cv_mape_pct": 24.41973797638378,
+      "epochs": 3000,
+      "hidden": 4
     }
   },
   "ffbp_random_split": {
     "FFBP neural network (K-Means tiers)": {
-      "cv_mape_pct": 27.325542847727036,
+      "cv_mape_pct": 28.19640243337046,
       "epochs": 10000,
       "hidden": 8
     },
     "FFBP neural network + building + neighbourhood price": {
-      "cv_mape_pct": 17.20625644249272,
+      "cv_mape_pct": 17.928595576371556,
       "epochs": 10000,
-      "hidden": 16
+      "hidden": 8
     },
     "FFBP neural network + building features": {
-      "cv_mape_pct": 18.266632511080722,
+      "cv_mape_pct": 19.181701492050898,
       "epochs": 10000,
-      "hidden": 16
+      "hidden": 8
     }
   },
   "fuzzy_cmeans": {
@@ -487,284 +487,286 @@
       "sathorn-narathiwat",
       "siam-paragon-chulalongkornsamyan",
       "khlongtoei-kluaynamthai",
-      "bangna-lasalle-bearing",
+      "pattanakan-srinakarin",
       "ratchadapisek-huaikwang-suttisan",
+      "kasetsart-ratchayothin",
+      "yothinpattanacdc",
       "min-buri-romklao",
       "ladkrabang-suwannaphum-airport",
-      "pha-nakorn-yaowarat",
-      "rama3-riversidesatupadit"
+      "vipawadee-don-mueang-lak-si",
+      "wongwianyai-charoennakor"
     ],
-    "zones_same_tier_as_kmeans": 16
+    "zones_same_tier_as_kmeans": 22
   },
   "kmeans": {
     "k": 8,
     "metric": "euclidean",
     "scan": [
       {
-        "cv_mape_pct": 31.852109503807856,
-        "inertia": 63.745935996724164,
+        "cv_mape_pct": 33.45838232342927,
+        "inertia": 61.70234172740849,
         "k": 2,
-        "silhouette": 0.4185861367997354
+        "silhouette": 0.4562005589576021
       },
       {
-        "cv_mape_pct": 32.26176434498701,
-        "inertia": 47.17372881546577,
+        "cv_mape_pct": 33.529822748285184,
+        "inertia": 43.78212091296324,
         "k": 3,
-        "silhouette": 0.4173903283091288
+        "silhouette": 0.4509588907317205
       },
       {
-        "cv_mape_pct": 31.399722502267117,
-        "inertia": 33.648393100733195,
+        "cv_mape_pct": 31.619748372402597,
+        "inertia": 31.782363872288027,
         "k": 4,
-        "silhouette": 0.3795446383127658
+        "silhouette": 0.39580097224873034
       },
       {
-        "cv_mape_pct": 31.014325015098784,
-        "inertia": 23.86775472002691,
+        "cv_mape_pct": 31.776472981120207,
+        "inertia": 24.347803464966344,
         "k": 5,
-        "silhouette": 0.36294272851820636
+        "silhouette": 0.40407323048577964
       },
       {
-        "cv_mape_pct": 30.738430504250772,
-        "inertia": 17.349620085746636,
+        "cv_mape_pct": 30.884148672374998,
+        "inertia": 16.64118252295868,
         "k": 6,
-        "silhouette": 0.4078726895064657
+        "silhouette": 0.383667088478924
       },
       {
-        "cv_mape_pct": 29.91856835074799,
-        "inertia": 13.993395555400893,
+        "cv_mape_pct": 30.121650717769874,
+        "inertia": 13.923178440066946,
         "k": 7,
-        "silhouette": 0.40269330525162883
+        "silhouette": 0.3794703042914246
       },
       {
-        "cv_mape_pct": 28.921905473414636,
-        "inertia": 11.807223347499933,
+        "cv_mape_pct": 29.52451890728953,
+        "inertia": 10.970528959775324,
         "k": 8,
-        "silhouette": 0.3909519807045648
+        "silhouette": 0.38888578055470413
       }
     ]
   },
   "knn": {
     "cv_curve": [
       {
-        "cv_mape_pct": 35.31723934465507,
+        "cv_mape_pct": 38.71550860044274,
         "k": 1
       },
       {
-        "cv_mape_pct": 31.684338626584623,
+        "cv_mape_pct": 34.10715571585657,
         "k": 2
       },
       {
-        "cv_mape_pct": 30.305412086026585,
+        "cv_mape_pct": 32.16882724631403,
         "k": 3
       },
       {
-        "cv_mape_pct": 29.78464208570323,
+        "cv_mape_pct": 31.3152083231375,
         "k": 4
       },
       {
-        "cv_mape_pct": 29.359224531839697,
+        "cv_mape_pct": 30.90613438694162,
         "k": 5
       },
       {
-        "cv_mape_pct": 29.0581853428116,
+        "cv_mape_pct": 30.691982420028985,
         "k": 6
       },
       {
-        "cv_mape_pct": 28.866304410816504,
+        "cv_mape_pct": 30.44081551182119,
         "k": 7
       },
       {
-        "cv_mape_pct": 28.71852816810084,
+        "cv_mape_pct": 30.391948611258318,
         "k": 8
       },
       {
-        "cv_mape_pct": 28.589571100746205,
+        "cv_mape_pct": 30.240244815444804,
         "k": 9
       },
       {
-        "cv_mape_pct": 28.47792359201111,
+        "cv_mape_pct": 30.112726637733992,
         "k": 10
       },
       {
-        "cv_mape_pct": 28.379901195780654,
+        "cv_mape_pct": 30.213295067608424,
         "k": 11
       },
       {
-        "cv_mape_pct": 28.313343158098434,
+        "cv_mape_pct": 30.139803135629563,
         "k": 12
       },
       {
-        "cv_mape_pct": 28.311555032264778,
+        "cv_mape_pct": 30.12273874252022,
         "k": 13
       },
       {
-        "cv_mape_pct": 28.25982315778187,
+        "cv_mape_pct": 30.143690493956683,
         "k": 14
       },
       {
-        "cv_mape_pct": 28.25833909264164,
+        "cv_mape_pct": 30.14487937352164,
         "k": 15
       },
       {
-        "cv_mape_pct": 28.252892520713647,
+        "cv_mape_pct": 30.039086165929767,
         "k": 16
       },
       {
-        "cv_mape_pct": 28.27575230105159,
+        "cv_mape_pct": 30.131288569037878,
         "k": 17
       },
       {
-        "cv_mape_pct": 28.26798465449009,
+        "cv_mape_pct": 30.244321373148818,
         "k": 18
       },
       {
-        "cv_mape_pct": 28.245710809797334,
+        "cv_mape_pct": 30.21289159921247,
         "k": 19
       },
       {
-        "cv_mape_pct": 28.233317912137444,
+        "cv_mape_pct": 30.203103379000062,
         "k": 20
       },
       {
-        "cv_mape_pct": 28.219953064333176,
+        "cv_mape_pct": 30.216916151053816,
         "k": 21
       },
       {
-        "cv_mape_pct": 28.239288756924925,
+        "cv_mape_pct": 30.263764388813133,
         "k": 22
       },
       {
-        "cv_mape_pct": 28.271732985894992,
+        "cv_mape_pct": 30.39709010823254,
         "k": 23
       },
       {
-        "cv_mape_pct": 28.29247474871637,
+        "cv_mape_pct": 30.462565791411826,
         "k": 24
       },
       {
-        "cv_mape_pct": 28.307481952728164,
+        "cv_mape_pct": 30.51111096112649,
         "k": 25
       },
       {
-        "cv_mape_pct": 28.322130646219374,
+        "cv_mape_pct": 30.572372169871574,
         "k": 26
       },
       {
-        "cv_mape_pct": 28.339905932502393,
+        "cv_mape_pct": 30.53591618309735,
         "k": 27
       },
       {
-        "cv_mape_pct": 28.378660708348008,
+        "cv_mape_pct": 30.526989750430392,
         "k": 28
       },
       {
-        "cv_mape_pct": 28.388913273969244,
+        "cv_mape_pct": 30.52168655222177,
         "k": 29
       },
       {
-        "cv_mape_pct": 28.405458307265974,
+        "cv_mape_pct": 30.549935808038537,
         "k": 30
       }
     ],
-    "k": 21,
-    "k_project": 9,
-    "metric": "euclidean",
-    "weight": "distance"
+    "k": 16,
+    "k_project": 5,
+    "metric": "manhattan",
+    "weight": "uniform"
   },
   "learning_curve": [
     {
       "fraction": 0.1,
-      "mape_pct": 31.105727845413888,
-      "train_rows": 261
+      "mape_pct": 29.092211998694484,
+      "train_rows": 252
     },
     {
       "fraction": 0.25,
-      "mape_pct": 29.180464415050107,
-      "train_rows": 654
+      "mape_pct": 28.48502724814367,
+      "train_rows": 630
     },
     {
       "fraction": 0.5,
-      "mape_pct": 29.171330657955014,
-      "train_rows": 1308
+      "mape_pct": 28.762215227852217,
+      "train_rows": 1260
     },
     {
       "fraction": 0.75,
-      "mape_pct": 29.080744021981275,
-      "train_rows": 1962
+      "mape_pct": 28.502543865535884,
+      "train_rows": 1890
     },
     {
       "fraction": 1.0,
-      "mape_pct": 29.106368282402407,
-      "train_rows": 2616
+      "mape_pct": 28.652248519370495,
+      "train_rows": 2520
     }
   ],
   "linear_regression": {
     "coefficients": {
       "bathrooms": {
-        "coef_log": 0.08965587198645122,
-        "effect_pct": 9.37978124633483
+        "coef_log": 0.11255179726460798,
+        "effect_pct": 11.913022329582446
       },
       "bedrooms": {
-        "coef_log": 0.048849598433326924,
-        "effect_pct": 5.006240783165317
+        "coef_log": 0.042466728629955514,
+        "effect_pct": 4.3381341069472334
       },
       "floor": {
-        "coef_log": 0.011522558595366748,
-        "effect_pct": 1.1589198983623872
+        "coef_log": 0.010224787310847038,
+        "effect_pct": 1.0277239065541455
       },
       "is_new_unit": {
-        "coef_log": 0.25967573853287124,
-        "effect_pct": 29.650961038891754
+        "coef_log": 0.288598364039202,
+        "effect_pct": 33.45556153477405
       },
       "log_area_sqm": {
-        "coef_log": 0.9233599428010366,
-        "effect_pct": 151.7735641954514
+        "coef_log": 0.887394770874434,
+        "effect_pct": 142.87938373049144
       },
       "tier_2": {
-        "coef_log": 0.05507337474407243,
-        "effect_pct": 5.661814091689754
+        "coef_log": 0.06670758726823356,
+        "effect_pct": 6.89828482734709
       },
       "tier_3": {
-        "coef_log": 0.3814907022709959,
-        "effect_pct": 46.44660459396517
+        "coef_log": 0.31631097238505373,
+        "effect_pct": 37.20568610858675
       },
       "tier_4": {
-        "coef_log": 0.49582368914252345,
-        "effect_pct": 64.18500563070499
+        "coef_log": 0.7673045195019494,
+        "effect_pct": 115.39524849378138
       },
       "tier_5": {
-        "coef_log": 0.7319035086664689,
-        "effect_pct": 107.90343033476412
+        "coef_log": 0.818762383944689,
+        "effect_pct": 126.76915686176935
       },
       "tier_6": {
-        "coef_log": 0.6977226408589445,
-        "effect_pct": 100.91718874003402
+        "coef_log": 0.8186272514364569,
+        "effect_pct": 126.73851504721219
       },
       "tier_7": {
-        "coef_log": 0.9207660991136013,
-        "effect_pct": 151.121349162899
+        "coef_log": 0.7316431102729474,
+        "effect_pct": 107.8492996635731
       },
       "tier_8": {
-        "coef_log": 1.3903694430780384,
-        "effect_pct": 301.63335855791917
+        "coef_log": 1.4983959587267957,
+        "effect_pct": 347.4506018591444
       }
     },
-    "intercept_log": 10.950247091041007
+    "intercept_log": 11.015012350025048
   },
   "neighbourhood_project_split": {
     "k": 20,
     "scan": [
       {
-        "cv_mape_pct": 21.430473621200655,
+        "cv_mape_pct": 21.39846264192964,
         "k": 5
       },
       {
-        "cv_mape_pct": 20.720196859257218,
+        "cv_mape_pct": 21.217022997639152,
         "k": 10
       },
       {
-        "cv_mape_pct": 20.502976060922375,
+        "cv_mape_pct": 21.16677022080632,
         "k": 20
       }
     ]
@@ -773,893 +775,893 @@
     "k": 20,
     "scan": [
       {
-        "cv_mape_pct": 20.08887420211053,
+        "cv_mape_pct": 20.96881380743351,
         "k": 5
       },
       {
-        "cv_mape_pct": 20.037487214531975,
+        "cv_mape_pct": 20.722298575714284,
         "k": 10
       },
       {
-        "cv_mape_pct": 19.9421952779786,
+        "cv_mape_pct": 20.45423662996783,
         "k": 20
       }
     ]
   },
   "rows": {
-    "clean_all_pages": 4918,
-    "listings_with_building_info": 3189,
-    "projects": 971,
-    "projects_with_building_info": 944,
-    "test_project": 647,
-    "test_random": 655,
-    "train_project": 2624,
-    "train_random": 2616,
-    "used": 3271,
+    "clean_all_pages": 4668,
+    "listings_with_building_info": 3067,
+    "projects": 956,
+    "projects_with_building_info": 943,
+    "test_project": 705,
+    "test_random": 630,
+    "train_project": 2445,
+    "train_random": 2520,
+    "used": 3150,
     "zones": 38
   },
   "sota_style_project_split": {
     "Baseline: zone median price/sqm x area": {
-      "price_per_sqm_r2": 0.3382947916517791,
-      "project_price_per_sqm_r2": 0.3948751799480321,
-      "project_relative_error_pct": 37.23453749825228
+      "price_per_sqm_r2": 0.49978742501288365,
+      "project_price_per_sqm_r2": 0.47394981939227265,
+      "project_relative_error_pct": 33.00057888647895
     },
     "Blend: LR + GB (extended + IDW, CV-weighted)": {
-      "price_per_sqm_r2": 0.6859907301690804,
-      "project_price_per_sqm_r2": 0.6347899265475136,
-      "project_relative_error_pct": 20.14811098549868
+      "price_per_sqm_r2": 0.7775899547315843,
+      "project_price_per_sqm_r2": 0.7600975274804104,
+      "project_relative_error_pct": 16.904941384221072
     },
     "Blend: Linear Regression + Gradient Boosting (building + neighbourhood price)": {
-      "price_per_sqm_r2": 0.6409763863852138,
-      "project_price_per_sqm_r2": 0.6530454283784876,
-      "project_relative_error_pct": 20.711185487074047
+      "price_per_sqm_r2": 0.7748209347914956,
+      "project_price_per_sqm_r2": 0.7275098667696821,
+      "project_relative_error_pct": 18.07436986654711
     },
     "FFBP neural network (K-Means tiers)": {
-      "price_per_sqm_r2": 0.53720219984987,
-      "project_price_per_sqm_r2": 0.5596349085513446,
-      "project_relative_error_pct": 31.45436441383372
+      "price_per_sqm_r2": 0.5219807283577595,
+      "project_price_per_sqm_r2": 0.4753338444837748,
+      "project_relative_error_pct": 30.31943123256444
     },
     "FFBP neural network + building + neighbourhood price": {
-      "price_per_sqm_r2": 0.6421782324498184,
-      "project_price_per_sqm_r2": 0.6546255807172894,
-      "project_relative_error_pct": 21.224942722683952
+      "price_per_sqm_r2": 0.7703012106071205,
+      "project_price_per_sqm_r2": 0.7320849612005526,
+      "project_relative_error_pct": 19.6771724804648
     },
     "FFBP neural network + building features": {
-      "price_per_sqm_r2": 0.5717500754021911,
-      "project_price_per_sqm_r2": 0.6382438382962801,
-      "project_relative_error_pct": 25.592431373995993
+      "price_per_sqm_r2": 0.663319513193696,
+      "project_price_per_sqm_r2": 0.6061231961584804,
+      "project_relative_error_pct": 22.837209835935603
     },
     "Gradient Boosting (K-Means tiers, reference)": {
-      "price_per_sqm_r2": 0.3961411538470343,
-      "project_price_per_sqm_r2": 0.4149309676944767,
-      "project_relative_error_pct": 34.045880552516465
+      "price_per_sqm_r2": 0.43668472090124066,
+      "project_price_per_sqm_r2": 0.3328077656310945,
+      "project_relative_error_pct": 31.702012633612657
     },
     "Gradient Boosting (log price/sqm) + extended + IDW (reference)": {
-      "price_per_sqm_r2": 0.5720635359403258,
-      "project_price_per_sqm_r2": 0.5441567465271486,
-      "project_relative_error_pct": 22.192684493804858
+      "price_per_sqm_r2": 0.7498430750646436,
+      "project_price_per_sqm_r2": 0.7408786570846455,
+      "project_relative_error_pct": 17.56646507610008
     },
     "Gradient Boosting + building + neighbourhood price (reference)": {
-      "price_per_sqm_r2": 0.49500603681349553,
-      "project_price_per_sqm_r2": 0.5690141170674681,
-      "project_relative_error_pct": 21.48718387082388
+      "price_per_sqm_r2": 0.7607534090604929,
+      "project_price_per_sqm_r2": 0.7233970167218245,
+      "project_relative_error_pct": 18.638935295833313
     },
     "Gradient Boosting + building + project price level (reference)": {
-      "price_per_sqm_r2": 0.5160002294911921,
-      "project_price_per_sqm_r2": 0.5541644687686237,
-      "project_relative_error_pct": 26.21230924244965
+      "price_per_sqm_r2": 0.7209182960279414,
+      "project_price_per_sqm_r2": 0.7388007919381168,
+      "project_relative_error_pct": 21.181689857628996
     },
     "Gradient Boosting + building features (reference)": {
-      "price_per_sqm_r2": 0.5365718353819018,
-      "project_price_per_sqm_r2": 0.5735229863125054,
-      "project_relative_error_pct": 25.668308871993844
+      "price_per_sqm_r2": 0.6746353357655566,
+      "project_price_per_sqm_r2": 0.6690063905795363,
+      "project_relative_error_pct": 20.86465011183799
     },
     "Gradient Boosting + project price level (reference)": {
-      "price_per_sqm_r2": 0.24596943931435333,
-      "project_price_per_sqm_r2": 0.28817025434409127,
-      "project_relative_error_pct": 31.639422227033887
+      "price_per_sqm_r2": 0.5494094631676477,
+      "project_price_per_sqm_r2": 0.5518386322060562,
+      "project_relative_error_pct": 27.996672487077774
     },
     "KNN Regression (K-Means tiers)": {
-      "price_per_sqm_r2": 0.32847359329995884,
-      "project_price_per_sqm_r2": 0.46553092332129986,
-      "project_relative_error_pct": 33.032190514445354
+      "price_per_sqm_r2": 0.3964097081449982,
+      "project_price_per_sqm_r2": 0.38133593515866204,
+      "project_relative_error_pct": 31.963113759574124
     },
     "KNN Regression + building features": {
-      "price_per_sqm_r2": 0.33918323679702345,
-      "project_price_per_sqm_r2": 0.4494019974225423,
-      "project_relative_error_pct": 29.591812862939644
+      "price_per_sqm_r2": 0.4141266543997758,
+      "project_price_per_sqm_r2": 0.4137428755955683,
+      "project_relative_error_pct": 28.877819729502697
     },
     "KNN Regression + project price level": {
-      "price_per_sqm_r2": 0.09642766964615179,
-      "project_price_per_sqm_r2": 0.2801032136141445,
-      "project_relative_error_pct": 34.848895322092346
+      "price_per_sqm_r2": 0.28868084998969046,
+      "project_price_per_sqm_r2": 0.32841479682433583,
+      "project_relative_error_pct": 31.428633898422092
     },
     "Linear Regression (Fuzzy C-Means memberships)": {
-      "price_per_sqm_r2": 0.43859499204984587,
-      "project_price_per_sqm_r2": 0.4969822924688949,
-      "project_relative_error_pct": 31.912450973120105
+      "price_per_sqm_r2": 0.48876399634469014,
+      "project_price_per_sqm_r2": 0.5109022537262788,
+      "project_relative_error_pct": 29.185801032161773
     },
     "Linear Regression (K-Means tiers)": {
-      "price_per_sqm_r2": 0.5343145824656603,
-      "project_price_per_sqm_r2": 0.5392709765017223,
-      "project_relative_error_pct": 31.940726965996287
+      "price_per_sqm_r2": 0.5079455155300235,
+      "project_price_per_sqm_r2": 0.45704408492053794,
+      "project_relative_error_pct": 30.64924507091676
     },
     "Linear Regression (no location)": {
-      "price_per_sqm_r2": 0.19523823617806912,
-      "project_price_per_sqm_r2": 0.2978559017825362,
-      "project_relative_error_pct": 40.818015816512926
+      "price_per_sqm_r2": 0.2680022628063742,
+      "project_price_per_sqm_r2": 0.23776043059877927,
+      "project_relative_error_pct": 35.10470008912439
     },
     "Linear Regression + building + neighbourhood price": {
-      "price_per_sqm_r2": 0.6624747227545423,
-      "project_price_per_sqm_r2": 0.6258575745484469,
-      "project_relative_error_pct": 21.795237576282762
+      "price_per_sqm_r2": 0.741436330594829,
+      "project_price_per_sqm_r2": 0.6801939844339582,
+      "project_relative_error_pct": 20.1642308722783
     },
     "Linear Regression + building + project price level": {
-      "price_per_sqm_r2": 0.50081348191981,
-      "project_price_per_sqm_r2": 0.6005953398401028,
-      "project_relative_error_pct": 27.085306753564698
+      "price_per_sqm_r2": 0.5351404410847287,
+      "project_price_per_sqm_r2": 0.5479715235076579,
+      "project_relative_error_pct": 24.242291486338644
     },
     "Linear Regression + building features": {
-      "price_per_sqm_r2": 0.6781680487735494,
-      "project_price_per_sqm_r2": 0.6863128794807785,
-      "project_relative_error_pct": 24.28714195122531
+      "price_per_sqm_r2": 0.6261500536804621,
+      "project_price_per_sqm_r2": 0.5592560980648114,
+      "project_relative_error_pct": 23.750379642318276
     },
     "Linear Regression + building features (Fuzzy C-Means memberships)": {
-      "price_per_sqm_r2": 0.5652274666384702,
-      "project_price_per_sqm_r2": 0.6507255192532837,
-      "project_relative_error_pct": 24.47460887878282
+      "price_per_sqm_r2": 0.5968883572210324,
+      "project_price_per_sqm_r2": 0.5920953855692057,
+      "project_relative_error_pct": 22.162749658050554
     },
     "Linear Regression + extended + project price level": {
-      "price_per_sqm_r2": 0.5565803886445948,
-      "project_price_per_sqm_r2": 0.6230829128412516,
-      "project_relative_error_pct": 24.350581297086567
+      "price_per_sqm_r2": 0.6170819716934652,
+      "project_price_per_sqm_r2": 0.6282428277059635,
+      "project_relative_error_pct": 21.49193119124119
     },
     "Linear Regression + extended building + multi-scale IDW": {
-      "price_per_sqm_r2": 0.7375275994208532,
-      "project_price_per_sqm_r2": 0.6772655779569499,
-      "project_relative_error_pct": 19.1641401316089
+      "price_per_sqm_r2": 0.7891741083261253,
+      "project_price_per_sqm_r2": 0.7640122018341677,
+      "project_relative_error_pct": 17.58902643518547
     },
     "Linear Regression + project price level": {
-      "price_per_sqm_r2": 0.3799212771929348,
-      "project_price_per_sqm_r2": 0.5147593742506218,
-      "project_relative_error_pct": 30.254220324669053
+      "price_per_sqm_r2": 0.4667289932040084,
+      "project_price_per_sqm_r2": 0.49075368189889546,
+      "project_relative_error_pct": 27.335008561370362
     },
     "Random Forest (K-Means tiers, reference)": {
-      "price_per_sqm_r2": 0.2998073857512058,
-      "project_price_per_sqm_r2": 0.3214650406984745,
-      "project_relative_error_pct": 36.31964013677966
+      "price_per_sqm_r2": 0.39330145742924416,
+      "project_price_per_sqm_r2": 0.30076982140039354,
+      "project_relative_error_pct": 33.307955190295345
     },
     "Random Forest (log price/sqm) + extended + IDW (reference)": {
-      "price_per_sqm_r2": 0.6210823208017302,
-      "project_price_per_sqm_r2": 0.6057890667415751,
-      "project_relative_error_pct": 22.84086551823355
+      "price_per_sqm_r2": 0.746729455772383,
+      "project_price_per_sqm_r2": 0.7702382839938462,
+      "project_relative_error_pct": 19.635464883979868
     },
     "Random Forest + building features (reference)": {
-      "price_per_sqm_r2": 0.4929959901413865,
-      "project_price_per_sqm_r2": 0.5476643711277247,
-      "project_relative_error_pct": 27.782394181161997
+      "price_per_sqm_r2": 0.6272316882355091,
+      "project_price_per_sqm_r2": 0.6147491306877686,
+      "project_relative_error_pct": 21.72175031202045
     },
     "Random Forest + project price level (reference)": {
-      "price_per_sqm_r2": 0.28902162547109145,
-      "project_price_per_sqm_r2": 0.301997735216861,
-      "project_relative_error_pct": 33.26967595072409
+      "price_per_sqm_r2": 0.4858067674738361,
+      "project_price_per_sqm_r2": 0.4711915763346447,
+      "project_relative_error_pct": 31.5921333913715
     },
     "Website filter: same zone, bedrooms, area +-10%": {
-      "price_per_sqm_r2": 0.16176345676583903,
-      "project_price_per_sqm_r2": 0.22191330504868567,
-      "project_relative_error_pct": 37.93387438827917
+      "price_per_sqm_r2": 0.43570486729830304,
+      "project_price_per_sqm_r2": 0.4605629374975171,
+      "project_relative_error_pct": 37.17124462665639
     }
   },
   "sota_style_random_split": {
     "Baseline: zone median price/sqm x area": {
-      "price_per_sqm_r2": 0.5466121533001195,
-      "project_price_per_sqm_r2": 0.529383040323965,
-      "project_relative_error_pct": 31.429204009425927
+      "price_per_sqm_r2": 0.5658473085309559,
+      "project_price_per_sqm_r2": 0.5436708072742443,
+      "project_relative_error_pct": 28.141705851169945
     },
     "Blend: LR + GB (extended + IDW, CV-weighted)": {
-      "price_per_sqm_r2": 0.8044759416977779,
-      "project_price_per_sqm_r2": 0.7849997320368467,
-      "project_relative_error_pct": 14.926907891329119
+      "price_per_sqm_r2": 0.8218058062151021,
+      "project_price_per_sqm_r2": 0.8234465416387579,
+      "project_relative_error_pct": 13.834586218119371
     },
     "Blend: Linear Regression + Gradient Boosting (building + neighbourhood price)": {
-      "price_per_sqm_r2": 0.8117043201721312,
-      "project_price_per_sqm_r2": 0.8034041970485788,
-      "project_relative_error_pct": 16.29922588090934
+      "price_per_sqm_r2": 0.8064636480337587,
+      "project_price_per_sqm_r2": 0.8013910728102218,
+      "project_relative_error_pct": 16.002355815281334
     },
     "FFBP neural network (K-Means tiers)": {
-      "price_per_sqm_r2": 0.5927417250663538,
-      "project_price_per_sqm_r2": 0.5401283895239983,
-      "project_relative_error_pct": 29.302071060404227
+      "price_per_sqm_r2": 0.5604335060360717,
+      "project_price_per_sqm_r2": 0.5488963685444836,
+      "project_relative_error_pct": 26.653989873265218
     },
     "FFBP neural network + building + neighbourhood price": {
-      "price_per_sqm_r2": 0.7819953712797544,
-      "project_price_per_sqm_r2": 0.7719135003623541,
-      "project_relative_error_pct": 17.993179236067075
+      "price_per_sqm_r2": 0.7503993049671305,
+      "project_price_per_sqm_r2": 0.7223873072050312,
+      "project_relative_error_pct": 18.25715106680226
     },
     "FFBP neural network + building features": {
-      "price_per_sqm_r2": 0.7517764326955889,
-      "project_price_per_sqm_r2": 0.7272341326182641,
-      "project_relative_error_pct": 19.079513156052624
+      "price_per_sqm_r2": 0.7286177004446792,
+      "project_price_per_sqm_r2": 0.7137020433094228,
+      "project_relative_error_pct": 19.39784422952329
     },
     "Gradient Boosting (K-Means tiers, reference)": {
-      "price_per_sqm_r2": 0.6154489996892519,
-      "project_price_per_sqm_r2": 0.5863266891396993,
-      "project_relative_error_pct": 28.14193349534775
+      "price_per_sqm_r2": 0.5767362937941254,
+      "project_price_per_sqm_r2": 0.5535483719434211,
+      "project_relative_error_pct": 26.528423321689985
     },
     "Gradient Boosting (log price/sqm) + extended + IDW (reference)": {
-      "price_per_sqm_r2": 0.8044759416977779,
-      "project_price_per_sqm_r2": 0.7849997320368467,
-      "project_relative_error_pct": 14.926907891329119
+      "price_per_sqm_r2": 0.8218058062151021,
+      "project_price_per_sqm_r2": 0.8234465416387579,
+      "project_relative_error_pct": 13.834586218119371
     },
     "Gradient Boosting + building + neighbourhood price (reference)": {
-      "price_per_sqm_r2": 0.8015031312413986,
-      "project_price_per_sqm_r2": 0.813061872345525,
-      "project_relative_error_pct": 15.114714292285422
+      "price_per_sqm_r2": 0.8255817699638544,
+      "project_price_per_sqm_r2": 0.8362759134383901,
+      "project_relative_error_pct": 14.612256536909953
     },
     "Gradient Boosting + building + project price level (reference)": {
-      "price_per_sqm_r2": 0.8690429242649647,
-      "project_price_per_sqm_r2": 0.8671770081256159,
-      "project_relative_error_pct": 14.86213443184163
+      "price_per_sqm_r2": 0.8541755915132778,
+      "project_price_per_sqm_r2": 0.8611851369543262,
+      "project_relative_error_pct": 13.972691470047364
     },
     "Gradient Boosting + building features (reference)": {
-      "price_per_sqm_r2": 0.7734557314205179,
-      "project_price_per_sqm_r2": 0.7987925615026958,
-      "project_relative_error_pct": 16.639232621543982
+      "price_per_sqm_r2": 0.8117157152419998,
+      "project_price_per_sqm_r2": 0.8158035041376761,
+      "project_relative_error_pct": 15.487324152540175
     },
     "Gradient Boosting + project price level (reference)": {
-      "price_per_sqm_r2": 0.8478834571664022,
-      "project_price_per_sqm_r2": 0.8334098702323526,
-      "project_relative_error_pct": 16.953400922414684
+      "price_per_sqm_r2": 0.8580785969328497,
+      "project_price_per_sqm_r2": 0.8593856433517877,
+      "project_relative_error_pct": 15.335995415524623
     },
     "KNN Regression (K-Means tiers)": {
-      "price_per_sqm_r2": 0.540207379320585,
-      "project_price_per_sqm_r2": 0.567231502594199,
-      "project_relative_error_pct": 27.315565630618398
+      "price_per_sqm_r2": 0.43942998113583465,
+      "project_price_per_sqm_r2": 0.4030183410810301,
+      "project_relative_error_pct": 29.142384160745678
     },
     "KNN Regression + building features": {
-      "price_per_sqm_r2": 0.6654915590242754,
-      "project_price_per_sqm_r2": 0.6816010179685471,
-      "project_relative_error_pct": 22.051018591402503
+      "price_per_sqm_r2": 0.6632212501424556,
+      "project_price_per_sqm_r2": 0.6096803959513242,
+      "project_relative_error_pct": 23.371272311799085
     },
     "KNN Regression + project price level": {
-      "price_per_sqm_r2": 0.7141415881230889,
-      "project_price_per_sqm_r2": 0.7148166802140876,
-      "project_relative_error_pct": 20.05374158097911
+      "price_per_sqm_r2": 0.6995141980575736,
+      "project_price_per_sqm_r2": 0.6928227152218812,
+      "project_relative_error_pct": 19.276781191686787
     },
     "Linear Regression (Fuzzy C-Means memberships)": {
-      "price_per_sqm_r2": 0.5371443692019676,
-      "project_price_per_sqm_r2": 0.5238038702271307,
-      "project_relative_error_pct": 29.468088229391338
+      "price_per_sqm_r2": 0.5234683669954756,
+      "project_price_per_sqm_r2": 0.5026020393767927,
+      "project_relative_error_pct": 26.764997059913465
     },
     "Linear Regression (K-Means tiers)": {
-      "price_per_sqm_r2": 0.5723804386985616,
-      "project_price_per_sqm_r2": 0.5341197325954654,
-      "project_relative_error_pct": 30.3356861826217
+      "price_per_sqm_r2": 0.5401958553675956,
+      "project_price_per_sqm_r2": 0.5169379724076083,
+      "project_relative_error_pct": 27.12842666688499
     },
     "Linear Regression (no location)": {
-      "price_per_sqm_r2": 0.29150402604269665,
-      "project_price_per_sqm_r2": 0.2788996488205978,
-      "project_relative_error_pct": 40.238181352248006
+      "price_per_sqm_r2": 0.3733087285507696,
+      "project_price_per_sqm_r2": 0.3588227961040422,
+      "project_relative_error_pct": 33.78182795376971
     },
     "Linear Regression + building + neighbourhood price": {
-      "price_per_sqm_r2": 0.7427390593337279,
-      "project_price_per_sqm_r2": 0.7221533559870266,
-      "project_relative_error_pct": 20.44475175265288
+      "price_per_sqm_r2": 0.7103531608757859,
+      "project_price_per_sqm_r2": 0.6776546798672697,
+      "project_relative_error_pct": 19.855834757783754
     },
     "Linear Regression + building + project price level": {
-      "price_per_sqm_r2": 0.8674006184799203,
-      "project_price_per_sqm_r2": 0.8502814078142441,
-      "project_relative_error_pct": 15.547859153837628
+      "price_per_sqm_r2": 0.8610563513649887,
+      "project_price_per_sqm_r2": 0.8788393376945349,
+      "project_relative_error_pct": 14.898492352240734
     },
     "Linear Regression + building features": {
-      "price_per_sqm_r2": 0.6849689991438553,
-      "project_price_per_sqm_r2": 0.6454712156729923,
-      "project_relative_error_pct": 22.262338455439277
+      "price_per_sqm_r2": 0.6419571614605872,
+      "project_price_per_sqm_r2": 0.6316039667623002,
+      "project_relative_error_pct": 21.67972898078635
     },
     "Linear Regression + building features (Fuzzy C-Means memberships)": {
-      "price_per_sqm_r2": 0.6535144912705784,
-      "project_price_per_sqm_r2": 0.6393867595221576,
-      "project_relative_error_pct": 22.217106911115618
+      "price_per_sqm_r2": 0.6401406821800476,
+      "project_price_per_sqm_r2": 0.6321987905349229,
+      "project_relative_error_pct": 21.221687286621798
     },
     "Linear Regression + extended + project price level": {
-      "price_per_sqm_r2": 0.8682477774392346,
-      "project_price_per_sqm_r2": 0.8553790216442164,
-      "project_relative_error_pct": 14.830881772110851
+      "price_per_sqm_r2": 0.8649258789537754,
+      "project_price_per_sqm_r2": 0.8775713143277427,
+      "project_relative_error_pct": 14.513742617423562
     },
     "Linear Regression + extended building + multi-scale IDW": {
-      "price_per_sqm_r2": 0.7649443325703906,
-      "project_price_per_sqm_r2": 0.7420253567934867,
-      "project_relative_error_pct": 18.79964938825891
+      "price_per_sqm_r2": 0.7525620079267424,
+      "project_price_per_sqm_r2": 0.7325245085623986,
+      "project_relative_error_pct": 18.26598973921969
     },
     "Linear Regression + project price level": {
-      "price_per_sqm_r2": 0.8695464643075815,
-      "project_price_per_sqm_r2": 0.8518307410131064,
-      "project_relative_error_pct": 16.439709688694258
+      "price_per_sqm_r2": 0.8673100896948548,
+      "project_price_per_sqm_r2": 0.8784527588392008,
+      "project_relative_error_pct": 15.39336993797032
     },
     "Random Forest (K-Means tiers, reference)": {
-      "price_per_sqm_r2": 0.5941458074416688,
-      "project_price_per_sqm_r2": 0.5985599158786932,
-      "project_relative_error_pct": 28.781768959370837
+      "price_per_sqm_r2": 0.5229039761361447,
+      "project_price_per_sqm_r2": 0.4934923739942739,
+      "project_relative_error_pct": 28.69142458708376
     },
     "Random Forest (log price/sqm) + extended + IDW (reference)": {
-      "price_per_sqm_r2": 0.8656899731777322,
-      "project_price_per_sqm_r2": 0.858215576042747,
-      "project_relative_error_pct": 13.73300123046699
+      "price_per_sqm_r2": 0.8641609259349536,
+      "project_price_per_sqm_r2": 0.858038968962517,
+      "project_relative_error_pct": 13.070723327533138
     },
     "Random Forest + building features (reference)": {
-      "price_per_sqm_r2": 0.7948037588635986,
-      "project_price_per_sqm_r2": 0.8035517864582238,
-      "project_relative_error_pct": 18.090914456263626
+      "price_per_sqm_r2": 0.7786399751205633,
+      "project_price_per_sqm_r2": 0.7632367062445711,
+      "project_relative_error_pct": 15.614903755721823
     },
     "Random Forest + project price level (reference)": {
-      "price_per_sqm_r2": 0.8501607968983235,
-      "project_price_per_sqm_r2": 0.8334681309771708,
-      "project_relative_error_pct": 17.598643286274328
+      "price_per_sqm_r2": 0.8544590817313998,
+      "project_price_per_sqm_r2": 0.8519616966208735,
+      "project_relative_error_pct": 16.02171465289419
     },
     "Website filter: same zone, bedrooms, area +-10%": {
-      "price_per_sqm_r2": 0.5246681962452582,
-      "project_price_per_sqm_r2": 0.5070301595049673,
-      "project_relative_error_pct": 31.209105274817677
+      "price_per_sqm_r2": 0.5791848667875885,
+      "project_price_per_sqm_r2": 0.5138250685731021,
+      "project_relative_error_pct": 27.526426408570202
     }
   },
   "test_results_project_split": {
     "Baseline: zone median price/sqm x area": {
-      "mae_thb": 2391311.3426279034,
-      "mape_pct": 34.14205426615353,
-      "median_ape_pct": 29.39037589586075,
-      "r2": 0.7597796200591578,
-      "rmse_thb": 4818433.6542977,
-      "within_10pct": 21.483771251931994,
-      "within_20pct": 36.476043276661514
+      "mae_thb": 2082068.876246219,
+      "mape_pct": 29.692723758014495,
+      "median_ape_pct": 24.810457516339877,
+      "r2": 0.6368565724008513,
+      "rmse_thb": 4890099.956005847,
+      "within_10pct": 22.127659574468083,
+      "within_20pct": 41.27659574468085
     },
     "Blend: LR + GB (extended + IDW, CV-weighted)": {
-      "mae_thb": 1487591.2460197369,
-      "mape_pct": 18.89556693851828,
-      "median_ape_pct": 13.604924290753209,
-      "r2": 0.8107322716458395,
-      "rmse_thb": 4276999.9339306215,
-      "within_10pct": 38.02163833075734,
-      "within_20pct": 66.76970633693972
+      "mae_thb": 1234389.409631075,
+      "mape_pct": 17.4715909477775,
+      "median_ape_pct": 14.561380967894774,
+      "r2": 0.8196978098638305,
+      "rmse_thb": 3445713.3320857114,
+      "within_10pct": 35.60283687943262,
+      "within_20pct": 64.68085106382979
     },
     "Blend: Linear Regression + Gradient Boosting (building + neighbourhood price)": {
-      "mae_thb": 1669428.0287060733,
-      "mape_pct": 20.402284279969066,
-      "median_ape_pct": 14.032626855116142,
-      "r2": 0.7762884403596872,
-      "rmse_thb": 4649916.6854562275,
-      "within_10pct": 37.86707882534776,
-      "within_20pct": 64.45131375579598
+      "mae_thb": 1279189.7366538437,
+      "mape_pct": 17.93474519522354,
+      "median_ape_pct": 13.991741439010132,
+      "r2": 0.8141187888322302,
+      "rmse_thb": 3498616.8945774413,
+      "within_10pct": 37.4468085106383,
+      "within_20pct": 65.24822695035462
     },
     "FFBP neural network (K-Means tiers)": {
-      "mae_thb": 1923368.771723877,
-      "mape_pct": 29.987445510127497,
-      "median_ape_pct": 24.169175659343182,
-      "r2": 0.840709672274363,
-      "rmse_thb": 3923698.799577643,
-      "within_10pct": 22.411128284389488,
-      "within_20pct": 42.96754250386399
+      "mae_thb": 1992616.2675770016,
+      "mape_pct": 27.761117545237347,
+      "median_ape_pct": 23.388157044985032,
+      "r2": 0.6617754867048988,
+      "rmse_thb": 4719339.083611724,
+      "within_10pct": 23.26241134751773,
+      "within_20pct": 44.39716312056737
     },
     "FFBP neural network + building + neighbourhood price": {
-      "mae_thb": 1576505.4626436592,
-      "mape_pct": 20.9757740138189,
-      "median_ape_pct": 14.98443236450187,
-      "r2": 0.8649675996592967,
-      "rmse_thb": 3612600.6240646,
-      "within_10pct": 35.7032457496136,
-      "within_20pct": 63.52395672333848
+      "mae_thb": 1313606.867237562,
+      "mape_pct": 19.267270526806172,
+      "median_ape_pct": 14.725805858600493,
+      "r2": 0.7951241511220386,
+      "rmse_thb": 3673026.191435579,
+      "within_10pct": 37.730496453900706,
+      "within_20pct": 62.69503546099291
     },
     "FFBP neural network + building features": {
-      "mae_thb": 2019408.881119,
-      "mape_pct": 24.91177065444962,
-      "median_ape_pct": 18.61196690374434,
-      "r2": 0.7281891489767636,
-      "rmse_thb": 5125477.765680707,
-      "within_10pct": 23.64760432766615,
-      "within_20pct": 54.09582689335394
+      "mae_thb": 1527670.9449490472,
+      "mape_pct": 21.710694342111235,
+      "median_ape_pct": 16.646990734066886,
+      "r2": 0.7322746220007184,
+      "rmse_thb": 4198782.828200509,
+      "within_10pct": 28.368794326241137,
+      "within_20pct": 58.01418439716311
     },
     "Gradient Boosting (K-Means tiers, reference)": {
-      "mae_thb": 2289071.520229598,
-      "mape_pct": 32.32936936687324,
-      "median_ape_pct": 25.904856482595868,
-      "r2": 0.7703789733815724,
-      "rmse_thb": 4710931.462337937,
-      "within_10pct": 20.247295208655334,
-      "within_20pct": 38.639876352395675
+      "mae_thb": 2183267.821568897,
+      "mape_pct": 29.449230731481347,
+      "median_ape_pct": 22.71572051576701,
+      "r2": 0.5434770117162042,
+      "rmse_thb": 5482895.490596013,
+      "within_10pct": 24.53900709219858,
+      "within_20pct": 44.82269503546099
     },
     "Gradient Boosting (log price/sqm) + extended + IDW (reference)": {
-      "mae_thb": 1743591.7081714475,
-      "mape_pct": 20.53499794734349,
-      "median_ape_pct": 14.650129820187768,
-      "r2": 0.735842834860717,
-      "rmse_thb": 5052800.558614529,
-      "within_10pct": 36.78516228748068,
-      "within_20pct": 64.76043276661515
+      "mae_thb": 1312138.6703952677,
+      "mape_pct": 18.26304484195724,
+      "median_ape_pct": 14.903444827470139,
+      "r2": 0.7854957798509208,
+      "rmse_thb": 3758344.2961560325,
+      "within_10pct": 34.8936170212766,
+      "within_20pct": 63.40425531914894
     },
     "Gradient Boosting + building + neighbourhood price (reference)": {
-      "mae_thb": 1953338.2665957538,
-      "mape_pct": 21.855846737643063,
-      "median_ape_pct": 15.150724859022388,
-      "r2": 0.6643287776168636,
-      "rmse_thb": 5695843.050714134,
-      "within_10pct": 35.08500772797527,
-      "within_20pct": 61.82380216383307
+      "mae_thb": 1387203.3603276922,
+      "mape_pct": 18.54431819463507,
+      "median_ape_pct": 14.474688203011901,
+      "r2": 0.8000589403436148,
+      "rmse_thb": 3628520.966808842,
+      "within_10pct": 35.177304964539005,
+      "within_20pct": 63.68794326241135
     },
     "Gradient Boosting + building + project price level (reference)": {
-      "mae_thb": 2022429.880391856,
-      "mape_pct": 25.18564210186324,
-      "median_ape_pct": 20.776395465265153,
-      "r2": 0.7562515949481443,
-      "rmse_thb": 4853687.933340151,
-      "within_10pct": 24.72952086553323,
-      "within_20pct": 48.99536321483771
+      "mae_thb": 1566137.866299828,
+      "mape_pct": 21.263965244408734,
+      "median_ape_pct": 17.48022462695377,
+      "r2": 0.7743173275956073,
+      "rmse_thb": 3855029.8935904433,
+      "within_10pct": 29.078014184397162,
+      "within_20pct": 57.02127659574469
     },
     "Gradient Boosting + building features (reference)": {
-      "mae_thb": 1943357.6171431246,
-      "mape_pct": 24.791923024615446,
-      "median_ape_pct": 19.98963237773156,
-      "r2": 0.7911053562716355,
-      "rmse_thb": 4493291.673585138,
-      "within_10pct": 28.748068006182383,
-      "within_20pct": 50.0772797527048
+      "mae_thb": 1595342.1878185393,
+      "mape_pct": 21.20684455682361,
+      "median_ape_pct": 16.833513501628477,
+      "r2": 0.7749683032202155,
+      "rmse_thb": 3849466.013233198,
+      "within_10pct": 32.4822695035461,
+      "within_20pct": 58.29787234042553
     },
     "Gradient Boosting + project price level (reference)": {
-      "mae_thb": 2473368.8276778795,
-      "mape_pct": 31.450415723002163,
-      "median_ape_pct": 27.411044848184506,
-      "r2": 0.6408788676177202,
-      "rmse_thb": 5891439.7364497585,
-      "within_10pct": 20.401854714064914,
-      "within_20pct": 38.02163833075734
+      "mae_thb": 1998446.4329623801,
+      "mape_pct": 27.350595906589504,
+      "median_ape_pct": 23.914603597004582,
+      "r2": 0.6416488826830771,
+      "rmse_thb": 4857726.099112537,
+      "within_10pct": 21.134751773049647,
+      "within_20pct": 42.5531914893617
     },
     "KNN Regression (K-Means tiers)": {
-      "mae_thb": 2727837.697170699,
-      "mape_pct": 33.59685123912352,
-      "median_ape_pct": 27.121827965105815,
-      "r2": 0.5920249045071653,
-      "rmse_thb": 6279394.743558007,
-      "within_10pct": 18.701700154559507,
-      "within_20pct": 36.16692426584235
+      "mae_thb": 2221910.557342896,
+      "mape_pct": 30.37519072532482,
+      "median_ape_pct": 25.19183251607831,
+      "r2": 0.5802670320380741,
+      "rmse_thb": 5257329.33406468,
+      "within_10pct": 20.425531914893615,
+      "within_20pct": 39.71631205673759
     },
     "KNN Regression + building features": {
-      "mae_thb": 2558947.064826477,
-      "mape_pct": 30.98106480071909,
-      "median_ape_pct": 23.854667646587767,
-      "r2": 0.6490663591093516,
-      "rmse_thb": 5823893.972924306,
-      "within_10pct": 22.720247295208658,
-      "within_20pct": 43.585780525502315
+      "mae_thb": 2215225.686936667,
+      "mape_pct": 28.205032744934087,
+      "median_ape_pct": 24.1341846210548,
+      "r2": 0.5369241778267801,
+      "rmse_thb": 5522105.447003651,
+      "within_10pct": 24.680851063829788,
+      "within_20pct": 42.695035460992905
     },
     "KNN Regression + project price level": {
-      "mae_thb": 3047213.3427224355,
-      "mape_pct": 36.44845968933451,
-      "median_ape_pct": 32.34639359276509,
-      "r2": 0.5489511881647184,
-      "rmse_thb": 6602565.682858763,
-      "within_10pct": 13.446676970633694,
-      "within_20pct": 31.839258114374037
+      "mae_thb": 2334726.277350503,
+      "mape_pct": 32.7023340372181,
+      "median_ape_pct": 28.389779343660525,
+      "r2": 0.4949762244911109,
+      "rmse_thb": 5766795.54586861,
+      "within_10pct": 16.170212765957448,
+      "within_20pct": 33.90070921985816
     },
     "Linear Regression (Fuzzy C-Means memberships)": {
-      "mae_thb": 2118117.86800294,
-      "mape_pct": 31.17196141702534,
-      "median_ape_pct": 25.614226444387043,
-      "r2": 0.7987680654489941,
-      "rmse_thb": 4410109.87631048,
-      "within_10pct": 24.111282843894898,
-      "within_20pct": 41.88562596599691
+      "mae_thb": 1960724.395214649,
+      "mape_pct": 27.37860061974126,
+      "median_ape_pct": 23.539787176018294,
+      "r2": 0.6927048208034956,
+      "rmse_thb": 4498383.896176879,
+      "within_10pct": 21.70212765957447,
+      "within_20pct": 43.54609929078014
     },
     "Linear Regression (K-Means tiers)": {
-      "mae_thb": 1842704.956513277,
-      "mape_pct": 30.10385373710837,
-      "median_ape_pct": 24.25419130326341,
-      "r2": 0.8739463543922744,
-      "rmse_thb": 3490427.8399579166,
-      "within_10pct": 21.947449768160745,
-      "within_20pct": 44.04945904173106
+      "mae_thb": 2007047.6777439867,
+      "mape_pct": 28.19075284799454,
+      "median_ape_pct": 22.89223464784527,
+      "r2": 0.6647996833093657,
+      "rmse_thb": 4698192.98768733,
+      "within_10pct": 22.69503546099291,
+      "within_20pct": 44.39716312056737
     },
     "Linear Regression (no location)": {
-      "mae_thb": 2813112.552212527,
-      "mape_pct": 40.2754836162381,
-      "median_ape_pct": 31.166819144084997,
-      "r2": 0.610173392693148,
-      "rmse_thb": 6138138.701882198,
-      "within_10pct": 16.537867078825347,
-      "within_20pct": 32.30293663060278
+      "mae_thb": 2298657.6421687803,
+      "mape_pct": 36.542324863155514,
+      "median_ape_pct": 31.440326405163017,
+      "r2": 0.5949904079893333,
+      "rmse_thb": 5164298.0220385,
+      "within_10pct": 17.588652482269502,
+      "within_20pct": 32.62411347517731
     },
     "Linear Regression + building + neighbourhood price": {
-      "mae_thb": 1594229.6674505048,
-      "mape_pct": 21.291605656928894,
-      "median_ape_pct": 15.537057370927384,
-      "r2": 0.7792201372760547,
-      "rmse_thb": 4619348.0747998515,
-      "within_10pct": 34.15765069551777,
-      "within_20pct": 60.278207109737245
+      "mae_thb": 1349596.5429603755,
+      "mape_pct": 19.59896046603666,
+      "median_ape_pct": 15.658084906681358,
+      "r2": 0.7799491707838878,
+      "rmse_thb": 3806625.4506182536,
+      "within_10pct": 35.46099290780142,
+      "within_20pct": 63.829787234042556
     },
     "Linear Regression + building + project price level": {
-      "mae_thb": 1949983.3800403136,
-      "mape_pct": 27.385007364301327,
-      "median_ape_pct": 24.4429882320814,
-      "r2": 0.8438065986511107,
-      "rmse_thb": 3885369.2610562653,
-      "within_10pct": 23.02936630602782,
-      "within_20pct": 42.65842349304482
+      "mae_thb": 1898355.4280952197,
+      "mape_pct": 25.146327132127094,
+      "median_ape_pct": 22.11611833492189,
+      "r2": 0.6923253172316969,
+      "rmse_thb": 4501160.7474286305,
+      "within_10pct": 21.27659574468085,
+      "within_20pct": 45.248226950354606
     },
     "Linear Regression + building features": {
-      "mae_thb": 1544122.7097052487,
-      "mape_pct": 23.982394704109858,
-      "median_ape_pct": 18.094196665738206,
-      "r2": 0.9071356174039267,
-      "rmse_thb": 2995887.8148794547,
-      "within_10pct": 23.183925811437405,
-      "within_20pct": 55.332302936630605
+      "mae_thb": 1681649.0450804965,
+      "mape_pct": 22.445118166595694,
+      "median_ape_pct": 17.90000508862434,
+      "r2": 0.6875347688223981,
+      "rmse_thb": 4536067.325358746,
+      "within_10pct": 27.801418439716315,
+      "within_20pct": 55.0354609929078
     },
     "Linear Regression + building features (Fuzzy C-Means memberships)": {
-      "mae_thb": 2031102.4990018266,
-      "mape_pct": 26.365573425738177,
-      "median_ape_pct": 18.904532334288007,
-      "r2": 0.776398526882548,
-      "rmse_thb": 4648772.452788132,
-      "within_10pct": 27.51159196290572,
-      "within_20pct": 53.63214837712519
+      "mae_thb": 1670162.4512714494,
+      "mape_pct": 22.313827758311117,
+      "median_ape_pct": 17.82720388088093,
+      "r2": 0.7026432299671139,
+      "rmse_thb": 4425043.634353485,
+      "within_10pct": 29.929078014184395,
+      "within_20pct": 54.751773049645394
     },
     "Linear Regression + extended + project price level": {
-      "mae_thb": 1867348.2605647047,
-      "mape_pct": 24.943880718451805,
-      "median_ape_pct": 21.554227337275975,
-      "r2": 0.8396838691743245,
-      "rmse_thb": 3936312.5070194835,
-      "within_10pct": 25.811437403400312,
-      "within_20pct": 47.14064914992272
+      "mae_thb": 1702726.931423907,
+      "mape_pct": 22.752894577608455,
+      "median_ape_pct": 20.192385674790135,
+      "r2": 0.747112562711505,
+      "rmse_thb": 4080771.429086141,
+      "within_10pct": 22.69503546099291,
+      "within_20pct": 49.50354609929078
     },
     "Linear Regression + extended building + multi-scale IDW": {
-      "mae_thb": 1306236.116539648,
-      "mape_pct": 18.551077813574178,
-      "median_ape_pct": 13.598135803203396,
-      "r2": 0.847267770639781,
-      "rmse_thb": 3842079.121586592,
-      "within_10pct": 37.09428129829985,
-      "within_20pct": 65.84234930448223
+      "mae_thb": 1214064.4266449725,
+      "mape_pct": 18.034266382498043,
+      "median_ape_pct": 14.94880830475899,
+      "r2": 0.8414439700265918,
+      "rmse_thb": 3231246.006967332,
+      "within_10pct": 35.88652482269504,
+      "within_20pct": 64.822695035461
     },
     "Linear Regression + project price level": {
-      "mae_thb": 2256805.342719213,
-      "mape_pct": 31.004148351449857,
-      "median_ape_pct": 28.24920795519772,
-      "r2": 0.7925809426184122,
-      "rmse_thb": 4477393.731188422,
-      "within_10pct": 20.09273570324575,
-      "within_20pct": 39.721792890262755
+      "mae_thb": 2094649.3636753296,
+      "mape_pct": 28.227366640108613,
+      "median_ape_pct": 26.421971469840827,
+      "r2": 0.6473878901590748,
+      "rmse_thb": 4818670.760906561,
+      "within_10pct": 16.595744680851062,
+      "within_20pct": 38.72340425531915
     },
     "Random Forest (K-Means tiers, reference)": {
-      "mae_thb": 2508899.0684623993,
-      "mape_pct": 34.581401177009646,
-      "median_ape_pct": 25.632718066443978,
-      "r2": 0.6718596953825842,
-      "rmse_thb": 5631586.344650897,
-      "within_10pct": 19.938176197836167,
-      "within_20pct": 38.33075734157651
+      "mae_thb": 2297093.829961675,
+      "mape_pct": 31.502766729883792,
+      "median_ape_pct": 25.168347416737603,
+      "r2": 0.5521982452805401,
+      "rmse_thb": 5430271.424185826,
+      "within_10pct": 21.98581560283688,
+      "within_20pct": 39.57446808510638
     },
     "Random Forest (log price/sqm) + extended + IDW (reference)": {
-      "mae_thb": 1666262.7321794983,
-      "mape_pct": 21.079020117508144,
-      "median_ape_pct": 15.42123708923136,
-      "r2": 0.800074889134098,
-      "rmse_thb": 4395766.667462853,
-      "within_10pct": 35.54868624420402,
-      "within_20pct": 62.287480680061826
+      "mae_thb": 1388351.180645647,
+      "mape_pct": 19.8511714997345,
+      "median_ape_pct": 16.399531722214256,
+      "r2": 0.8299886683201032,
+      "rmse_thb": 3345935.5924926153,
+      "within_10pct": 28.794326241134755,
+      "within_20pct": 59.43262411347517
     },
     "Random Forest + building features (reference)": {
-      "mae_thb": 2067387.5033972606,
-      "mape_pct": 27.80037445529999,
-      "median_ape_pct": 20.19415354140679,
-      "r2": 0.797681321128094,
-      "rmse_thb": 4422002.145413323,
-      "within_10pct": 27.51159196290572,
-      "within_20pct": 49.92272024729521
+      "mae_thb": 1619772.7121688316,
+      "mape_pct": 22.908248721355484,
+      "median_ape_pct": 18.257920725868416,
+      "r2": 0.7481294124864784,
+      "rmse_thb": 4072558.859821457,
+      "within_10pct": 28.936170212765955,
+      "within_20pct": 54.60992907801418
     },
     "Random Forest + project price level (reference)": {
-      "mae_thb": 2317562.8608621224,
-      "mape_pct": 31.417085414945323,
-      "median_ape_pct": 25.778223390863875,
-      "r2": 0.7116214524814775,
-      "rmse_thb": 5279374.054816477,
-      "within_10pct": 19.629057187017,
-      "within_20pct": 40.49459041731067
+      "mae_thb": 2118187.614318411,
+      "mape_pct": 29.6943765128354,
+      "median_ape_pct": 25.53026811124232,
+      "r2": 0.6568066590923418,
+      "rmse_thb": 4753878.397510758,
+      "within_10pct": 18.29787234042553,
+      "within_20pct": 39.290780141843975
     },
     "Website filter: same zone, bedrooms, area +-10%": {
-      "mae_thb": 2660828.9092799383,
-      "mape_pct": 35.04950869586141,
-      "median_ape_pct": 31.199121072291796,
-      "r2": 0.6859805068726137,
-      "rmse_thb": 5509082.3320239065,
-      "within_10pct": 20.247295208655334,
-      "within_20pct": 35.7032457496136
+      "mae_thb": 2356431.243092865,
+      "mape_pct": 33.64517992495447,
+      "median_ape_pct": 27.200000000000003,
+      "r2": 0.5830149366971431,
+      "rmse_thb": 5240091.752815287,
+      "within_10pct": 16.02836879432624,
+      "within_20pct": 39.43262411347518
     }
   },
   "test_results_random_split": {
     "Baseline: zone median price/sqm x area": {
-      "mae_thb": 2293840.353037785,
-      "mape_pct": 29.443409331351344,
-      "median_ape_pct": 21.42923815571537,
-      "r2": 0.7120284041314885,
-      "rmse_thb": 6054035.339646644,
-      "within_10pct": 25.49618320610687,
-      "within_20pct": 47.02290076335878
+      "mae_thb": 2167269.3942194,
+      "mape_pct": 28.476381386997712,
+      "median_ape_pct": 23.45855564228327,
+      "r2": 0.7649682651376745,
+      "rmse_thb": 5308372.214691753,
+      "within_10pct": 23.174603174603174,
+      "within_20pct": 44.285714285714285
     },
     "Blend: LR + GB (extended + IDW, CV-weighted)": {
-      "mae_thb": 1259727.9116086839,
-      "mape_pct": 14.769162212183742,
-      "median_ape_pct": 9.738567042563826,
-      "r2": 0.8506754993356642,
-      "rmse_thb": 4359489.748751199,
-      "within_10pct": 50.99236641221374,
-      "within_20pct": 78.32061068702289
+      "mae_thb": 1195174.254898556,
+      "mape_pct": 14.595516971966996,
+      "median_ape_pct": 10.559407063348264,
+      "r2": 0.8624509045046651,
+      "rmse_thb": 4060943.8404659294,
+      "within_10pct": 47.3015873015873,
+      "within_20pct": 76.03174603174602
     },
     "Blend: Linear Regression + Gradient Boosting (building + neighbourhood price)": {
-      "mae_thb": 1347970.7679560657,
-      "mape_pct": 16.006668295899786,
-      "median_ape_pct": 11.246133388619807,
-      "r2": 0.86887468352233,
-      "rmse_thb": 4085200.7210079064,
-      "within_10pct": 44.88549618320611,
-      "within_20pct": 72.51908396946564
+      "mae_thb": 1292462.2613451723,
+      "mape_pct": 16.449151120139394,
+      "median_ape_pct": 12.8265198777117,
+      "r2": 0.869389737655645,
+      "rmse_thb": 3957188.7437050072,
+      "within_10pct": 39.84126984126984,
+      "within_20pct": 71.26984126984127
     },
     "FFBP neural network (K-Means tiers)": {
-      "mae_thb": 2186904.3464207146,
-      "mape_pct": 27.860712681543575,
-      "median_ape_pct": 21.436943369120055,
-      "r2": 0.7272412269791266,
-      "rmse_thb": 5891955.922749921,
-      "within_10pct": 26.564885496183205,
-      "within_20pct": 47.02290076335878
+      "mae_thb": 2087218.0395154257,
+      "mape_pct": 28.199436725184285,
+      "median_ape_pct": 22.519803701370908,
+      "r2": 0.7532913926435119,
+      "rmse_thb": 5438639.4055154715,
+      "within_10pct": 22.380952380952383,
+      "within_20pct": 44.920634920634924
     },
     "FFBP neural network + building + neighbourhood price": {
-      "mae_thb": 1538439.8823914665,
-      "mape_pct": 17.726849203191268,
-      "median_ape_pct": 12.858728659044496,
-      "r2": 0.8117783249941543,
-      "rmse_thb": 4894461.787080218,
-      "within_10pct": 40.30534351145038,
-      "within_20pct": 68.24427480916032
+      "mae_thb": 1501395.559046928,
+      "mape_pct": 18.42571937288521,
+      "median_ape_pct": 13.959188149733325,
+      "r2": 0.828945778072223,
+      "rmse_thb": 4528610.95772026,
+      "within_10pct": 35.87301587301587,
+      "within_20pct": 64.28571428571429
     },
     "FFBP neural network + building features": {
-      "mae_thb": 1603205.8101047208,
-      "mape_pct": 18.567396879896762,
-      "median_ape_pct": 14.143843482242183,
-      "r2": 0.7833128431034981,
-      "rmse_thb": 5251540.400046201,
-      "within_10pct": 38.62595419847328,
-      "within_20pct": 66.10687022900763
+      "mae_thb": 1538468.8788183678,
+      "mape_pct": 19.731694733029393,
+      "median_ape_pct": 15.641604045005414,
+      "r2": 0.818373429671069,
+      "rmse_thb": 4666462.769670765,
+      "within_10pct": 36.03174603174603,
+      "within_20pct": 61.111111111111114
     },
     "Gradient Boosting (K-Means tiers, reference)": {
-      "mae_thb": 2070560.0202136745,
-      "mape_pct": 27.118459531671927,
-      "median_ape_pct": 21.179612555900043,
-      "r2": 0.8014054340500013,
-      "rmse_thb": 5027519.985064222,
-      "within_10pct": 25.64885496183206,
-      "within_20pct": 47.32824427480916
+      "mae_thb": 1919527.994957642,
+      "mape_pct": 27.56174588281884,
+      "median_ape_pct": 21.644509853909778,
+      "r2": 0.8439236755899451,
+      "rmse_thb": 4325801.915455793,
+      "within_10pct": 25.396825396825395,
+      "within_20pct": 47.14285714285714
     },
     "Gradient Boosting (log price/sqm) + extended + IDW (reference)": {
-      "mae_thb": 1259727.9116086839,
-      "mape_pct": 14.769162212183742,
-      "median_ape_pct": 9.738567042563826,
-      "r2": 0.8506754993356642,
-      "rmse_thb": 4359489.748751199,
-      "within_10pct": 50.99236641221374,
-      "within_20pct": 78.32061068702289
+      "mae_thb": 1195174.254898556,
+      "mape_pct": 14.595516971966996,
+      "median_ape_pct": 10.559407063348264,
+      "r2": 0.8624509045046651,
+      "rmse_thb": 4060943.8404659294,
+      "within_10pct": 47.3015873015873,
+      "within_20pct": 76.03174603174602
     },
     "Gradient Boosting + building + neighbourhood price (reference)": {
-      "mae_thb": 1316774.4068683714,
-      "mape_pct": 15.11829728770807,
-      "median_ape_pct": 10.965982633650894,
-      "r2": 0.8454595013530557,
-      "rmse_thb": 4434976.059465426,
-      "within_10pct": 45.80152671755725,
-      "within_20pct": 75.72519083969466
+      "mae_thb": 1084823.4144617575,
+      "mape_pct": 14.814990568640113,
+      "median_ape_pct": 11.555199807900063,
+      "r2": 0.8924479247142278,
+      "rmse_thb": 3590934.73193917,
+      "within_10pct": 43.17460317460318,
+      "within_20pct": 75.87301587301587
     },
     "Gradient Boosting + building + project price level (reference)": {
-      "mae_thb": 1213344.6497461468,
-      "mape_pct": 14.529537202985773,
-      "median_ape_pct": 9.914758901560413,
-      "r2": 0.8998354873012359,
-      "rmse_thb": 3570483.796002571,
-      "within_10pct": 50.38167938931297,
-      "within_20pct": 77.55725190839695
+      "mae_thb": 1054973.5927298681,
+      "mape_pct": 14.122923905088278,
+      "median_ape_pct": 9.686803313907806,
+      "r2": 0.9180503195624723,
+      "rmse_thb": 3134525.0603450323,
+      "within_10pct": 51.746031746031754,
+      "within_20pct": 77.3015873015873
     },
     "Gradient Boosting + building features (reference)": {
-      "mae_thb": 1503736.6856599448,
-      "mape_pct": 16.845814823361593,
-      "median_ape_pct": 11.984682749109506,
-      "r2": 0.8006162921584654,
-      "rmse_thb": 5037498.841103871,
-      "within_10pct": 43.51145038167939,
-      "within_20pct": 70.53435114503816
+      "mae_thb": 1158981.1565896806,
+      "mape_pct": 16.012656007721144,
+      "median_ape_pct": 11.38017991003962,
+      "r2": 0.911643233094756,
+      "rmse_thb": 3254752.8966880036,
+      "within_10pct": 46.34920634920635,
+      "within_20pct": 70.7936507936508
     },
     "Gradient Boosting + project price level (reference)": {
-      "mae_thb": 1257556.6894343959,
-      "mape_pct": 16.049836248058114,
-      "median_ape_pct": 10.772011064520756,
-      "r2": 0.8979719484732,
-      "rmse_thb": 3603544.766264572,
-      "within_10pct": 47.786259541984734,
-      "within_20pct": 74.9618320610687
+      "mae_thb": 1101411.8277255702,
+      "mape_pct": 15.450202565108537,
+      "median_ape_pct": 10.616671019864151,
+      "r2": 0.9210194336738801,
+      "rmse_thb": 3077217.799865236,
+      "within_10pct": 47.77777777777778,
+      "within_20pct": 75.23809523809524
     },
     "KNN Regression (K-Means tiers)": {
-      "mae_thb": 2102876.257422023,
-      "mape_pct": 27.550971363110577,
-      "median_ape_pct": 21.13945625591046,
-      "r2": 0.7546725197434396,
-      "rmse_thb": 5587830.50594412,
-      "within_10pct": 30.076335877862597,
-      "within_20pct": 48.091603053435115
+      "mae_thb": 2303561.2062073913,
+      "mape_pct": 30.528351487271465,
+      "median_ape_pct": 24.097659684875804,
+      "r2": 0.73363960389926,
+      "rmse_thb": 5651099.319299067,
+      "within_10pct": 22.6984126984127,
+      "within_20pct": 43.333333333333336
     },
     "KNN Regression + building features": {
-      "mae_thb": 1825503.7137842786,
-      "mape_pct": 21.948353395180806,
-      "median_ape_pct": 15.702671688234163,
-      "r2": 0.8212099979742831,
-      "rmse_thb": 4770256.586278184,
-      "within_10pct": 34.80916030534351,
-      "within_20pct": 59.84732824427481
+      "mae_thb": 1861652.169228616,
+      "mape_pct": 23.460898641268397,
+      "median_ape_pct": 16.584828160450936,
+      "r2": 0.7963042896322367,
+      "rmse_thb": 4941844.27264667,
+      "within_10pct": 30.634920634920636,
+      "within_20pct": 57.61904761904761
     },
     "KNN Regression + project price level": {
-      "mae_thb": 1675533.7546100754,
-      "mape_pct": 19.40850179551484,
-      "median_ape_pct": 12.96631636286002,
-      "r2": 0.8119170307295909,
-      "rmse_thb": 4892658.022872409,
-      "within_10pct": 40.15267175572519,
-      "within_20pct": 65.34351145038167
+      "mae_thb": 1697098.641146351,
+      "mape_pct": 20.070823609278044,
+      "median_ape_pct": 14.841290299210689,
+      "r2": 0.8283673611826989,
+      "rmse_thb": 4536261.205651785,
+      "within_10pct": 35.714285714285715,
+      "within_20pct": 64.60317460317461
     },
     "Linear Regression (Fuzzy C-Means memberships)": {
-      "mae_thb": 2247401.368007972,
-      "mape_pct": 29.091633359400408,
-      "median_ape_pct": 22.601463205314396,
-      "r2": 0.7533068419334865,
-      "rmse_thb": 5603361.96079122,
-      "within_10pct": 23.358778625954198,
-      "within_20pct": 45.343511450381676
+      "mae_thb": 2169265.1066119303,
+      "mape_pct": 28.3709765371283,
+      "median_ape_pct": 22.888995987913507,
+      "r2": 0.7361560173162105,
+      "rmse_thb": 5624341.872154896,
+      "within_10pct": 24.285714285714285,
+      "within_20pct": 43.17460317460318
     },
     "Linear Regression (K-Means tiers)": {
-      "mae_thb": 2221834.842550997,
-      "mape_pct": 29.106368282402293,
-      "median_ape_pct": 22.96184682564069,
-      "r2": 0.749061911818246,
-      "rmse_thb": 5651365.7811154835,
-      "within_10pct": 24.580152671755727,
-      "within_20pct": 45.80152671755725
+      "mae_thb": 2082253.6352355413,
+      "mape_pct": 28.652248519370215,
+      "median_ape_pct": 23.56067410980211,
+      "r2": 0.7732046479101942,
+      "rmse_thb": 5214530.225321556,
+      "within_10pct": 24.285714285714285,
+      "within_20pct": 44.285714285714285
     },
     "Linear Regression (no location)": {
-      "mae_thb": 2921383.2115628375,
-      "mape_pct": 41.23205636575871,
-      "median_ape_pct": 30.080966665381066,
-      "r2": 0.5798972654831079,
-      "rmse_thb": 7312196.933872451,
-      "within_10pct": 16.030534351145036,
-      "within_20pct": 32.97709923664122
+      "mae_thb": 2313778.4853652646,
+      "mape_pct": 36.835387668252466,
+      "median_ape_pct": 27.774312018326007,
+      "r2": 0.7929667202556339,
+      "rmse_thb": 4982166.018163274,
+      "within_10pct": 18.253968253968253,
+      "within_20pct": 37.142857142857146
     },
     "Linear Regression + building + neighbourhood price": {
-      "mae_thb": 1598990.9084156563,
-      "mape_pct": 19.907660647662876,
-      "median_ape_pct": 14.911682945710158,
-      "r2": 0.8334606713392881,
-      "rmse_thb": 4603928.072590404,
-      "within_10pct": 34.961832061068705,
-      "within_20pct": 61.52671755725191
+      "mae_thb": 1677691.506181882,
+      "mape_pct": 20.681718263785818,
+      "median_ape_pct": 16.756260277309572,
+      "r2": 0.7315079434539444,
+      "rmse_thb": 5673666.900272063,
+      "within_10pct": 30.952380952380953,
+      "within_20pct": 57.77777777777777
     },
     "Linear Regression + building + project price level": {
-      "mae_thb": 1138664.340449794,
-      "mape_pct": 14.938409359624853,
-      "median_ape_pct": 10.917680570260702,
-      "r2": 0.9228267756966733,
-      "rmse_thb": 3134032.154552003,
-      "within_10pct": 47.32824427480916,
-      "within_20pct": 77.25190839694656
+      "mae_thb": 1095526.5965377933,
+      "mape_pct": 15.407805712495733,
+      "median_ape_pct": 11.626724655894753,
+      "r2": 0.9348940432263185,
+      "rmse_thb": 2793884.684176986,
+      "within_10pct": 44.12698412698413,
+      "within_20pct": 73.65079365079366
     },
     "Linear Regression + building features": {
-      "mae_thb": 1758970.3576730227,
-      "mape_pct": 21.320574076281012,
-      "median_ape_pct": 15.86000177085297,
-      "r2": 0.7875509033672192,
-      "rmse_thb": 5199930.864886567,
-      "within_10pct": 32.82442748091603,
-      "within_20pct": 61.06870229007634
+      "mae_thb": 1779706.2768555703,
+      "mape_pct": 23.066694685145062,
+      "median_ape_pct": 17.559684745327353,
+      "r2": 0.823335337795736,
+      "rmse_thb": 4602279.157235056,
+      "within_10pct": 30.0,
+      "within_20pct": 54.6031746031746
     },
     "Linear Regression + building features (Fuzzy C-Means memberships)": {
-      "mae_thb": 1873079.9863444867,
-      "mape_pct": 22.096497687364028,
-      "median_ape_pct": 17.378873526996983,
-      "r2": 0.803807221451718,
-      "rmse_thb": 4997026.287548194,
-      "within_10pct": 30.99236641221374,
-      "within_20pct": 57.25190839694656
+      "mae_thb": 1819589.9069721918,
+      "mape_pct": 22.53736662659187,
+      "median_ape_pct": 17.555166320994438,
+      "r2": 0.8080538392073304,
+      "rmse_thb": 4797200.045874791,
+      "within_10pct": 30.634920634920636,
+      "within_20pct": 55.87301587301587
     },
     "Linear Regression + extended + project price level": {
-      "mae_thb": 1175790.7680177062,
-      "mape_pct": 14.50746999849227,
-      "median_ape_pct": 10.631920862928913,
-      "r2": 0.9112306901844709,
-      "rmse_thb": 3361255.6620844025,
-      "within_10pct": 47.32824427480916,
-      "within_20pct": 78.01526717557252
+      "mae_thb": 1124191.65437833,
+      "mape_pct": 15.074593116112183,
+      "median_ape_pct": 11.562000760152515,
+      "r2": 0.9221433238106811,
+      "rmse_thb": 3055245.0118947984,
+      "within_10pct": 43.65079365079365,
+      "within_20pct": 74.28571428571429
     },
     "Linear Regression + extended building + multi-scale IDW": {
-      "mae_thb": 1573393.2805861512,
-      "mape_pct": 18.417710539716968,
-      "median_ape_pct": 14.513751993430512,
-      "r2": 0.8219305966396403,
-      "rmse_thb": 4760633.8135571405,
-      "within_10pct": 36.94656488549619,
-      "within_20pct": 65.80152671755725
+      "mae_thb": 1539363.3560671844,
+      "mape_pct": 19.013573877349504,
+      "median_ape_pct": 15.526029307443062,
+      "r2": 0.8046086578592997,
+      "rmse_thb": 4840060.298282267,
+      "within_10pct": 32.53968253968254,
+      "within_20pct": 63.17460317460317
     },
     "Linear Regression + project price level": {
-      "mae_thb": 1178748.5552920713,
-      "mape_pct": 15.527230353258497,
-      "median_ape_pct": 10.700598978988229,
-      "r2": 0.921213194529455,
-      "rmse_thb": 3166626.7128605708,
-      "within_10pct": 48.2442748091603,
-      "within_20pct": 76.33587786259542
+      "mae_thb": 1097170.2933810977,
+      "mape_pct": 15.719575957939783,
+      "median_ape_pct": 10.924711410806577,
+      "r2": 0.9354108770191646,
+      "rmse_thb": 2782773.172931884,
+      "within_10pct": 46.666666666666664,
+      "within_20pct": 73.17460317460316
     },
     "Random Forest (K-Means tiers, reference)": {
-      "mae_thb": 2221222.4211116848,
-      "mape_pct": 29.06476344342761,
-      "median_ape_pct": 21.073259986966132,
-      "r2": 0.7523416616290558,
-      "rmse_thb": 5614312.761081226,
-      "within_10pct": 26.717557251908396,
-      "within_20pct": 48.2442748091603
+      "mae_thb": 2072059.1221208475,
+      "mape_pct": 29.04418690736939,
+      "median_ape_pct": 23.66783724154026,
+      "r2": 0.8008168372963949,
+      "rmse_thb": 4886798.435276502,
+      "within_10pct": 22.53968253968254,
+      "within_20pct": 42.06349206349206
     },
     "Random Forest (log price/sqm) + extended + IDW (reference)": {
-      "mae_thb": 1109610.7631386602,
-      "mape_pct": 13.348323765120131,
-      "median_ape_pct": 9.22974217940058,
-      "r2": 0.9016502023856924,
-      "rmse_thb": 3537992.113285459,
-      "within_10pct": 53.89312977099237,
-      "within_20pct": 80.0
+      "mae_thb": 1078560.262668385,
+      "mape_pct": 13.505123810509822,
+      "median_ape_pct": 9.798458674173244,
+      "r2": 0.9063582890687878,
+      "rmse_thb": 3350678.6947615347,
+      "within_10pct": 50.95238095238095,
+      "within_20pct": 78.0952380952381
     },
     "Random Forest + building features (reference)": {
-      "mae_thb": 1492138.9873929613,
-      "mape_pct": 18.19037578754836,
-      "median_ape_pct": 11.718944915972115,
-      "r2": 0.8583045314769651,
-      "rmse_thb": 4246666.008476142,
-      "within_10pct": 43.358778625954194,
-      "within_20pct": 69.61832061068702
+      "mae_thb": 1224846.0137841091,
+      "mape_pct": 16.28468105074762,
+      "median_ape_pct": 11.308419460137696,
+      "r2": 0.9069747738959816,
+      "rmse_thb": 3339630.981340388,
+      "within_10pct": 44.60317460317461,
+      "within_20pct": 72.06349206349206
     },
     "Random Forest + project price level (reference)": {
-      "mae_thb": 1308573.1645693644,
-      "mape_pct": 16.514072687098082,
-      "median_ape_pct": 10.660139693637266,
-      "r2": 0.8733766323893611,
-      "rmse_thb": 4014459.2607271457,
-      "within_10pct": 47.48091603053435,
-      "within_20pct": 73.2824427480916
+      "mae_thb": 1158478.1696579428,
+      "mape_pct": 15.913234625813926,
+      "median_ape_pct": 11.029814697170936,
+      "r2": 0.9114273113954814,
+      "rmse_thb": 3258727.36845315,
+      "within_10pct": 48.095238095238095,
+      "within_20pct": 72.85714285714285
     },
     "Website filter: same zone, bedrooms, area +-10%": {
-      "mae_thb": 2223454.335820476,
-      "mape_pct": 28.897105138241024,
-      "median_ape_pct": 19.0,
-      "r2": 0.5833641819357456,
-      "rmse_thb": 7281962.311718584,
-      "within_10pct": 29.770992366412212,
-      "within_20pct": 52.213740458015266
+      "mae_thb": 1988550.4415329085,
+      "mape_pct": 27.48000962219614,
+      "median_ape_pct": 19.80766345391282,
+      "r2": 0.7640428478040056,
+      "rmse_thb": 5318812.578336892,
+      "within_10pct": 27.77777777777778,
+      "within_20pct": 50.15873015873016
     }
   },
   "web_reliability": {
     "blend_unseen": {
-      "mape_pct": 18.89556693851828,
-      "test_units": 647,
-      "within_20pct": 66.76970633693972
+      "mape_pct": 17.4715909477775,
+      "test_units": 705,
+      "within_20pct": 64.68085106382979
     },
     "project_level": {
-      "mape_pct": 13.144539933944252,
-      "test_units": 570,
-      "within_20pct": 81.22807017543859
+      "mape_pct": 12.22490009078666,
+      "test_units": 535,
+      "within_20pct": 83.3644859813084
     }
   },
   "website_filter_match_pct": {
-    "project_split": 89.18083462132921,
-    "random_split": 93.43511450381679
+    "project_split": 89.7872340425532,
+    "random_split": 95.23809523809524
   }
 }
