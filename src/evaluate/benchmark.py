@@ -29,18 +29,18 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import HistGradientBoostingRegressor
 
 from src.clean.clean import twin_groups
 from src.evaluate.run import (
     CLEAN_CSV, MAX_PAGES_PER_ZONE, PROJECTS_CSV, REPORTS_DIR, best_zone_clustering,
-    choose_extended_settings, make_extended_gb,
+    choose_extended_settings,
 )
 from src.features.build import (
     BuildingFeatures, ExtendedBuildingFeatures, KnownBuildingPrice, MultiScaleNeighbourhood, ProjectPriceLevels,
     ZoneClustering, attach_buildings, feature_frame, project_key,
 )
 from src.models import linear_regression as lr
+from src.models.unseen_ensemble import UnseenBuildingEnsemble
 
 LOG = logging.getLogger(__name__)
 CV_FOLDS = 5
@@ -110,7 +110,8 @@ def usable_extra(extra: pd.DataFrame, held_out: pd.DataFrame) -> pd.DataFrame:
 
 @dataclass
 class WebModels:
-    """The two models the web app uses, fitted the same way as in run.py."""
+    """The two models the web app uses, fitted the same way as in run.py: the known-building
+    model and the unseen-building ensemble (src/models/unseen_ensemble.py)."""
 
     clustering: ZoneClustering
     buildings: BuildingFeatures
@@ -118,9 +119,7 @@ class WebModels:
     levels: ProjectPriceLevels
     neighbourhood: MultiScaleNeighbourhood
     W_project: np.ndarray
-    W_extended: np.ndarray
-    gb_extended: HistGradientBoostingRegressor
-    w_lr: float
+    unseen: UnseenBuildingEnsemble
     zone_price_per_sqm: pd.Series
     known_model: KnownBuildingPrice
     history_levels: ProjectPriceLevels
@@ -132,21 +131,15 @@ class WebModels:
         buildings = BuildingFeatures.fit(train)
         levels = ProjectPriceLevels.fit(train)
         log_price = np.log(train["price_thb"].to_numpy())
-        log_ppsqm = np.log(train["price_per_sqm"].to_numpy())
         x_project = feature_frame(train, clustering, project_levels=levels.transform(train, leave_one_out=True),
                                   buildings=buildings.transform(train)).to_numpy()
         ext_settings = choose_extended_settings(train, clustering, groups=groups)
-        extended_buildings = ExtendedBuildingFeatures.fit(train)
-        neighbourhood = MultiScaleNeighbourhood.fit(train)
-        x_extended = feature_frame(train, clustering, buildings=extended_buildings.transform(train),
-                                   neighbourhood=neighbourhood.transform(train)).to_numpy()
+        unseen = UnseenBuildingEnsemble.fit(train, clustering, l2=ext_settings["l2"])
         models = cls(
-            clustering=clustering, buildings=buildings, extended_buildings=extended_buildings,
-            levels=levels, neighbourhood=neighbourhood,
+            clustering=clustering, buildings=buildings, extended_buildings=unseen.extended_buildings,
+            levels=levels, neighbourhood=unseen.neighbourhood,
             W_project=lr.fit(x_project, log_price),
-            W_extended=lr.fit(x_extended, log_price, l2=ext_settings["l2"]),
-            gb_extended=make_extended_gb().fit(x_extended, log_ppsqm),
-            w_lr=float(ext_settings["w_lr"]),
+            unseen=unseen,
             zone_price_per_sqm=train.groupby("zone_no")["price_per_sqm"].median(),
             known_model=None, history_levels=None,
         )
@@ -156,28 +149,20 @@ class WebModels:
         return models
 
     def unseen_log_ppsqm(self, listings: pd.DataFrame) -> np.ndarray:
-        """Log price per sqm from the unseen-building blend, the prior for the known-building model."""
-        x_extended = feature_frame(listings, self.clustering, buildings=self.extended_buildings.transform(listings),
-                                   neighbourhood=self.neighbourhood.transform(listings)).to_numpy()
-        log_lr = lr.predict(x_extended, self.W_extended) - np.log(listings["area_sqm"].to_numpy())
-        return self.w_lr * log_lr + (1.0 - self.w_lr) * self.gb_extended.predict(x_extended)
+        """Log price per sqm from the unseen-building ensemble, the prior for the known-building model."""
+        return np.log(self.unseen.predict(listings, self.clustering) / listings["area_sqm"].to_numpy())
 
     def predict(self, listings: pd.DataFrame) -> pd.DataFrame:
         buildings = self.buildings.transform(listings)
-        extended_buildings = self.extended_buildings.transform(listings)
         levels = self.levels.transform(listings, leave_one_out=False)
         x_project = feature_frame(listings, self.clustering, project_levels=levels, buildings=buildings).to_numpy()
-        x_extended = feature_frame(listings, self.clustering, buildings=extended_buildings,
-                                   neighbourhood=self.neighbourhood.transform(listings)).to_numpy()
         area = listings["area_sqm"].to_numpy()
-        log_lr = lr.predict(x_extended, self.W_extended)
-        log_gb = self.gb_extended.predict(x_extended) + np.log(area)
-        blend_log = self.w_lr * log_lr + (1.0 - self.w_lr) * log_gb
-        known_price = self.known_model.predict(listings, blend_log - np.log(area))
+        blend = self.unseen.predict(listings, self.clustering)
+        known_price = self.known_model.predict(listings, np.log(blend / area))
         history = self.history_levels.transform(listings, leave_one_out=False)
         known = np.isfinite(known_price)
         return pd.DataFrame({
-            "blend": np.exp(blend_log),
+            "blend": blend,
             "project_level": known_price,
             "project_level_lr": np.where(levels["has_project_history"].to_numpy() > 0,
                                          np.exp(lr.predict(x_project, self.W_project)), np.nan),
