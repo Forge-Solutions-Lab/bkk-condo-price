@@ -18,7 +18,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.features.build import BASE_YEAR, ZoneClustering, attach_buildings, feature_frame, project_key  # noqa: E402
+from src.features.build import (  # noqa: E402
+    BASE_YEAR, ZoneClustering, attach_buildings, clean_coordinates, feature_frame, project_key,
+)
 from src.models import ffbp  # noqa: E402
 from src.models import linear_regression as lr  # noqa: E402
 from src.models.knn_regression import knn, neighbors  # noqa: E402
@@ -73,6 +75,20 @@ def zone_labels_map(bundle: dict[str, Any]) -> dict[int, str]:
     return {int(row["zone_no"]): zone_label(row) for _, row in zones.iterrows()}
 
 
+def zone_centres(bundle: dict[str, Any]) -> pd.DataFrame:
+    """Median coordinates of each zone's buildings. A unit with no project has no building
+    coordinates; without a stand-in location its neighbourhood features look like those of the few
+    training listings with no project, and KNN matched cheap units from other zones."""
+    cached = bundle.get("_zone_centres")
+    if cached is None:
+        located = clean_coordinates(bundle["projects"]).dropna(subset=["latitude", "longitude"])
+        zone_of = project_key(located["project_name"]).map(bundle.get("project_zones", {}))
+        located = located.assign(zone_no=zone_of).dropna(subset=["zone_no"])
+        cached = located.groupby(located["zone_no"].astype(int))[["latitude", "longitude"]].median()
+        bundle["_zone_centres"] = cached
+    return cached
+
+
 def build_input(
     bundle: dict[str, Any],
     zone_no: int,
@@ -109,7 +125,24 @@ def build_input(
         listing["manual_building_input"] = True
     else:
         listing["manual_building_input"] = False
+    centres = zone_centres(bundle)
+    no_location = listing[["latitude", "longitude"]].isna().any(axis=1).iloc[0]
+    listing["location_from_zone"] = bool(no_location and effective_zone in centres.index)
+    if listing["location_from_zone"].iloc[0]:
+        listing[["latitude", "longitude"]] = centres.loc[effective_zone].to_numpy()
     return listing
+
+
+def similar_rooms(bundle: dict[str, Any], knn_model: dict[str, Any], z: np.ndarray, zone_no: int) -> pd.DataFrame:
+    """The KNN's closest training rooms within the unit's own zone (the whole data if the zone has
+    too few rooms), so the table shows comparable rooms a buyer would recognise."""
+    rows = bundle["reference_rows"]
+    zone_name = bundle["zone_table"].set_index("zone_no")["zone_name_th"].get(zone_no)
+    in_zone = np.flatnonzero((rows["zone_name_th"] == zone_name).to_numpy())
+    if len(in_zone) < SIMILAR_COUNT:
+        in_zone = np.arange(len(rows))
+    index, _ = neighbors(knn_model["X"][in_zone], z, SIMILAR_COUNT, knn_model["metric"])
+    return rows.iloc[in_zone[index]]
 
 
 def input_warnings(
@@ -215,7 +248,6 @@ def predict(bundle: dict[str, Any], listing: pd.DataFrame) -> dict[str, Any]:
     else:
         knn_model, knn_features, log_area = bundle["knn_building"], building_features, 0.0
     z = knn_model["scaler"].transform(knn_features)[0]
-    neighbour_index, _ = neighbors(knn_model["X"], z, SIMILAR_COUNT, knn_model["metric"])
     log_knn = knn(knn_model["X"], knn_model["y"], z, knn_model["k"], knn_model["metric"], knn_model["weight"]) + log_area
     vote = "ถ่วงน้ำหนักตามระยะ" if knn_model["weight"] == "distance" else "โหวตเท่ากัน"
     blended = blend_price(bundle, listing, clustering, buildings)
@@ -239,7 +271,8 @@ def predict(bundle: dict[str, Any], listing: pd.DataFrame) -> dict[str, Any]:
         "knn": float(np.exp(log_knn)),
         "knn_setting": f"{knn_model['metric']}, {vote}, k={knn_model['k']}",
         "tier": int(clustering.tier_of(listing["zone_no"]).iloc[0]),
-        "neighbours": bundle["reference_rows"].iloc[neighbour_index],
+        "neighbours": similar_rooms(bundle, knn_model, z, int(listing["zone_no"].iloc[0])),
+        "location_from_zone": bool(listing["location_from_zone"].iloc[0]),
         "building": listing.iloc[0],
         "reliability": reliability_of(bundle, main_model, price, int(listing["zone_no"].iloc[0])),
     }
@@ -255,6 +288,12 @@ def main_model_label(result: dict[str, Any], bundle: dict[str, Any]) -> tuple[st
             "(ตึกที่มีประกาศน้อยจะถูกดึงเข้าหาราคาประเมินจากย่านมากขึ้น) แล้วปรับตามชั้นและขนาดห้อง",
         )
     blend = bundle["blend"]
+    if result.get("location_from_zone"):
+        return (
+            f"เฉลี่ย Linear Regression + {blend['partner']} (ข้อมูลตึก + ราคาย่าน)",
+            "ไม่ระบุโครงการ ระบบใช้ตำแหน่งกลางของโซนที่เลือกแทนตำแหน่งตึก และใช้ปีที่สร้างเสร็จกับระยะถึงรถไฟฟ้าที่กรอก "
+            "ถ้าเลือกโครงการ ราคาจะแม่นขึ้น",
+        )
     if blend.get("mode") == "unseen_ensemble":
         w_pct = int(round(100 * result["blend"].get("lr_weight", blend["w_lr"])))
         basis = (
@@ -262,7 +301,7 @@ def main_model_label(result: dict[str, Any], bundle: dict[str, Any]) -> tuple[st
             f"(5 และ 20 ตึกใกล้สุด ปรับตามอายุ/ความสูงตึก และนับตึกฝั่งตรงข้ามแม่น้ำเจ้าพระยาเป็นระยะไกลขึ้น) "
             f"ถ่วงน้ำหนัก LR {w_pct}% + {blend['partner']} {100 - w_pct}% (ห้องยิ่งใหญ่ ยิ่งให้น้ำหนัก LR มาก)"
             if result["has_coordinates"]
-            else "ไม่ระบุโครงการ ระบบไม่รู้ตำแหน่งตึก จึงใช้ราคากลางของโซนแทนราคาตึกใกล้เคียง"
+            else "ไม่ระบุโครงการ และไม่ทราบตำแหน่งตึก ระบบจึงใช้ราคากลางของโซนแทนราคาตึกใกล้เคียง"
         )
         return f"เฉลี่ย Linear Regression + {blend['partner']} (ข้อมูลตึกละเอียด + ราคาย่าน IDW)", basis
     if blend.get("mode") == "extended_multiscale":
@@ -271,14 +310,14 @@ def main_model_label(result: dict[str, Any], bundle: dict[str, Any]) -> tuple[st
             f"ตึกนี้ไม่มีประกาศห้องอื่นในข้อมูล ระบบใช้ข้อมูลตึกแบบละเอียดและราคาย่านแบบถ่วงน้ำหนักระยะ "
             f"(5 และ 20 ตึกใกล้สุด) ถ่วงน้ำหนัก LR {w_pct}% + {blend['partner']} {100 - w_pct}%"
             if result["has_coordinates"]
-            else "ไม่ระบุโครงการ ระบบไม่รู้ตำแหน่งตึก จึงใช้ราคากลางของโซนแทนราคาตึกใกล้เคียง"
+            else "ไม่ระบุโครงการ และไม่ทราบตำแหน่งตึก ระบบจึงใช้ราคากลางของโซนแทนราคาตึกใกล้เคียง"
         )
         return f"เฉลี่ย Linear Regression + {blend['partner']} (ข้อมูลตึกละเอียด + ราคาย่าน IDW)", basis
     k = blend["neighbourhood"].k
     basis = (
         f"ตึกนี้ไม่มีประกาศห้องอื่นในข้อมูล ระบบใช้ราคาต่อตร.ม. ของ {k} ตึกที่อยู่ใกล้ที่สุดแทน"
         if result["has_coordinates"]
-        else "ไม่ระบุโครงการ ระบบไม่รู้ตำแหน่งตึก จึงใช้ราคากลางของโซนแทนราคาตึกใกล้เคียง"
+        else "ไม่ระบุโครงการ และไม่ทราบตำแหน่งตึก ระบบจึงใช้ราคากลางของโซนแทนราคาตึกใกล้เคียง"
     )
     return f"เฉลี่ย Linear Regression + {blend['partner']} (ข้อมูลตึก + ราคาย่าน)", basis
 
@@ -483,6 +522,24 @@ def serialize_prediction(
             }
 
     price = float(result["price"])
+    # every forecast year, so the page can follow the year slider without asking the server again
+    forecast_series = None
+    if forecast:
+        forecast_series = {
+            "base_year": int(forecast["base_year"]),
+            "annual_growth_pct": float(forecast["annual_growth_pct"]),
+            "years": [
+                {
+                    "year": int(item["year"]),
+                    "price": price * float(item["factor"]),
+                    "low": price * float(item["low"]),
+                    "high": price * float(item["high"]),
+                    "backtest_mape_pct": forecast["backtest_mape_pct_by_horizon"].get(
+                        str(int(item["year"]) - int(forecast["base_year"]))),
+                }
+                for item in forecast["forecast"]
+            ],
+        }
     return _json_safe({
         "input_warnings": warnings,
         "main_model": result["main_model"],
@@ -505,8 +562,10 @@ def serialize_prediction(
             "total_unit": int(total_unit_val) if total_unit_val is not None and total_unit_val > 0 else None,
             "total_floor": int(total_floor_val) if total_floor_val is not None and total_floor_val > 0 else None,
             "has_coordinates": bool(result["has_coordinates"]),
+            "location_from_zone": bool(result["location_from_zone"]),
         },
         "model_breakdown": model_rows,
         "neighbours": neighbours_rows,
         "future": future,
+        "forecast_series": forecast_series,
     })
