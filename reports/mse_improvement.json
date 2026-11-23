@@ -1,0 +1,308 @@
+{
+  "group_cv_5fold": {
+    "Balanced Blend (0.4 Ridge + 0.3 HGB + 0.3 ET)": {
+      "mae_thb": 1518888.8169252044,
+      "mape_pct": 18.92085896099647,
+      "median_ape_pct": 14.515956173279438,
+      "mse_thb2": 30117899915597.29,
+      "r2": 0.8181979099058171,
+      "rmse_thb": 5487977.761944493,
+      "within_10pct": 35.56985294117647,
+      "within_20pct": 63.541666666666664
+    },
+    "Baseline: Blend LR + GB (origin/main PR #8)": {
+      "mae_thb": 1572637.5210731365,
+      "mape_pct": 19.494295160656197,
+      "median_ape_pct": 15.092345424252226,
+      "mse_thb2": 30329483160198.9,
+      "r2": 0.8169207200550878,
+      "rmse_thb": 5507221.001575922,
+      "within_10pct": 34.77328431372549,
+      "within_20pct": 62.591911764705884
+    },
+    "Baseline: LR + bld + neigh (origin/main)": {
+      "mae_thb": 1637814.5247967292,
+      "mape_pct": 21.382118900297044,
+      "median_ape_pct": 16.867177530465916,
+      "mse_thb2": 24752112596530.87,
+      "r2": 0.8505876632531926,
+      "rmse_thb": 4975149.504942628,
+      "within_10pct": 30.66789215686275,
+      "within_20pct": 58.30269607843137
+    },
+    "Baseline: LR + building (origin/main)": {
+      "mae_thb": 1853527.9092535984,
+      "mape_pct": 23.10649700050518,
+      "median_ape_pct": 18.22488641351051,
+      "mse_thb2": 32326804673953.766,
+      "r2": 0.804864194639693,
+      "rmse_thb": 5685666.598909381,
+      "within_10pct": 27.941176470588236,
+      "within_20pct": 53.49264705882353
+    },
+    "CV-MSE Optimal Blend (Ridge + HGB + ET)": {
+      "mae_thb": 1570176.5455799454,
+      "mape_pct": 21.067450661296846,
+      "median_ape_pct": 16.543082163970517,
+      "mse_thb2": 25353307049881.207,
+      "r2": 0.8469586450122654,
+      "rmse_thb": 5035206.753439347,
+      "within_10pct": 31.311274509803923,
+      "within_20pct": 58.73161764705882
+    },
+    "ExtraTrees (clean IDW, log ppsqm)": {
+      "mae_thb": 1635079.6318732693,
+      "mape_pct": 19.358412419823846,
+      "median_ape_pct": 15.020523865854102,
+      "mse_thb2": 37804254957465.9,
+      "r2": 0.7718004049093283,
+      "rmse_thb": 6148516.484280244,
+      "within_10pct": 34.40563725490196,
+      "within_20pct": 63.541666666666664
+    },
+    "Pure NumPy Ridge (clean IDW, log ppsqm)": {
+      "mae_thb": 1567292.389687838,
+      "mape_pct": 21.23641814971486,
+      "median_ape_pct": 16.728176737232026,
+      "mse_thb2": 23549020661446.746,
+      "r2": 0.8578499434582103,
+      "rmse_thb": 4852733.318599606,
+      "within_10pct": 30.943627450980394,
+      "within_20pct": 58.486519607843135
+    },
+    "Tuned HistGB (clean IDW, log ppsqm)": {
+      "mae_thb": 1569299.7704624936,
+      "mape_pct": 18.832872233240778,
+      "median_ape_pct": 14.75294340212484,
+      "mse_thb2": 35738457769147.164,
+      "r2": 0.7842702732467464,
+      "rmse_thb": 5978165.08379847,
+      "within_10pct": 35.96813725490196,
+      "within_20pct": 62.99019607843137
+    }
+  },
+  "project_split": {
+    "Balanced Blend (0.4 Ridge + 0.3 HGB + 0.3 ET)": {
+      "mae_thb": 1653134.0399119344,
+      "mape_pct": 20.61280149202267,
+      "median_ape_pct": 14.432844174155019,
+      "mse_thb2": 21200176876762.758,
+      "r2": 0.7806500362992008,
+      "rmse_thb": 4604364.980837505,
+      "within_10pct": 35.08500772797527,
+      "within_20pct": 64.2967542503864
+    },
+    "Baseline: Blend LR + GB (origin/main PR #8)": {
+      "mae_thb": 1616095.5798139488,
+      "mape_pct": 20.425810857302153,
+      "median_ape_pct": 14.592133301530982,
+      "mse_thb2": 19225383918702.82,
+      "r2": 0.8010824490184472,
+      "rmse_thb": 4384676.033494701,
+      "within_10pct": 34.003091190108194,
+      "within_20pct": 65.53323029366305
+    },
+    "Baseline: LR + bld + neigh (origin/main)": {
+      "mae_thb": 1653534.4091696364,
+      "mape_pct": 21.866178094141166,
+      "median_ape_pct": 16.34427652869033,
+      "mse_thb2": 28600582867299.332,
+      "r2": 0.7040809211058918,
+      "rmse_thb": 5347951.277573435,
+      "within_10pct": 31.375579598145286,
+      "within_20pct": 59.969088098918085
+    },
+    "Baseline: LR + building (origin/main)": {
+      "mae_thb": 1526014.8320990563,
+      "mape_pct": 23.390807301526774,
+      "median_ape_pct": 18.697492158442024,
+      "mse_thb2": 12195755059587.002,
+      "r2": 0.8738152778075907,
+      "rmse_thb": 3492242.124994629,
+      "within_10pct": 24.72952086553323,
+      "within_20pct": 53.94126738794436
+    },
+    "CV-MSE Optimal Blend (Ridge + HGB + ET)": {
+      "mae_thb": 1717044.8289108225,
+      "mape_pct": 22.674737099802925,
+      "median_ape_pct": 16.81553776684771,
+      "mse_thb2": 31346645314562.215,
+      "r2": 0.6756684837178119,
+      "rmse_thb": 5598807.490400274,
+      "within_10pct": 29.984544049459043,
+      "within_20pct": 57.80525502318392
+    },
+    "ExtraTrees (clean IDW, log ppsqm)": {
+      "mae_thb": 1743060.96716316,
+      "mape_pct": 21.700605353791655,
+      "median_ape_pct": 14.877965789152228,
+      "mse_thb2": 19099823856323.32,
+      "r2": 0.8023815700250932,
+      "rmse_thb": 4370334.524532799,
+      "within_10pct": 31.375579598145286,
+      "within_20pct": 62.59659969088099
+    },
+    "Pure NumPy Ridge (clean IDW, log ppsqm)": {
+      "mae_thb": 1717044.8289108225,
+      "mape_pct": 22.674737099802925,
+      "median_ape_pct": 16.81553776684771,
+      "mse_thb2": 31346645314562.215,
+      "r2": 0.6756684837178119,
+      "rmse_thb": 5598807.490400274,
+      "within_10pct": 29.984544049459043,
+      "within_20pct": 57.80525502318392
+    },
+    "Tuned HistGB (clean IDW, log ppsqm)": {
+      "mae_thb": 1777383.9525366912,
+      "mape_pct": 20.880743957902435,
+      "median_ape_pct": 15.23410346955337,
+      "mse_thb2": 24132621226973.883,
+      "r2": 0.7503091780359633,
+      "rmse_thb": 4912496.435314114,
+      "within_10pct": 36.476043276661514,
+      "within_20pct": 60.123647604327665
+    }
+  },
+  "project_split_meta": {
+    "cv_blend_rmse_thb": 4511606.585333723,
+    "cv_blend_weights": {
+      "et": 0.0,
+      "hgb": 0.0,
+      "ridge": 1.0
+    },
+    "cv_ridge_rmse_thb": 4511606.585333723,
+    "feature_names": [
+      "log_area_sqm",
+      "bedrooms",
+      "bathrooms",
+      "floor",
+      "is_new_unit",
+      "building_age",
+      "log_total_unit",
+      "total_floor",
+      "facility_count",
+      "rail_km",
+      "mall_km",
+      "has_building_info",
+      "floor_ratio",
+      "log_units_per_floor",
+      "is_high_rise",
+      "is_central_rail",
+      "log_area_per_br",
+      "clean_neigh_idw"
+    ],
+    "ridge_lambda": 1.0
+  },
+  "random_split": {
+    "Balanced Blend (0.4 Ridge + 0.3 HGB + 0.3 ET)": {
+      "mae_thb": 1235891.5791934563,
+      "mape_pct": 15.495254688502047,
+      "median_ape_pct": 11.027687781606758,
+      "mse_thb2": 14057024285455.047,
+      "r2": 0.8895531981477551,
+      "rmse_thb": 3749269.833641618,
+      "within_10pct": 45.954198473282446,
+      "within_20pct": 73.2824427480916
+    },
+    "Baseline: Blend LR + GB (origin/main PR #8)": {
+      "mae_thb": 1398900.849266316,
+      "mape_pct": 16.312867912404545,
+      "median_ape_pct": 11.792778168530704,
+      "mse_thb2": 18966315073834.848,
+      "r2": 0.8509806342872608,
+      "rmse_thb": 4355033.303412828,
+      "within_10pct": 44.88549618320611,
+      "within_20pct": 72.51908396946564
+    },
+    "Baseline: LR + bld + neigh (origin/main)": {
+      "mae_thb": 1675156.657801451,
+      "mape_pct": 20.41921311747505,
+      "median_ape_pct": 15.395874336912009,
+      "mse_thb2": 23291438869140.06,
+      "r2": 0.8169979021594675,
+      "rmse_thb": 4826120.478100402,
+      "within_10pct": 33.12977099236642,
+      "within_20pct": 61.52671755725191
+    },
+    "Baseline: LR + building (origin/main)": {
+      "mae_thb": 1758970.3576730043,
+      "mape_pct": 21.320574076281567,
+      "median_ape_pct": 15.860001770849985,
+      "mse_thb2": 27039280999600.117,
+      "r2": 0.787550903367218,
+      "rmse_thb": 5199930.864886582,
+      "within_10pct": 32.82442748091603,
+      "within_20pct": 61.06870229007634
+    },
+    "CV-MSE Optimal Blend (Ridge + HGB + ET)": {
+      "mae_thb": 1316704.1591761033,
+      "mape_pct": 16.881465144986475,
+      "median_ape_pct": 11.964016566968775,
+      "mse_thb2": 15685685734245.38,
+      "r2": 0.8767567168536978,
+      "rmse_thb": 3960515.841938444,
+      "within_10pct": 42.13740458015267,
+      "within_20pct": 71.14503816793894
+    },
+    "ExtraTrees (clean IDW, log ppsqm)": {
+      "mae_thb": 1095660.6265359912,
+      "mape_pct": 13.61987069077267,
+      "median_ape_pct": 9.570480464417285,
+      "mse_thb2": 11475471480642.08,
+      "r2": 0.90983659848301,
+      "rmse_thb": 3387546.528188518,
+      "within_10pct": 52.06106870229008,
+      "within_20pct": 80.45801526717557
+    },
+    "Pure NumPy Ridge (clean IDW, log ppsqm)": {
+      "mae_thb": 1592833.708088805,
+      "mape_pct": 20.495456967357743,
+      "median_ape_pct": 15.256874778527187,
+      "mse_thb2": 20432998713913.062,
+      "r2": 0.8394568214171885,
+      "rmse_thb": 4520287.459212419,
+      "within_10pct": 36.33587786259542,
+      "within_20pct": 61.679389312977094
+    },
+    "Tuned HistGB (clean IDW, log ppsqm)": {
+      "mae_thb": 1201731.6685891843,
+      "mape_pct": 14.894989514997967,
+      "median_ape_pct": 10.264602045836982,
+      "mse_thb2": 15994642170629.338,
+      "r2": 0.8743292293842778,
+      "rmse_thb": 3999330.215252216,
+      "within_10pct": 49.00763358778626,
+      "within_20pct": 75.72519083969466
+    }
+  },
+  "random_split_meta": {
+    "cv_blend_rmse_thb": 4616029.325137844,
+    "cv_blend_weights": {
+      "et": 0.0,
+      "hgb": 0.45,
+      "ridge": 0.55
+    },
+    "cv_ridge_rmse_thb": 4754881.655884352,
+    "feature_names": [
+      "log_area_sqm",
+      "bedrooms",
+      "bathrooms",
+      "floor",
+      "is_new_unit",
+      "building_age",
+      "log_total_unit",
+      "total_floor",
+      "facility_count",
+      "rail_km",
+      "mall_km",
+      "has_building_info",
+      "floor_ratio",
+      "log_units_per_floor",
+      "is_high_rise",
+      "is_central_rail",
+      "log_area_per_br",
+      "clean_neigh_idw"
+    ],
+    "ridge_lambda": 1.0
+  }
+}
