@@ -486,6 +486,7 @@
       }
 
       renderQualityTable(meta.model_quality);
+      applyQueryParams(meta);
       els.submitBtn.disabled = false;
       showGlobalError("");
     } catch (err) {
@@ -523,6 +524,7 @@
         throw new Error(data.detail || `HTTP ${res.status}`);
       }
       renderPrediction(data);
+      syncUrlParams(payload);
     } catch (err) {
       showGlobalError(`ไม่สามารถประเมินราคาได้: ${err.message}`);
     } finally {
@@ -555,6 +557,69 @@
     btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
   });
 
+  function applyQueryParams(meta) {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.toString()) return;
+    const clampNum = (key, min, max) => {
+      if (!params.has(key)) return null;
+      const val = Number(params.get(key));
+      if (Number.isNaN(val)) return null;
+      return Math.min(max, Math.max(min, val));
+    };
+    const zone = clampNum("zone", 1, 200);
+    if (zone !== null && (meta.zones || []).some((z) => z.zone_no === zone)) {
+      els.zoneSelect.value = String(zone);
+    }
+    const area = clampNum("area", 15, 500);
+    if (area !== null) els.areaInput.value = String(area);
+    const bed = clampNum("bed", 0, 5);
+    if (bed !== null) els.bedroomsSelect.value = String(Math.round(bed));
+    const bath = clampNum("bath", 1, 5);
+    if (bath !== null) els.bathroomsSelect.value = String(Math.round(bath));
+    const floor = clampNum("floor", 1, 80);
+    if (floor !== null) els.floorInput.value = String(Math.round(floor));
+    const completeYear = clampNum("complete_year", 1980, 2030);
+    if (completeYear !== null) els.completeYearInput.value = String(Math.round(completeYear));
+    const railKm = clampNum("rail_km", 0, 3);
+    if (railKm !== null) els.railKmInput.value = String(railKm);
+    if (params.has("is_new")) {
+      els.isNewCheckbox.checked = params.get("is_new") === "1" || params.get("is_new") === "true";
+    }
+    const minY = Number(els.yearSlider.min || 2026);
+    const maxY = Number(els.yearSlider.max || 2036);
+    const year = clampNum("year", minY, maxY);
+    if (year !== null) {
+      els.yearSlider.value = String(Math.round(year));
+      els.yearValue.textContent = els.yearSlider.value;
+    }
+    const proj = params.get("project");
+    if (proj && state.projects.includes(proj)) {
+      setSelectedProject(proj);
+    }
+  }
+
+  function syncUrlParams(payload) {
+    try {
+      const params = new URLSearchParams();
+      params.set("zone", String(payload.zone_no));
+      params.set("area", String(payload.area_sqm));
+      params.set("bed", String(payload.bedrooms));
+      params.set("bath", String(payload.bathrooms));
+      params.set("floor", String(payload.floor));
+      if (payload.project) {
+        params.set("project", payload.project);
+      } else {
+        params.set("complete_year", String(payload.complete_year));
+        params.set("rail_km", String(payload.rail_km));
+      }
+      if (payload.is_new) params.set("is_new", "1");
+      if (payload.year && payload.year !== 2026) params.set("year", String(payload.year));
+      window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
+    } catch {
+      // Ignore history API restrictions in embedded contexts.
+    }
+  }
+
   function resetToDefaults() {
     const d = state.meta?.defaults || {
       zone_no: 1, area_sqm: 35, bedrooms: 1, bathrooms: 1, floor: 10,
@@ -574,6 +639,13 @@
     els.yearValue.textContent = els.yearSlider.value;
     setSelectedProject(null);
     showGlobalError("");
+    if (window.location.search) {
+      try {
+        window.history.replaceState(null, "", window.location.pathname);
+      } catch {
+        // Ignore history restrictions.
+      }
+    }
     if (state.lastPrediction) {
       renderFuture(Number(els.yearSlider.value));
       markStale();
