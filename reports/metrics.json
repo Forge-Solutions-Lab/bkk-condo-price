@@ -1,0 +1,520 @@
+{
+  "distance_experiment": {
+    "kmeans_project_split": [
+      {
+        "cv_mape_pct": 27.239360192345032,
+        "k": 8,
+        "metric": "euclidean",
+        "silhouette": 0.40888027454661674
+      },
+      {
+        "cv_mape_pct": 27.98879996612248,
+        "k": 8,
+        "metric": "manhattan",
+        "silhouette": 0.38714622385263847
+      }
+    ],
+    "kmeans_random_split": [
+      {
+        "cv_mape_pct": 28.705161754537663,
+        "k": 8,
+        "metric": "euclidean",
+        "silhouette": 0.3909519807045648
+      },
+      {
+        "cv_mape_pct": 29.396879871189185,
+        "k": 7,
+        "metric": "manhattan",
+        "silhouette": 0.37612718448931093
+      }
+    ],
+    "knn_project_split": [
+      {
+        "cv_mape_pct": 29.714079122726663,
+        "k": 6,
+        "metric": "euclidean",
+        "test_mape_pct": 32.262137745471115,
+        "weight": "uniform"
+      },
+      {
+        "cv_mape_pct": 28.715682926516422,
+        "k": 19,
+        "metric": "euclidean",
+        "test_mape_pct": 31.647311807215278,
+        "weight": "distance"
+      },
+      {
+        "cv_mape_pct": 29.500093371647957,
+        "k": 11,
+        "metric": "manhattan",
+        "test_mape_pct": 32.23184924413386,
+        "weight": "uniform"
+      },
+      {
+        "cv_mape_pct": 28.592302291928007,
+        "k": 30,
+        "metric": "manhattan",
+        "test_mape_pct": 31.099702018917895,
+        "weight": "distance"
+      }
+    ],
+    "knn_random_split": [
+      {
+        "cv_mape_pct": 28.73829908042889,
+        "k": 8,
+        "metric": "euclidean",
+        "test_mape_pct": 28.138814835187674,
+        "weight": "uniform"
+      },
+      {
+        "cv_mape_pct": 28.219953064333176,
+        "k": 21,
+        "metric": "euclidean",
+        "test_mape_pct": 27.550971363110577,
+        "weight": "distance"
+      },
+      {
+        "cv_mape_pct": 28.50162506487654,
+        "k": 9,
+        "metric": "manhattan",
+        "test_mape_pct": 27.843022043783368,
+        "weight": "uniform"
+      },
+      {
+        "cv_mape_pct": 28.240939091567963,
+        "k": 27,
+        "metric": "manhattan",
+        "test_mape_pct": 27.883870484652768,
+        "weight": "distance"
+      }
+    ]
+  },
+  "features": [
+    "log_area_sqm",
+    "bedrooms",
+    "bathrooms",
+    "floor",
+    "is_new_unit",
+    "tier_2",
+    "tier_3",
+    "tier_4",
+    "tier_5",
+    "tier_6",
+    "tier_7",
+    "tier_8"
+  ],
+  "kmeans": {
+    "k": 8,
+    "metric": "euclidean",
+    "scan": [
+      {
+        "cv_mape_pct": 31.852109503807856,
+        "inertia": 63.745935996724164,
+        "k": 2,
+        "silhouette": 0.4185861367997354
+      },
+      {
+        "cv_mape_pct": 32.30540389536542,
+        "inertia": 47.17372881546577,
+        "k": 3,
+        "silhouette": 0.4173903283091288
+      },
+      {
+        "cv_mape_pct": 30.828577399040505,
+        "inertia": 34.74284896872548,
+        "k": 4,
+        "silhouette": 0.354688717303111
+      },
+      {
+        "cv_mape_pct": 31.06998206317133,
+        "inertia": 24.18390920581012,
+        "k": 5,
+        "silhouette": 0.35923706470874633
+      },
+      {
+        "cv_mape_pct": 30.237408931900717,
+        "inertia": 17.740380727642567,
+        "k": 6,
+        "silhouette": 0.3923575798950781
+      },
+      {
+        "cv_mape_pct": 29.777886321001425,
+        "inertia": 14.641297090441368,
+        "k": 7,
+        "silhouette": 0.3804485861789367
+      },
+      {
+        "cv_mape_pct": 28.705161754537663,
+        "inertia": 11.807223347499933,
+        "k": 8,
+        "silhouette": 0.3909519807045648
+      }
+    ]
+  },
+  "knn": {
+    "cv_curve": [
+      {
+        "cv_mape_pct": 35.31723934465507,
+        "k": 1
+      },
+      {
+        "cv_mape_pct": 31.684338626584623,
+        "k": 2
+      },
+      {
+        "cv_mape_pct": 30.305412086026585,
+        "k": 3
+      },
+      {
+        "cv_mape_pct": 29.78464208570323,
+        "k": 4
+      },
+      {
+        "cv_mape_pct": 29.359224531839697,
+        "k": 5
+      },
+      {
+        "cv_mape_pct": 29.0581853428116,
+        "k": 6
+      },
+      {
+        "cv_mape_pct": 28.866304410816504,
+        "k": 7
+      },
+      {
+        "cv_mape_pct": 28.71852816810084,
+        "k": 8
+      },
+      {
+        "cv_mape_pct": 28.589571100746205,
+        "k": 9
+      },
+      {
+        "cv_mape_pct": 28.47792359201111,
+        "k": 10
+      },
+      {
+        "cv_mape_pct": 28.379901195780654,
+        "k": 11
+      },
+      {
+        "cv_mape_pct": 28.313343158098434,
+        "k": 12
+      },
+      {
+        "cv_mape_pct": 28.311555032264778,
+        "k": 13
+      },
+      {
+        "cv_mape_pct": 28.25982315778187,
+        "k": 14
+      },
+      {
+        "cv_mape_pct": 28.25833909264164,
+        "k": 15
+      },
+      {
+        "cv_mape_pct": 28.252892520713647,
+        "k": 16
+      },
+      {
+        "cv_mape_pct": 28.27575230105159,
+        "k": 17
+      },
+      {
+        "cv_mape_pct": 28.26798465449009,
+        "k": 18
+      },
+      {
+        "cv_mape_pct": 28.245710809797334,
+        "k": 19
+      },
+      {
+        "cv_mape_pct": 28.233317912137444,
+        "k": 20
+      },
+      {
+        "cv_mape_pct": 28.219953064333176,
+        "k": 21
+      },
+      {
+        "cv_mape_pct": 28.239288756924925,
+        "k": 22
+      },
+      {
+        "cv_mape_pct": 28.271732985894992,
+        "k": 23
+      },
+      {
+        "cv_mape_pct": 28.29247474871637,
+        "k": 24
+      },
+      {
+        "cv_mape_pct": 28.307481952728164,
+        "k": 25
+      },
+      {
+        "cv_mape_pct": 28.322130646219374,
+        "k": 26
+      },
+      {
+        "cv_mape_pct": 28.339905932502393,
+        "k": 27
+      },
+      {
+        "cv_mape_pct": 28.378660708348008,
+        "k": 28
+      },
+      {
+        "cv_mape_pct": 28.388913273969244,
+        "k": 29
+      },
+      {
+        "cv_mape_pct": 28.405458307265974,
+        "k": 30
+      }
+    ],
+    "k": 21,
+    "k_project": 9,
+    "metric": "euclidean",
+    "weight": "distance"
+  },
+  "learning_curve": [
+    {
+      "fraction": 0.1,
+      "mape_pct": 31.105727845413888,
+      "train_rows": 261
+    },
+    {
+      "fraction": 0.25,
+      "mape_pct": 29.180464415050107,
+      "train_rows": 654
+    },
+    {
+      "fraction": 0.5,
+      "mape_pct": 29.171330657955014,
+      "train_rows": 1308
+    },
+    {
+      "fraction": 0.75,
+      "mape_pct": 29.080744021981275,
+      "train_rows": 1962
+    },
+    {
+      "fraction": 1.0,
+      "mape_pct": 29.106368282402407,
+      "train_rows": 2616
+    }
+  ],
+  "linear_regression": {
+    "coefficients": {
+      "bathrooms": {
+        "coef_log": 0.08965587198645122,
+        "effect_pct": 9.37978124633483
+      },
+      "bedrooms": {
+        "coef_log": 0.048849598433326924,
+        "effect_pct": 5.006240783165317
+      },
+      "floor": {
+        "coef_log": 0.011522558595366748,
+        "effect_pct": 1.1589198983623872
+      },
+      "is_new_unit": {
+        "coef_log": 0.25967573853287124,
+        "effect_pct": 29.650961038891754
+      },
+      "log_area_sqm": {
+        "coef_log": 0.9233599428010366,
+        "effect_pct": 151.7735641954514
+      },
+      "tier_2": {
+        "coef_log": 0.05507337474407243,
+        "effect_pct": 5.661814091689754
+      },
+      "tier_3": {
+        "coef_log": 0.3814907022709959,
+        "effect_pct": 46.44660459396517
+      },
+      "tier_4": {
+        "coef_log": 0.49582368914252345,
+        "effect_pct": 64.18500563070499
+      },
+      "tier_5": {
+        "coef_log": 0.7319035086664689,
+        "effect_pct": 107.90343033476412
+      },
+      "tier_6": {
+        "coef_log": 0.6977226408589445,
+        "effect_pct": 100.91718874003402
+      },
+      "tier_7": {
+        "coef_log": 0.9207660991136013,
+        "effect_pct": 151.121349162899
+      },
+      "tier_8": {
+        "coef_log": 1.3903694430780384,
+        "effect_pct": 301.63335855791917
+      }
+    },
+    "intercept_log": 10.950247091041007
+  },
+  "rows": {
+    "clean_all_pages": 4918,
+    "projects": 971,
+    "test_project": 647,
+    "test_random": 655,
+    "train_project": 2624,
+    "train_random": 2616,
+    "used": 3271,
+    "zones": 38
+  },
+  "test_results_project_split": {
+    "Baseline: zone median price/sqm x area": {
+      "mae_thb": 2391311.3426279034,
+      "mape_pct": 34.14205426615353,
+      "median_ape_pct": 29.39037589586075,
+      "r2": 0.7597796200591578,
+      "rmse_thb": 4818433.6542977,
+      "within_10pct": 21.483771251931994,
+      "within_20pct": 36.476043276661514
+    },
+    "Gradient Boosting (K-Means tiers, reference)": {
+      "mae_thb": 2292179.8961765463,
+      "mape_pct": 30.37802407336826,
+      "median_ape_pct": 24.43622848742124,
+      "r2": 0.6899806592796652,
+      "rmse_thb": 5473881.014258802,
+      "within_10pct": 24.420401854714065,
+      "within_20pct": 42.65842349304482
+    },
+    "Gradient Boosting + project price level (reference)": {
+      "mae_thb": 2542217.166650492,
+      "mape_pct": 31.361176737002523,
+      "median_ape_pct": 27.609001972453868,
+      "r2": 0.5637665990991128,
+      "rmse_thb": 6493224.463607421,
+      "within_10pct": 19.938176197836167,
+      "within_20pct": 38.33075734157651
+    },
+    "KNN Regression (K-Means tiers)": {
+      "mae_thb": 2681529.320574145,
+      "mape_pct": 31.099702018917895,
+      "median_ape_pct": 23.076923073551715,
+      "r2": 0.5417769654220814,
+      "rmse_thb": 6654867.5658424385,
+      "within_10pct": 23.493044822256568,
+      "within_20pct": 43.27666151468315
+    },
+    "KNN Regression + project price level": {
+      "mae_thb": 2838054.5993385366,
+      "mape_pct": 35.135822479409676,
+      "median_ape_pct": 30.391855039708833,
+      "r2": 0.5305913103112876,
+      "rmse_thb": 6735603.613076061,
+      "within_10pct": 18.238021638330757,
+      "within_20pct": 34.15765069551777
+    },
+    "Linear Regression (K-Means tiers)": {
+      "mae_thb": 2011406.8399082527,
+      "mape_pct": 28.340225567329036,
+      "median_ape_pct": 21.803339063547433,
+      "r2": 0.7561970138299613,
+      "rmse_thb": 4854231.331533559,
+      "within_10pct": 23.64760432766615,
+      "within_20pct": 46.21329211746523
+    },
+    "Linear Regression (no location)": {
+      "mae_thb": 2813112.552212527,
+      "mape_pct": 40.2754836162381,
+      "median_ape_pct": 31.166819144084997,
+      "r2": 0.610173392693148,
+      "rmse_thb": 6138138.701882198,
+      "within_10pct": 16.537867078825347,
+      "within_20pct": 32.30293663060278
+    },
+    "Linear Regression + project price level": {
+      "mae_thb": 2288695.843899096,
+      "mape_pct": 30.854721599006435,
+      "median_ape_pct": 27.958649352140206,
+      "r2": 0.7774599290739926,
+      "rmse_thb": 4637725.820058596,
+      "within_10pct": 20.247295208655334,
+      "within_20pct": 39.721792890262755
+    }
+  },
+  "test_results_random_split": {
+    "Baseline: zone median price/sqm x area": {
+      "mae_thb": 2293840.353037785,
+      "mape_pct": 29.443409331351344,
+      "median_ape_pct": 21.42923815571537,
+      "r2": 0.7120284041314885,
+      "rmse_thb": 6054035.339646644,
+      "within_10pct": 25.49618320610687,
+      "within_20pct": 47.02290076335878
+    },
+    "Gradient Boosting (K-Means tiers, reference)": {
+      "mae_thb": 2070560.0202136745,
+      "mape_pct": 27.118459531671927,
+      "median_ape_pct": 21.179612555900043,
+      "r2": 0.8014054340500013,
+      "rmse_thb": 5027519.985064222,
+      "within_10pct": 25.64885496183206,
+      "within_20pct": 47.32824427480916
+    },
+    "Gradient Boosting + project price level (reference)": {
+      "mae_thb": 1257556.6894343959,
+      "mape_pct": 16.049836248058114,
+      "median_ape_pct": 10.772011064520756,
+      "r2": 0.8979719484732,
+      "rmse_thb": 3603544.766264572,
+      "within_10pct": 47.786259541984734,
+      "within_20pct": 74.9618320610687
+    },
+    "KNN Regression (K-Means tiers)": {
+      "mae_thb": 2102876.257422023,
+      "mape_pct": 27.550971363110577,
+      "median_ape_pct": 21.13945625591046,
+      "r2": 0.7546725197434396,
+      "rmse_thb": 5587830.50594412,
+      "within_10pct": 30.076335877862597,
+      "within_20pct": 48.091603053435115
+    },
+    "KNN Regression + project price level": {
+      "mae_thb": 1675533.7546100754,
+      "mape_pct": 19.40850179551484,
+      "median_ape_pct": 12.96631636286002,
+      "r2": 0.8119170307295909,
+      "rmse_thb": 4892658.022872409,
+      "within_10pct": 40.15267175572519,
+      "within_20pct": 65.34351145038167
+    },
+    "Linear Regression (K-Means tiers)": {
+      "mae_thb": 2221834.842550997,
+      "mape_pct": 29.106368282402293,
+      "median_ape_pct": 22.96184682564069,
+      "r2": 0.749061911818246,
+      "rmse_thb": 5651365.7811154835,
+      "within_10pct": 24.580152671755727,
+      "within_20pct": 45.80152671755725
+    },
+    "Linear Regression (no location)": {
+      "mae_thb": 2921383.2115628375,
+      "mape_pct": 41.23205636575871,
+      "median_ape_pct": 30.080966665381066,
+      "r2": 0.5798972654831079,
+      "rmse_thb": 7312196.933872451,
+      "within_10pct": 16.030534351145036,
+      "within_20pct": 32.97709923664122
+    },
+    "Linear Regression + project price level": {
+      "mae_thb": 1178748.5552920713,
+      "mape_pct": 15.527230353258497,
+      "median_ape_pct": 10.700598978988229,
+      "r2": 0.921213194529455,
+      "rmse_thb": 3166626.7128605708,
+      "within_10pct": 48.2442748091603,
+      "within_20pct": 76.33587786259542
+    }
+  }
+}

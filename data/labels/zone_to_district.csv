@@ -1,0 +1,39 @@
+zone_no,zone_slug,zone_name_th,district_th,label_confidence,label_note
+1,sukhumvit-asoke-thonglor,สุขุมวิท อโศก ทองหล่อ,วัฒนา,medium,zone also covers Khlong Toei (even-numbered sois)
+2,silom-saladaeng-bangrak,สีลม ศาลาแดง บางรัก,บางรัก,high,
+3,sathorn-narathiwat,สาทร นราธิวาส,สาทร,high,
+4,siam-paragon-chulalongkornsamyan,สยาม จุฬา สามย่าน,ปทุมวัน,high,
+5,witthayuploenchit-langsuan,วิทยุ เพลินจิต หลังสวน,ปทุมวัน,high,
+6,nana-north-nanasukhumvit13-soi-nana,นานา สุขุมวิท 13,วัฒนา,medium,zone also covers Khlong Toei (Nana south)
+7,khlongtoei-kluaynamthai,คลองเตย กล้วยน้ำไท,คลองเตย,high,
+8,onnut-udomsuk,อ่อนนุช อุดมสุข,พระโขนง,medium,Udom Suk side is in Bang Na
+9,bangna-lasalle-bearing,บางนา ลาซาล แบริ่ง,บางนา,medium,Bearing side is partly in Samut Prakan
+10,pattanakan-srinakarin,พัฒนาการ ศรีนครินทร์,สวนหลวง,medium,Srinakarin side is partly in Prawet
+11,rama9-rca-petchaburi,พระราม 9 อาร์ซีเอ เพชรบุรี,ห้วยขวาง,medium,zone also covers Bang Kapi and Ratchathewi edges
+12,ratchadapisek-huaikwang-suttisan,รัชดา ห้วยขวาง สุทธิสาร,ห้วยขวาง,medium,Sutthisan side is in Din Daeng
+13,ratchathewiphayathai,ราชเทวี พญาไท,ราชเทวี,high,
+14,ari-anusaowaree,อารีย์ อนุสาวรีย์,พญาไท,high,
+15,sapankwaijatujak,สะพานควาย จตุจักร,จตุจักร,medium,Saphan Khwai side is in Phaya Thai
+16,ladprao-central-ladprao,ลาดพร้าว เซ็นทรัลลาดพร้าว,จตุจักร,high,
+17,ladprao-48-chokchai-4-ladprao-71,ลาดพร้าว 48 โชคชัย 4 ลาดพร้าว 71,วังทองหลาง,medium,zone also covers Lat Phrao district
+18,ladprao101-the-mall-bang-kapi,ลาดพร้าว 101 เดอะมอลล์บางกะปิ,บางกะปิ,high,
+19,kasetsart-ratchayothin,เกษตร รัชโยธิน,จตุจักร,high,
+20,kaset-nawaminladplakao,เกษตร นวมินทร์ ลาดปลาเค้า,ลาดพร้าว,medium,zone also covers Bueng Kum and Bang Khen
+21,yothinpattanacdc,โยธินพัฒนา ซีดีซี,บางกะปิ,low,zone spans Bang Kapi and Lat Phrao
+22,nawamin-ramindra,นวมินทร์ รามอินทรา,บางเขน,low,zone spans Bang Khen and Khan Na Yao
+23,ramkhamhaeng-hua-mak,รามคำแหง หัวหมาก,บางกะปิ,high,
+24,ramkhamhaeng-nida-seri-thai,รามคำแหง นิด้า เสรีไทย,บางกะปิ,medium,Seri Thai side is in Bueng Kum
+25,min-buri-romklao,มีนบุรี ร่มเกล้า,มีนบุรี,high,
+26,ladkrabang-suwannaphum-airport,ลาดกระบัง สุวรรณภูมิ,ลาดกระบัง,medium,airport side is in Samut Prakan
+27,vipawadee-don-mueang-lak-si,วิภาวดี ดอนเมือง หลักสี่,หลักสี่,medium,zone also covers Don Mueang
+28,bang-sue-wong-sawang,บางซื่อ วงศ์สว่าง,บางซื่อ,high,
+29,rama-8-samsen-ratchawat,พระราม 8 สามเสน ราชวัตร,ดุสิต,medium,zone also covers Bang Phlat riverside
+30,pha-nakorn-yaowarat,พระนคร เยาวราช,พระนคร,medium,Yaowarat is in Samphanthawong
+31,rama3-riversidesatupadit,พระราม 3 สาธุประดิษฐ์,ยานนาวา,medium,zone also covers Bang Kho Laem
+32,wongwianyai-charoennakor,วงเวียนใหญ่ เจริญนคร,คลองสาน,medium,Wongwian Yai side is in Thon Buri
+33,thaphra-wutthakat,ท่าพระ วุฒากาศ,บางกอกใหญ่,low,zone spans Bangkok Yai Phasi Charoen and Thon Buri
+34,pinklao-charansanitwong,ปิ่นเกล้า จรัญสนิทวงศ์,บางกอกน้อย,medium,zone also covers Bang Phlat
+35,rathburana-suksawat,ราษฎร์บูรณะ สุขสวัสดิ์,ราษฎร์บูรณะ,high,
+36,rama-2-bang-khun-thian,พระราม 2 บางขุนเทียน,บางขุนเทียน,high,
+37,bang-kae-phetkasem,บางแค เพชรเกษม,บางแค,high,
+38,daokanongbang-bon,ดาวคะนอง บางบอน,จอมทอง,low,zone spans Chom Thong Thon Buri and Bang Bon

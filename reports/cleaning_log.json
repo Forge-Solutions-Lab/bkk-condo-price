@@ -1,0 +1,42 @@
+[
+  {
+    "rule": "start",
+    "removed": 0,
+    "remaining": 5624
+  },
+  {
+    "rule": "duplicate listing id across pages",
+    "removed": 156,
+    "remaining": 5468
+  },
+  {
+    "rule": "same unit re-posted (project, area, price, floor, bedrooms)",
+    "removed": 319,
+    "remaining": 5149
+  },
+  {
+    "rule": "down-payment listing (price is not full price)",
+    "removed": 93,
+    "remaining": 5056
+  },
+  {
+    "rule": "missing required field",
+    "removed": 15,
+    "remaining": 5041
+  },
+  {
+    "rule": "area outside 15-500 sqm",
+    "removed": 14,
+    "remaining": 5027
+  },
+  {
+    "rule": "price below 500,000 THB",
+    "removed": 5,
+    "remaining": 5022
+  },
+  {
+    "rule": "price per sqm outlier (1.5 IQR on log scale, per zone)",
+    "removed": 104,
+    "remaining": 4918
+  }
+]
