@@ -4,6 +4,7 @@ from sklearn.cluster import KMeans
 from sklearn.linear_model import LinearRegression
 from sklearn.neighbors import KNeighborsRegressor
 
+from src.models import ffbp
 from src.models import kmeans as km
 from src.models import knn_regression as knn
 from src.models import linear_regression as lr
@@ -56,3 +57,17 @@ def test_kmeans_manhattan_finds_the_three_blobs(blobs):
     for k in range(3):
         assert len(set(idx[k * 60:(k + 1) * 60])) == 1
     assert len(set(idx)) == 3
+
+
+def test_ffbp_learns_xor():
+    X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=float)
+    Y = np.array([0, 1, 1, 0], dtype=float)
+    W0, W1 = ffbp.ffbp(X, Y, H=4, lr=1.0, epochs=20000, seed=0)
+    np.testing.assert_allclose(np.round(ffbp.predict(X, W0, W1)), Y)
+
+
+def test_ffbp_fits_a_smooth_function(data):
+    X, y = data
+    y = (y - y.mean()) / y.std()
+    W0, W1 = ffbp.ffbp(X, y, H=8, lr=0.5, epochs=3000)
+    assert np.mean((ffbp.predict(X, W0, W1) - y) ** 2) < 0.01
