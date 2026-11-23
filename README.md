@@ -1,9 +1,9 @@
 # BKK Condo Price
 
 ทำนายราคาคอนโดในกรุงเทพฯ จากข้อมูลประกาศขายที่ทีมเก็บเองทั้งหมด:
-- จัดกลุ่มทำเล 38 โซนด้วย **K-Means**
+- จัดกลุ่มทำเล 38 โซนด้วย **K-Means** (เทียบกับ **Fuzzy C-Means**)
 - ทำนายราคาด้วย **Linear Regression** (โมเดลหลัก) พร้อมข้อมูลตึก: อายุตึก ระยะถึงรถไฟฟ้า จำนวนยูนิต
-- เปรียบเทียบกับ **KNN Regression** และตัวเปรียบเทียบอื่น (การกรองแบบเว็บประกาศ, Random Forest, Gradient Boosting)
+- เปรียบเทียบกับ **KNN Regression**, **FFBP neural network** และตัวเปรียบเทียบอื่น (การกรองแบบเว็บประกาศ, Random Forest, Gradient Boosting)
 - คาดการณ์ราคาไปถึงปี 2036 จากแนวโน้มดัชนีราคาที่อยู่อาศัยกรุงเทพฯ
 
 ทั้งสามโมเดลเขียนเองด้วย NumPy และมีเทสต์ยืนยันว่าให้ผลตรงกับ scikit-learn มีหน้าเว็บให้กรอกข้อมูลห้อง แล้วได้ราคาประเมินออกมา
@@ -38,12 +38,16 @@ Mini project วิชา Machine Learning ปี 2569
 | KNN Regression + ระดับทำเลจาก K-Means | 27.6% | 31.1% |
 | **Linear Regression + K-Means + ข้อมูลตึก (โมเดลหลักในหน้าเว็บ)** | 21.3% | **23.4%** |
 | KNN Regression + K-Means + ข้อมูลตึก | 21.9% | 30.0% |
+| FFBP neural network + K-Means + ข้อมูลตึก | 18.6% | 25.5% |
+| Linear Regression + Fuzzy C-Means + ข้อมูลตึก | 22.1% | 26.6% |
 | Random Forest + ข้อมูลตึก (อ้างอิง) | 18.2% | 25.9% |
 | Gradient Boosting + ข้อมูลตึก (อ้างอิง) | 16.8% | 23.3% |
 | **Linear Regression + ข้อมูลตึก + ระดับราคาของโครงการ** | **14.9%** | 27.3% |
 
 - การกรองแบบเว็บประกาศหาห้องเทียบเจอ 93% (แบ่งสุ่ม) และ 89% (ตึกที่ไม่เคยเห็น) ห้องที่หาไม่เจอใช้ราคากลางของโซนแทน
 - ข้อมูลตึกลดความคลาดเคลื่อนของ LR บนตึกที่ไม่เคยเห็นจาก 28.3% เหลือ 23.4% ตามค่าสัมประสิทธิ์ ไกลรถไฟฟ้าเพิ่ม 1 กม. ราคาลด 6.7% และตึกเก่าขึ้น 1 ปี ราคาลด 2.8%
+- **FFBP** (เขียนตามแบบไฟล์ `FFBP.py` ของวิชา, [src/models/ffbp.py](src/models/ffbp.py)): hidden layer sigmoid 1 ชั้น output เป็นเส้นตรงเพราะทำนายราคา เลือกขนาด hidden และจำนวน epoch ด้วย 5-fold CV เดาห้องในตึกที่เคยเห็นได้แม่นกว่า LR แต่บนตึกที่ไม่เคยเห็น LR ยังดีกว่า
+- **Fuzzy C-Means** (ตามแบบไฟล์ `FuzzyCmeans.py`, [src/models/fuzzy_cmeans.py](src/models/fuzzy_cmeans.py)): ใช้สถิติโซนชุดเดียวกับ K-Means และ k เท่ากัน (k = 8, m = 2) แต่ให้แต่ละโซนเป็นสมาชิกได้หลายกลุ่ม มี 11 โซนที่ก้ำกึ่ง (สมาชิกกลุ่มหลักไม่ถึง 0.6) เช่น สุขุมวิท-อโศก, สีลม, สาทร การใช้ค่าสมาชิกแบบนุ่มนวลกลับทำให้ LR แย่ลง (29.1% | 30.8%) เทียบกับกลุ่มแบบแข็งจาก K-Means (29.1% | 28.3%) กราฟอยู่ที่ `reports/figures/fuzzy_memberships.png`
 - KNN ไม่ได้ประโยชน์จากข้อมูลตึกบนตึกที่ไม่เคยเห็น เพราะทุก feature ถูกนับระยะเท่ากัน feature ที่ไม่สำคัญจึงดึงผลไปด้วย
 
 ### เทียบกับงานก่อนหน้า
@@ -71,6 +75,8 @@ Mini project วิชา Machine Learning ปี 2569
 |---|---|---|---|
 | K-Means | Euclidean ยกกำลังสอง (เทียบกับ Manhattan) | จัดแต่ละโซนเข้ากลุ่มที่ศูนย์กลางใกล้สุด แล้วย้ายศูนย์กลางไปที่ค่าเฉลี่ย เริ่มต้นแบบ k-means++ | [src/models/kmeans.py](src/models/kmeans.py) |
 | KNN Regression | Euclidean (เทียบกับ Manhattan) บน feature ที่ standardize แล้ว | ถ่วงน้ำหนักตามระยะ 1/ระยะ ของ k=21 ห้องที่ใกล้สุด (เทียบกับโหวตเท่ากัน) | [src/models/knn_regression.py](src/models/knn_regression.py) |
+| Fuzzy C-Means | Euclidean | ทุกโซนเป็นสมาชิกทุกกลุ่มด้วยค่า 0-1 (รวมเป็น 1) ตามระยะถึงศูนย์กลาง | [src/models/fuzzy_cmeans.py](src/models/fuzzy_cmeans.py) |
+| FFBP | ไม่ใช้ระยะ | ไม่มีการโหวต ปรับน้ำหนัก W0, W1 ด้วย back-propagation | [src/models/ffbp.py](src/models/ffbp.py) |
 | Linear Regression | ไม่ใช้ระยะ | ไม่มีการโหวต หาน้ำหนัก W ที่ทำให้ผลรวมความคลาดเคลื่อนยกกำลังสองน้อยสุด | [src/models/linear_regression.py](src/models/linear_regression.py) |
 
 ระยะและวิธีโหวตที่ใช้จริงเลือกจาก 5-fold cross-validation บนชุดฝึก ไม่ได้ใช้ชุดทดสอบเลือก
@@ -163,7 +169,7 @@ bkk-condo-price/
 ├── src/
 │   ├── clean/              ใส่ label และทำความสะอาด
 │   ├── features/           แบ่งข้อมูล K-Means และสร้าง feature
-│   ├── models/             K-Means, Linear Regression, KNN (NumPy)
+│   ├── models/             K-Means, Fuzzy C-Means, Linear Regression, KNN, FFBP (NumPy)
 │   └── evaluate/           ฝึก ประเมิน วาดกราฟ เปรียบเทียบกับกรมบังคับคดี คาดการณ์ปีอนาคต
 └── tests/                  เทสต์โมเดลเทียบกับ scikit-learn
 ```
