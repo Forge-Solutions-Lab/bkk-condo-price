@@ -161,10 +161,16 @@ def predict(bundle: dict, listing: pd.DataFrame) -> dict[str, object]:
     clustering = ZoneClustering(zone_table=bundle["zone_table"], n_clusters=bundle["n_clusters"])
     buildings = bundle["building_features"].transform(listing)
     building_features = feature_frame(listing, clustering, buildings=buildings)[bundle["building_feature_names"]].to_numpy()
-    knn_model = bundle["knn_building"]
-    z = knn_model["scaler"].transform(building_features)[0]
+    if "knn_extended" in bundle:
+        # same features as the unseen-building ensemble; the vote is on log price per sqm
+        knn_model = bundle["knn_extended"]
+        knn_features = bundle["blend"]["ensemble"].features(listing, clustering)
+        log_area = float(np.log(listing["area_sqm"].iloc[0]))
+    else:
+        knn_model, knn_features, log_area = bundle["knn_building"], building_features, 0.0
+    z = knn_model["scaler"].transform(knn_features)[0]
     neighbour_index, _ = neighbors(knn_model["X"], z, SIMILAR_COUNT, knn_model["metric"])
-    log_knn = knn(knn_model["X"], knn_model["y"], z, knn_model["k"], knn_model["metric"], knn_model["weight"])
+    log_knn = knn(knn_model["X"], knn_model["y"], z, knn_model["k"], knn_model["metric"], knn_model["weight"]) + log_area
     vote = "ถ่วงน้ำหนักตามระยะ" if knn_model["weight"] == "distance" else "โหวตเท่ากัน"
     blended = blend_price(bundle, listing, clustering, buildings)
     # building's own listings, shrunk toward the unseen-building blend (src/features/build.py)
@@ -310,7 +316,7 @@ def render_result(result: dict[str, object], area: float, bundle: dict) -> None:
     ]
     if result["project_price"] is not None:
         rows.append({"โมเดล": "ราคาห้องอื่นในโครงการ + shrinkage", "ราคา (บาท)": result["project_price"]})
-    rows.append({"โมเดล": "KNN Regression + ข้อมูลตึก", "ราคา (บาท)": result["knn"]})
+    rows.append({"โมเดล": "KNN Regression + ข้อมูลตึก + ราคาย่าน (ราคาต่อ ตร.ม.)", "ราคา (บาท)": result["knn"]})
     st.markdown("### ราคาจากแต่ละโมเดล")
     st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True,
                  column_config={"ราคา (บาท)": st.column_config.NumberColumn(format="%,.0f")})
