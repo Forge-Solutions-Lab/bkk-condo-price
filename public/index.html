@@ -219,17 +219,26 @@
     </section>
 
     <section class="table-section quality-section">
-      <h3>ความแม่นยำบนชุดทดสอบ</h3>
+      <div class="section-header-row">
+        <h3>ความแม่นยำบนชุดทดสอบ</h3>
+        <input
+          id="quality-filter"
+          type="text"
+          class="table-filter-input"
+          placeholder="กรองชื่อโมเดล (เช่น Blend, KNN, FFBP)..."
+          aria-label="กรองชื่อโมเดลในตารางความแม่นยำ"
+        />
+      </div>
       <div class="table-wrap">
-        <table>
+        <table id="quality-table">
           <thead>
             <tr>
-              <th>โมเดล</th>
-              <th class="num">MAPE สุ่มแบ่ง (%)</th>
-              <th class="num">MAPE ตึกที่ไม่เคยเห็น (%)</th>
-              <th class="num">MAE (ล้านบาท)</th>
-              <th class="num">R²</th>
-              <th class="num">คลาดเคลื่อนไม่เกิน 10% (%)</th>
+              <th class="sortable" data-sort-key="model">โมเดล</th>
+              <th class="num sortable" data-sort-key="mape_random_pct">MAPE สุ่มแบ่ง (%)</th>
+              <th class="num sortable" data-sort-key="mape_unseen_pct">MAPE ตึกที่ไม่เคยเห็น (%)</th>
+              <th class="num sortable" data-sort-key="mae_million_thb">MAE (ล้านบาท)</th>
+              <th class="num sortable" data-sort-key="r2">R²</th>
+              <th class="num sortable" data-sort-key="within_10pct">คลาดเคลื่อนไม่เกิน 10% (%)</th>
             </tr>
           </thead>
           <tbody id="quality-body">

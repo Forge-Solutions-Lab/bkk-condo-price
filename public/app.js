@@ -8,6 +8,10 @@
     activeOptionIndex: -1,
     // last prediction from the server; the year slider re-reads its forecast series without a new request
     lastPrediction: null,
+    qualityRows: [],
+    qualityQuery: "",
+    qualitySortKey: null,
+    qualitySortDir: "asc",
   };
 
   const els = {
@@ -54,6 +58,8 @@
     futurePrice: document.getElementById("future-price"),
     futureNote: document.getElementById("future-note"),
     forecastChart: document.getElementById("forecast-chart"),
+    qualityFilter: document.getElementById("quality-filter"),
+    qualityTable: document.getElementById("quality-table"),
     qualityBody: document.getElementById("quality-body"),
   };
 
@@ -224,8 +230,31 @@
   }
 
   function renderQualityTable(rows) {
+    if (Array.isArray(rows)) {
+      state.qualityRows = rows.slice();
+    }
+    const q = (state.qualityQuery || "").trim().toLowerCase();
+    let visible = state.qualityRows.filter((row) => !q || String(row.model).toLowerCase().includes(q));
+    if (state.qualitySortKey) {
+      const key = state.qualitySortKey;
+      const mult = state.qualitySortDir === "asc" ? 1 : -1;
+      visible = visible.slice().sort((a, b) => {
+        if (key === "model") return String(a.model).localeCompare(String(b.model)) * mult;
+        return (Number(a[key]) - Number(b[key])) * mult;
+      });
+    }
     els.qualityBody.innerHTML = "";
-    (rows || []).forEach((row) => {
+    if (!visible.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 6;
+      td.className = "loading-cell";
+      td.textContent = "ไม่พบโมเดลที่ตรงกับคำค้นหา";
+      tr.appendChild(td);
+      els.qualityBody.appendChild(tr);
+      return;
+    }
+    visible.forEach((row) => {
       const tr = document.createElement("tr");
       const cells = [
         { text: row.model, cls: "" },
@@ -243,6 +272,32 @@
       });
       els.qualityBody.appendChild(tr);
     });
+  }
+
+  function setupQualityControls() {
+    if (els.qualityFilter) {
+      els.qualityFilter.addEventListener("input", () => {
+        state.qualityQuery = els.qualityFilter.value;
+        renderQualityTable();
+      });
+    }
+    if (els.qualityTable) {
+      const headers = els.qualityTable.querySelectorAll("th.sortable");
+      headers.forEach((th) => {
+        th.addEventListener("click", () => {
+          const key = th.dataset.sortKey;
+          if (state.qualitySortKey === key) {
+            state.qualitySortDir = state.qualitySortDir === "asc" ? "desc" : "asc";
+          } else {
+            state.qualitySortKey = key;
+            state.qualitySortDir = key === "r2" || key === "within_10pct" ? "desc" : "asc";
+          }
+          headers.forEach((h) => h.classList.remove("sort-asc", "sort-desc"));
+          th.classList.add(state.qualitySortDir === "asc" ? "sort-asc" : "sort-desc");
+          renderQualityTable();
+        });
+      });
+    }
   }
 
   function renderForecastChart(series) {
@@ -741,5 +796,6 @@
   });
   els.form.addEventListener("submit", handleSubmit);
   setupCombobox();
+  setupQualityControls();
   loadMetadata();
 })();

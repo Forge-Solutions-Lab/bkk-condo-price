@@ -560,6 +560,56 @@ th.num, td.num {
   margin-top: 36px;
 }
 
+.section-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.section-header-row h3 {
+  margin-bottom: 0;
+}
+
+.table-filter-input {
+  width: min(320px, 100%);
+  background: var(--iron);
+  color: var(--white);
+  border: 1px solid var(--graphite);
+  border-radius: 0;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.table-filter-input:focus {
+  border-color: var(--white);
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+th.sortable:hover {
+  color: var(--white);
+}
+
+th.sortable.sort-asc::after {
+  content: " ▲";
+  color: var(--gold);
+  font-size: 10px;
+}
+
+th.sortable.sort-desc::after {
+  content: " ▼";
+  color: var(--gold);
+  font-size: 10px;
+}
+
 .footer-note {
   color: var(--ash);
   font-size: 14px;
