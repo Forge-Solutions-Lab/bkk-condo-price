@@ -196,7 +196,8 @@ def test_multiscale_neighbourhood_counts_other_river_bank_as_farther():
     target = pd.DataFrame({"project_name": ["T"], "zone_no": [35], "latitude": [13.69], "longitude": [100.52],
                            "complete_year": [2015.0], "price_per_sqm": [1.0]})
     near_only = MultiScaleNeighbourhood.fit(train, k_local=1, k_broad=2, k_age=1, river_km=0.0).transform(target)
-    with_river = MultiScaleNeighbourhood.fit(train, k_local=1, k_broad=2, k_age=1).transform(target)
+    # the penalty is off by default (RIVER_CROSSING_KM = 0); the option still works when set
+    with_river = MultiScaleNeighbourhood.fit(train, k_local=1, k_broad=2, k_age=1, river_km=5.0).transform(target)
     assert near_only["nb_idw_k5"].iloc[0] == pytest.approx(np.log(150000.0))
     assert with_river["nb_idw_k5"].iloc[0] == pytest.approx(np.log(60000.0))
 
