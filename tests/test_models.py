@@ -144,3 +144,82 @@ def test_spatial_encoder_excludes_own_building():
     out = enc.transform(train, leave_one_project_out=True)
     # Row 0 (building A, price 200k) must ONLY average B & C (100k), never seeing its own 200k!
     assert np.isclose(np.exp(out.loc[0, "local_log_pps_k8"]), 100000.0, rtol=1e-6)
+
+
+def test_spatial_encoder_lopo_excludes_own_project_from_zone_mean():
+    import pandas as pd
+
+    train = pd.DataFrame([
+        {"project_name": "A", "zone_no": 1, "latitude": 13.740, "longitude": 100.560, "price_per_sqm": 300000.0},
+        {"project_name": "B", "zone_no": 1, "latitude": 13.741, "longitude": 100.561, "price_per_sqm": 100000.0},
+        {"project_name": "C", "zone_no": 1, "latitude": 13.742, "longitude": 100.562, "price_per_sqm": 100000.0},
+    ])
+    enc = SpatialPriceEncoder.fit(train, k_neighbors=2, zone_smooth=0.0)
+    out = enc.transform(train, leave_one_project_out=True)
+    # With zone_smooth=0, row 0's zone mean should average only B and C (100k)
+    assert np.isclose(np.exp(out.loc[0, "zone_log_pps"]), 100000.0, rtol=1e-6)
+
+
+def test_rich_feature_builder_handles_missing_building_and_unseen_zone():
+    import pandas as pd
+    from src.features.build import RichFeatureBuilder, ZoneClustering
+
+    zone_table = pd.DataFrame([
+        {"zone_no": 1, "tier": 1, "median_price_per_sqm": 100000.0},
+        {"zone_no": 2, "tier": 2, "median_price_per_sqm": 200000.0},
+    ])
+    clustering = ZoneClustering(zone_table=zone_table, n_clusters=2)
+    train = pd.DataFrame([
+        {
+            "project_name": "A", "zone_no": 1, "area_sqm": 35.0, "bedrooms": 1, "bathrooms": 1,
+            "floor": 10, "is_new_unit": 0, "price_per_sqm": 100000.0, "latitude": 13.74, "longitude": 100.56,
+            "complete_year": 2020, "total_unit": 400, "total_floor": 25, "total_building": 1,
+            "facility_count": 10, "has_pool": 1, "has_gym": 1, "has_parking": 1,
+            "nearest_rail_km": 0.4, "nearest_rail_line": "bts", "nearest_mall_km": 0.6,
+            "nearest_hospital_km": 1.2, "has_building_info": True,
+        },
+        {
+            "project_name": "B", "zone_no": 2, "area_sqm": 55.0, "bedrooms": 2, "bathrooms": 2,
+            "floor": 18, "is_new_unit": 1, "price_per_sqm": 200000.0, "latitude": 13.73, "longitude": 100.53,
+            "complete_year": 2023, "total_unit": 600, "total_floor": 40, "total_building": 2,
+            "facility_count": 14, "has_pool": 1, "has_gym": 1, "has_parking": 1,
+            "nearest_rail_km": 0.2, "nearest_rail_line": "mrt", "nearest_mall_km": 0.3,
+            "nearest_hospital_km": 0.8, "has_building_info": True,
+        },
+    ])
+    test = pd.DataFrame([
+        {
+            "project_name": "Unknown", "zone_no": 99, "area_sqm": 40.0, "bedrooms": 1, "bathrooms": 1,
+            "floor": 5, "is_new_unit": 0, "price_per_sqm": 120000.0, "latitude": np.nan, "longitude": np.nan,
+            "complete_year": np.nan, "total_unit": np.nan, "total_floor": np.nan, "total_building": np.nan,
+            "facility_count": np.nan, "has_pool": np.nan, "has_gym": np.nan, "has_parking": np.nan,
+            "nearest_rail_km": np.nan, "nearest_rail_line": None, "nearest_mall_km": np.nan,
+            "nearest_hospital_km": np.nan, "has_building_info": False,
+        },
+    ])
+    builder = RichFeatureBuilder.fit(train, clustering, k_neighbors=2)
+    x_tr = builder.transform(train, leave_one_project_out=True)
+    x_te = builder.transform(test, leave_one_project_out=False)
+    assert list(x_tr.columns) == list(x_te.columns)
+    assert np.all(np.isfinite(x_tr.to_numpy()))
+    assert np.all(np.isfinite(x_te.to_numpy()))
+
+
+def test_bundle_prediction_sanity():
+    from pathlib import Path
+    import pickle
+    from app.streamlit_app import build_input, predict
+
+    bundle_path = Path(__file__).resolve().parents[1] / "models" / "model_bundle.pkl"
+    if not bundle_path.exists():
+        pytest.skip("model_bundle.pkl not built yet")
+    with bundle_path.open("rb") as handle:
+        bundle = pickle.load(handle)
+    zone_no = int(bundle["zone_table"]["zone_no"].iloc[0])
+    listing = build_input(bundle, zone_no, 35.0, 1, 1, 10, False, None, 2018, 0.5)
+    result = predict(bundle, listing)
+    assert result["ensemble"] is not None
+    ens = result["ensemble"]
+    assert ens["low"] < ens["price"] < ens["high"]
+    pps = ens["price"] / 35.0
+    assert 20_000 < pps < 1_000_000
