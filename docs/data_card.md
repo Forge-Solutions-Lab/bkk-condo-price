@@ -13,10 +13,13 @@
 | Clean listings | 4,918 rows |
 | Used for modelling | 3,271 rows (at most 2 pages per zone), 38 zones, 971 projects |
 | Target | Asking price in THB (not the final sale price) |
+| Building data | One listing page per project, 970 pages; building data for 944 projects (97.5% of modelling rows) |
+| Market index | BIS Bangkok residential property price index, quarterly 1991-2026 (FRED QTHN628BIS), used only for the future-year trend |
 
 ## Why the data was collected by hand
 - No ready-made or pre-labelled dataset was used.
-- Livinginsider answers scripted requests with an AWS WAF challenge, and the LED search requires a verification code. We did not bypass either. Every page was opened and saved by a person in a normal browser.
+- Livinginsider answers scripted requests with an AWS WAF challenge, and the LED search requires a verification code. We did not bypass either.
+- Zone pages and most project pages were opened and saved by a person in a normal browser. For the person 4 project list, a script opened each page in a visible Chrome window, one page every 4-7 seconds, and saved the loaded page. When the site showed a verification check, the script stopped until a team member dealt with it.
 - Only listing facts are kept. Listing titles are dropped because sellers often put phone numbers or LINE IDs in them. Raw HTML is kept locally and is not published.
 
 ## Collection protocol
@@ -35,6 +38,18 @@
 | bedrooms, bathrooms, floor, area | Read from the four icon fields of each card. Each icon is identified by its SVG shape, because the site shows no text labels |
 | price_thb | Card price. Formats such as "฿ 8M" or "฿ 19.5M" are converted to baht |
 | badges | Listing tags: ขาย, ขายและเช่า, ขายดาวน์, มือ 1 |
+
+## Building data (project pages)
+- `docs/project_pages/` lists one listing URL per project, split across five team members. Projects with the most listings come first.
+- Each listing page embeds its project's data. `scripts/parse_projects.py` reads it into `data/interim/projects.csv`.
+- Fields: project id and name, latitude and longitude, district, completion year, number of units, floors and buildings, facilities (count, pool, gym, parking), and distance to the nearest rail station, mall, hospital and school with the rail line.
+- Coverage: 944 of 970 pages had project data, one page per project. The other 26 pages are listings that the site does not link to a project.
+- Listings are joined to projects by project name (trimmed, lower case). All 944 parsed projects matched a listing project.
+- Rules for model features:
+  - building age = 2026 minus the completion year, never below 0
+  - a unit count or floor count of 0 is treated as unknown
+  - the site lists nearby places within about 3 km, so no rail station or mall in the list is recorded as 3 km
+  - listings without building data get the training-set median and a flag
 
 ## Labels we created
 | Label | Rule |
@@ -83,4 +98,5 @@ The outlier fence is computed inside each zone, because price per sqm differs se
 - **Newest listings only:** pages 1–2 show the newest listings, which may differ from older ones.
 - **Agent listings:** agents post many units, and some identical units with different prices remain after de-duplication. In the random split, 36.6% of test units have a unit with the same project, bedrooms and rounded area in training. This is why we also report a split by project, where test buildings are never seen in training.
 - **District labels are coarse:** they are per zone, not per building, and 4 zones have low confidence.
-- **Missing features:** distance to BTS/MRT, building age and number of units are not on the listing cards, so they are not in the data.
+- **Building data from the listing site:** completion year, unit counts and distances are what the site shows; we did not check them against another source.
+- **Market trend is citywide:** the future-year trend uses a residential index for all of Bangkok, not condos only.
