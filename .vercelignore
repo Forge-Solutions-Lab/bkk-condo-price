@@ -1,0 +1,10 @@
+data/
+docs/
+scripts/
+tests/
+.streamlit/
+reports/figures/
+reports/*.csv
+reports/benchmark*.json
+reports/metrics.json
+README.md

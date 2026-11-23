@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "fluid": true,
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{data/**,docs/**,scripts/**,tests/**,reports/figures/**,reports/benchmark*.json,reports/*.csv,.streamlit/**,public/**}"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" }
+  ]
+}

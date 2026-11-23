@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BKK Condo Price</title>
+  <meta name="description" content="ประเมินราคาคอนโดในกรุงเทพฯ ด้วย K-Means + Linear Regression + Boosting/ExtraTrees เทียบกับ KNN Regression" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <div class="micro-label">Bangkok condo price estimator</div>
+      <h1 class="hero-title">BKK Condo Price</h1>
+      <p class="hero-sub">
+        ประเมินราคาคอนโดในกรุงเทพฯ จากประกาศขายที่เก็บ ทำ label และทำความสะอาดเอง
+        ด้วย K-Means + Linear Regression (พร้อมข้อมูลตึกและราคาย่าน) เทียบกับ KNN Regression
+      </p>
+    </header>
+
+    <div id="global-error" class="alert alert-error hidden" role="alert"></div>
+
+    <section class="form-card" aria-label="แบบฟอร์มประเมินราคาคอนโด">
+      <form id="estimate-form" novalidate>
+        <div class="grid-2">
+          <div class="field">
+            <label for="zone-select">โซน / เขต</label>
+            <select id="zone-select" name="zone_no" required disabled>
+              <option value="">กำลังโหลดข้อมูลโซน...</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="area-input">พื้นที่ (ตร.ม.)</label>
+            <input id="area-input" name="area_sqm" type="number" min="15" max="500" step="1" value="35" required />
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="field">
+            <label for="bedrooms-select">ห้องนอน</label>
+            <select id="bedrooms-select" name="bedrooms" required>
+              <option value="0">สตูดิโอ</option>
+              <option value="1" selected>1 ห้องนอน</option>
+              <option value="2">2 ห้องนอน</option>
+              <option value="3">3 ห้องนอน</option>
+              <option value="4">4 ห้องนอน</option>
+              <option value="5">5 ห้องนอน</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="bathrooms-select">ห้องน้ำ</label>
+            <select id="bathrooms-select" name="bathrooms" required>
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="floor-input">ชั้น</label>
+            <input id="floor-input" name="floor" type="number" min="1" max="80" step="1" value="10" required />
+          </div>
+        </div>
+
+        <div class="field project-field">
+          <label for="project-search">โครงการ (ไม่บังคับ พิมพ์ค้นหาได้ ถ้าเลือก ระบบใช้ข้อมูลตึกของโครงการให้)</label>
+          <div class="combobox" id="project-combobox">
+            <input
+              id="project-search"
+              type="text"
+              autocomplete="off"
+              placeholder="ไม่ระบุโครงการ — พิมพ์ชื่อโครงการเพื่อค้นหา..."
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="project-listbox"
+            />
+            <button type="button" id="project-clear" class="clear-btn hidden" title="ล้างโครงการ" aria-label="ล้างโครงการ">×</button>
+            <ul id="project-listbox" class="combobox-list hidden" role="listbox"></ul>
+          </div>
+          <div id="project-hint" class="field-hint">ไม่ได้เลือกโครงการ — ใช้ปีสร้างเสร็จและระยะรถไฟฟ้าที่กรอกด้านล่าง</div>
+        </div>
+
+        <div class="grid-2" id="manual-building-fields">
+          <div class="field">
+            <label for="complete-year-input">ปีที่ตึกสร้างเสร็จ (ใช้เมื่อไม่ระบุโครงการ)</label>
+            <input id="complete-year-input" name="complete_year" type="number" min="1980" max="2030" step="1" value="2016" required />
+          </div>
+          <div class="field">
+            <label for="rail-km-input">ระยะถึงสถานีรถไฟฟ้า กม. (ใช้เมื่อไม่ระบุโครงการ)</label>
+            <input id="rail-km-input" name="rail_km" type="number" min="0" max="3" step="0.1" value="0.5" required />
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <label class="checkbox-label" for="is-new-checkbox">
+            <input id="is-new-checkbox" name="is_new" type="checkbox" />
+            <span>ห้องมือ 1 (ยังไม่เคยมีผู้อยู่)</span>
+          </label>
+        </div>
+
+        <div class="field slider-field" id="year-slider-wrapper">
+          <div class="slider-header">
+            <label for="year-slider">ปีที่ต้องการดูราคา</label>
+            <span id="year-value" class="slider-value">2026</span>
+          </div>
+          <input id="year-slider" name="year" type="range" min="2026" max="2036" step="1" value="2026" />
+          <div class="slider-ticks">
+            <span id="year-min-label">2026</span>
+            <span id="year-max-label">2036</span>
+          </div>
+        </div>
+
+        <button id="submit-btn" type="submit" class="btn-primary" disabled>
+          ประเมินราคา
+        </button>
+      </form>
+    </section>
+
+    <section id="results-section" class="results hidden" aria-live="polite">
+      <div id="input-warnings" class="warnings-stack"></div>
+
+      <div class="result-grid">
+        <div class="panel">
+          <div id="main-model-label" class="micro-label">โมเดลหลัก</div>
+          <div id="main-price" class="price-main">-</div>
+          <div id="main-range" class="value-note"></div>
+          <div id="main-basis" class="value-note"></div>
+        </div>
+        <div class="panel">
+          <div class="micro-label">KNN Regression (เปรียบเทียบ)</div>
+          <div id="knn-price" class="price-second">-</div>
+          <div id="knn-setting" class="value-note"></div>
+          <div id="tier-row" class="value-note"></div>
+        </div>
+      </div>
+
+      <div class="panel-deep">
+        <div class="micro-label">ราคานี้เชื่อได้แค่ไหน</div>
+        <div id="reliability-lines"></div>
+      </div>
+      <div id="reliability-warnings" class="warnings-stack"></div>
+
+      <div id="building-info" class="value-note building-info"></div>
+
+      <section class="table-section">
+        <h3>ราคาจากแต่ละโมเดล</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>โมเดล</th>
+                <th class="num">ราคา (บาท)</th>
+              </tr>
+            </thead>
+            <tbody id="model-breakdown-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="table-section">
+        <h3>ห้องที่คล้ายกันที่สุดในข้อมูล</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>โครงการ</th>
+                <th>โซน</th>
+                <th>เขต</th>
+                <th>ประเภท</th>
+                <th class="num">ห้องนอน</th>
+                <th class="num">ห้องน้ำ</th>
+                <th class="num">ชั้น</th>
+                <th class="num">ตร.ม.</th>
+                <th class="num">ราคา (บาท)</th>
+              </tr>
+            </thead>
+            <tbody id="neighbours-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="future-section" class="hidden">
+        <div class="panel-deep">
+          <div id="future-label" class="micro-label">คาดการณ์ราคา</div>
+          <div id="future-price" class="price-second">-</div>
+          <div id="future-note" class="value-note"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-legend">
+            <span class="legend-item"><span class="swatch swatch-gold"></span>ราคาคาดการณ์</span>
+            <span class="legend-item"><span class="swatch swatch-white"></span>สูง</span>
+            <span class="legend-item"><span class="swatch swatch-ash"></span>ต่ำ</span>
+          </div>
+          <div id="forecast-chart" class="chart-wrap"></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="table-section quality-section">
+      <h3>ความแม่นยำบนชุดทดสอบ</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>โมเดล</th>
+              <th class="num">MAPE สุ่มแบ่ง (%)</th>
+              <th class="num">MAPE ตึกที่ไม่เคยเห็น (%)</th>
+              <th class="num">MAE (ล้านบาท)</th>
+              <th class="num">R²</th>
+              <th class="num">คลาดเคลื่อนไม่เกิน 10% (%)</th>
+            </tr>
+          </thead>
+          <tbody id="quality-body">
+            <tr><td colspan="6" class="loading-cell">กำลังโหลดตารางความแม่นยำ...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer-note">
+      ข้อมูล: ประกาศขายคอนโดบน Livinginsider ที่บันทึกด้วยมือเมื่อ 23 พ.ย. 2569 ราคาเป็นราคาประกาศขาย ไม่ใช่ราคาซื้อขายจริง
+    </footer>
+  </main>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
