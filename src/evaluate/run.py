@@ -26,14 +26,16 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import HistGradientBoostingRegressor
+from sklearn.ensemble import HistGradientBoostingRegressor, RandomForestRegressor
 from sklearn.model_selection import KFold
 
 from src.features.build import (
     SEED,
+    BuildingFeatures,
     ProjectPriceLevels,
     Standardizer,
     ZoneClustering,
+    attach_buildings,
     choose_zone_clustering,
     feature_frame,
     split_by_project,
@@ -46,6 +48,7 @@ LOG = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CLEAN_CSV = PROJECT_ROOT / "data" / "processed" / "listings_clean.csv"
+PROJECTS_CSV = PROJECT_ROOT / "data" / "interim" / "projects.csv"
 REPORTS_DIR = PROJECT_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
 BUNDLE_PATH = PROJECT_ROOT / "models" / "model_bundle.pkl"
@@ -54,6 +57,7 @@ MAX_PAGES_PER_ZONE = 2
 K_CANDIDATES = range(1, 31)
 CV_FOLDS = 5
 LEARNING_FRACTIONS = [0.1, 0.25, 0.5, 0.75, 1.0]
+FILTER_AREA_TOLERANCE = 0.10
 METRICS = ["euclidean", "manhattan"]
 WEIGHTS = ["uniform", "distance"]
 GOLD = "#FFC000"
@@ -64,6 +68,8 @@ CHARCOAL = "#202020"
 MAIN_LR = "Linear Regression (K-Means tiers)"
 MAIN_KNN = "KNN Regression (K-Means tiers)"
 PROJECT_LR = "Linear Regression + project price level"
+BUILDING_LR = "Linear Regression + building features"
+BUILDING_KNN = "KNN Regression + building features"
 
 
 def price_metrics(actual: np.ndarray, predicted: np.ndarray) -> dict[str, float]:
@@ -78,6 +84,41 @@ def price_metrics(actual: np.ndarray, predicted: np.ndarray) -> dict[str, float]
         "within_10pct": float(100 * np.mean(absolute_percent <= 0.10)),
         "within_20pct": float(100 * np.mean(absolute_percent <= 0.20)),
     }
+
+
+def r_squared(actual: np.ndarray, predicted: np.ndarray) -> float:
+    return float(1 - np.sum((actual - predicted) ** 2) / np.sum((actual - actual.mean()) ** 2))
+
+
+def sota_style_metrics(test: pd.DataFrame, predicted_price: np.ndarray) -> dict[str, float]:
+    """Metrics in the form used by earlier Bangkok studies: price per sqm, and price per
+    sqm averaged to project level (those studies predict one value per project)."""
+    actual = test["price_per_sqm"].to_numpy()
+    predicted = predicted_price / test["area_sqm"].to_numpy()
+    projects = pd.DataFrame({"project": test["project_name"], "actual": actual, "predicted": predicted})
+    projects = projects.groupby("project").median()
+    return {
+        "price_per_sqm_r2": r_squared(actual, predicted),
+        "project_price_per_sqm_r2": r_squared(projects["actual"].to_numpy(), projects["predicted"].to_numpy()),
+        "project_relative_error_pct": float(100 * np.mean(np.abs(projects["predicted"] - projects["actual"]) / projects["actual"])),
+    }
+
+
+def website_filter_prediction(train: pd.DataFrame, test: pd.DataFrame) -> tuple[np.ndarray, float]:
+    """What a buyer gets by filtering a listing site: median price of listings in the same
+    zone with the same bedrooms and an area within 10%. When nothing matches, the zone's
+    median price per sqm times the area is used, and the match rate is reported."""
+    predicted, matched = [], 0
+    zone_price = train.groupby("zone_no")["price_per_sqm"].median()
+    for row in test.itertuples():
+        same = train[(train["zone_no"] == row.zone_no) & (train["bedrooms"] == row.bedrooms)
+                     & train["area_sqm"].between(row.area_sqm * (1 - FILTER_AREA_TOLERANCE), row.area_sqm * (1 + FILTER_AREA_TOLERANCE))]
+        if len(same):
+            predicted.append(same["price_thb"].median())
+            matched += 1
+        else:
+            predicted.append(zone_price[row.zone_no] * row.area_sqm)
+    return np.array(predicted), 100 * matched / len(test)
 
 
 def choose_knn_k(features: np.ndarray, log_price: np.ndarray, metric: str, weight: str) -> tuple[int, list[dict[str, float]]]:
@@ -149,6 +190,15 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     xp_train_frame = feature_frame(train, clustering, project_levels=levels.transform(train, leave_one_out=True))
     xp_train = xp_train_frame.to_numpy()
     xp_test = feature_frame(test, clustering, project_levels=levels.transform(test, leave_one_out=False)).to_numpy()
+    buildings = BuildingFeatures.fit(train)
+    xb_train_frame = feature_frame(train, clustering, buildings=buildings.transform(train))
+    xb_train = xb_train_frame.to_numpy()
+    xb_test = feature_frame(test, clustering, buildings=buildings.transform(test)).to_numpy()
+    xbp_train_frame = feature_frame(train, clustering, project_levels=levels.transform(train, leave_one_out=True),
+                                    buildings=buildings.transform(train))
+    xbp_train = xbp_train_frame.to_numpy()
+    xbp_test = feature_frame(test, clustering, project_levels=levels.transform(test, leave_one_out=False),
+                             buildings=buildings.transform(test)).to_numpy()
     x_train_no_location = feature_frame(train, clustering, use_location=False).to_numpy()
     x_test_no_location = feature_frame(test, clustering, use_location=False).to_numpy()
 
@@ -157,19 +207,37 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     W_no_location = lr.fit(x_train_no_location, y_train_log)
     knn, knn_candidates = best_knn(x_train, y_train_log)
     knn_project = FittedKnn.fit(xp_train, y_train_log, knn.metric, knn.weight)
+    W_building = lr.fit(xb_train, y_train_log)
+    W_building_project = lr.fit(xbp_train, y_train_log)
+    knn_building = FittedKnn.fit(xb_train, y_train_log, knn.metric, knn.weight)
+    forest_building = RandomForestRegressor(n_estimators=300, random_state=SEED, n_jobs=-1).fit(xb_train, y_train_log)
+    boosting_building = HistGradientBoostingRegressor(random_state=SEED).fit(xb_train, y_train_log)
+    boosting_building_project = HistGradientBoostingRegressor(random_state=SEED).fit(xbp_train, y_train_log)
     boosting = HistGradientBoostingRegressor(random_state=SEED).fit(x_train, y_train_log)
     boosting_project = HistGradientBoostingRegressor(random_state=SEED).fit(xp_train, y_train_log)
+    forest = RandomForestRegressor(n_estimators=300, random_state=SEED, n_jobs=-1).fit(x_train, y_train_log)
+    forest_project = RandomForestRegressor(n_estimators=300, random_state=SEED, n_jobs=-1).fit(xp_train, y_train_log)
     zone_price = train.groupby("zone_no")["price_per_sqm"].median()
+    filter_price, filter_match_pct = website_filter_prediction(train, test)
 
     predictions = {
+        "Website filter: same zone, bedrooms, area +-10%": filter_price,
         "Baseline: zone median price/sqm x area": test["zone_no"].map(zone_price).to_numpy() * test["area_sqm"].to_numpy(),
         "Linear Regression (no location)": np.exp(lr.predict(x_test_no_location, W_no_location)),
         MAIN_LR: np.exp(lr.predict(x_test, W)),
         MAIN_KNN: knn.predict(x_test),
+        "Random Forest (K-Means tiers, reference)": np.exp(forest.predict(x_test)),
         "Gradient Boosting (K-Means tiers, reference)": np.exp(boosting.predict(x_test)),
         PROJECT_LR: np.exp(lr.predict(xp_test, W_project)),
         "KNN Regression + project price level": knn_project.predict(xp_test),
+        "Random Forest + project price level (reference)": np.exp(forest_project.predict(xp_test)),
         "Gradient Boosting + project price level (reference)": np.exp(boosting_project.predict(xp_test)),
+        BUILDING_LR: np.exp(lr.predict(xb_test, W_building)),
+        BUILDING_KNN: knn_building.predict(xb_test),
+        "Random Forest + building features (reference)": np.exp(forest_building.predict(xb_test)),
+        "Gradient Boosting + building features (reference)": np.exp(boosting_building.predict(xb_test)),
+        "Linear Regression + building + project price level": np.exp(lr.predict(xbp_test, W_building_project)),
+        "Gradient Boosting + building + project price level (reference)": np.exp(boosting_building_project.predict(xbp_test)),
     }
     knn_experiment = [
         {"metric": model.metric, "weight": model.weight, "k": model.k, "cv_mape_pct": model.cv_mape_pct,
@@ -179,10 +247,18 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     return {
         "train": train, "test": test, "clustering": clustering, "levels": levels,
         "W": W, "W_project": W_project, "knn": knn, "knn_project": knn_project,
+        "W_building": W_building, "W_building_project": W_building_project, "knn_building": knn_building,
+        "buildings": buildings, "building_feature_names": list(xb_train_frame.columns),
+        "building_project_feature_names": list(xbp_train_frame.columns),
+        "residual_std_log_building": float(np.std(y_train_log - lr.predict(xb_train, W_building))),
+        "residual_std_log_building_project": float(np.std(y_train_log - lr.predict(xbp_train, W_building_project))),
+        "test_building_share_pct": float(100 * test["has_building_info"].mean()),
         "feature_names": list(feature_frame(train, clustering).columns),
         "project_feature_names": list(xp_train_frame.columns),
         "predictions": predictions,
         "results": {name: price_metrics(y_test, predicted) for name, predicted in predictions.items()},
+        "sota_style": {name: sota_style_metrics(test, predicted) for name, predicted in predictions.items()},
+        "filter_match_pct": filter_match_pct,
         "kmeans_experiment": kmeans_experiment,
         "knn_experiment": knn_experiment,
         "y_test": y_test,
@@ -286,7 +362,7 @@ def plot_knn_curve(curve: list[dict[str, float]], best_k: int) -> None:
 def plot_model_comparison(random_results: dict[str, dict[str, float]], project_results: dict[str, dict[str, float]]) -> None:
     names = list(random_results)
     positions = np.arange(len(names))
-    figure, axes = new_figure(10, 5.5)
+    figure, axes = new_figure(10, 0.42 * len(names) + 1.5)
     axes.barh(positions - 0.2, [random_results[n]["mape_pct"] for n in names], height=0.4, color=GOLD, label="random split")
     axes.barh(positions + 0.2, [project_results[n]["mape_pct"] for n in names], height=0.4, color=ASH, label="unseen buildings")
     for position, name in zip(positions, names):
@@ -332,9 +408,12 @@ def plot_learning_curve(rows: list[dict[str, float]]) -> None:
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     all_listings = pd.read_csv(CLEAN_CSV, dtype={"listing_id": str})
+    projects = pd.read_csv(PROJECTS_CSV)
     # Same collection rule for every zone: zone 01 was saved to 38 pages, others to 2,
     # so without this cap one zone would dominate the training data.
     listings = all_listings[all_listings["page"] <= MAX_PAGES_PER_ZONE].reset_index(drop=True)
+    listings = attach_buildings(listings, projects)
+    LOG.info("building data found for %.1f%% of listings", 100 * listings["has_building_info"].mean())
     LOG.info("using %s of %s clean listings (pages <= %s per zone)", len(listings), len(all_listings), MAX_PAGES_PER_ZONE)
 
     main_run = evaluate_split(*split_random(listings))
@@ -353,6 +432,8 @@ def main() -> None:
             "train_random": len(main_run["train"]), "test_random": len(main_run["test"]),
             "train_project": len(project_run["train"]), "test_project": len(project_run["test"]),
             "zones": int(listings["zone_no"].nunique()), "projects": int(listings["project_name"].nunique()),
+            "listings_with_building_info": int(listings["has_building_info"].sum()),
+            "projects_with_building_info": int(listings.loc[listings["has_building_info"], "project_name"].nunique()),
         },
         "kmeans": {"k": clustering.n_clusters, "metric": clustering.metric, "scan": clustering.scan},
         "knn": {"k": knn.k, "metric": knn.metric, "weight": knn.weight, "cv_curve": knn.curve,
@@ -364,9 +445,18 @@ def main() -> None:
             "knn_project_split": project_run["knn_experiment"],
         },
         "features": main_run["feature_names"],
+        "building_features": main_run["building_feature_names"],
+        "building_linear_regression": {
+            name: {"coef_log": float(coef), "effect_pct": float(100 * (np.exp(coef) - 1))}
+            for name, coef in zip(main_run["building_feature_names"], main_run["W_building"][:-1])
+        },
         "linear_regression": {"intercept_log": float(main_run["W"][-1]), "coefficients": coefficients},
         "test_results_random_split": main_run["results"],
         "test_results_project_split": project_run["results"],
+        "sota_style_random_split": main_run["sota_style"],
+        "sota_style_project_split": project_run["sota_style"],
+        "website_filter_match_pct": {"random_split": main_run["filter_match_pct"],
+                                     "project_split": project_run["filter_match_pct"]},
         "learning_curve": curve,
     }
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -394,8 +484,18 @@ def main() -> None:
         # plain values, not the FittedKnn object: run.py executes as __main__, so a pickled
         # instance of its class could not be loaded by the web app
         "knn": {"X": knn.X, "y": knn.y, "scaler": knn.scaler, "k": knn.k, "metric": knn.metric, "weight": knn.weight},
+        # main web model: Linear Regression with building features (lowest error on unseen buildings)
+        "W_building": main_run["W_building"],
+        "W_building_project": main_run["W_building_project"],
+        "building_features": main_run["buildings"],
+        "building_feature_names": main_run["building_feature_names"],
+        "building_project_feature_names": main_run["building_project_feature_names"],
+        "residual_std_log_building": main_run["residual_std_log_building"],
+        "residual_std_log_building_project": main_run["residual_std_log_building_project"],
+        "knn_building": {key: getattr(main_run["knn_building"], key) for key in ("X", "y", "scaler", "k", "metric", "weight")},
+        "projects": projects,
         "reference_rows": reference_rows,
-        "project_names": sorted(main_run["train"]["project_name"].dropna().unique().tolist()),
+        "project_names": sorted(set(main_run["train"]["project_name"].dropna()) | set(projects["project_name"].str.strip())),
         "test_results": main_run["results"],
         "test_results_project_split": project_run["results"],
         "residual_std_log": main_run["residual_std_log"],
