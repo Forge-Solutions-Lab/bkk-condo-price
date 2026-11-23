@@ -167,7 +167,9 @@ python3 -m venv .venv
 ```
 แล้วเปิด http://localhost:8501
 
-**ขึ้นเว็บออนไลน์ (Live demo):** ทำตามขั้นตอนใน [docs/deploy.md](docs/deploy.md) ด้วย Streamlit Community Cloud
+**ขึ้นเว็บออนไลน์ (Live demo):**
+- **Vercel (อัปเดตอัตโนมัติจาก `main`):** https://bkk-condo-price.vercel.app
+- **คู่มือ deploy (Vercel และ Streamlit Community Cloud):** ดูใน [docs/deploy.md](docs/deploy.md)
 
 **ฝึกและประเมินโมเดลใหม่** จากข้อมูลที่ทำความสะอาดแล้ว:
 ```bash
@@ -211,7 +213,9 @@ python3 -m venv .venv
 ## โครงสร้างไฟล์
 ```
 bkk-condo-price/
-├── app/                    หน้าเว็บ Streamlit และไฟล์ธีม
+├── api/                    FastAPI backend สำหรับ Vercel (`/api/health`, `/api/meta`, `/api/zones`, `/api/projects`, `/api/predict`)
+├── app/                    โมดูลประเมินราคากลาง (`inference.py`), หน้าเว็บ Streamlit และไฟล์ธีม
+├── public/                 หน้าเว็บธีมดำ-ทองสำหรับ Vercel CDN (`index.html`, `styles.css`, `app.js`)
 ├── data/
 │   ├── raw/                HTML ที่บันทึกมา (ไม่ขึ้น git)
 │   ├── external/           ดัชนีราคาที่อยู่อาศัยกรุงเทพฯ (BIS ผ่าน FRED)
