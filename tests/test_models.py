@@ -89,3 +89,17 @@ def test_fuzzy_cmeans_centres_match_kmeans_on_separated_blobs(blobs):
     # every fuzzy centre lies close to one K-Means centre
     for c in C:
         assert np.min(np.linalg.norm(reference - c, axis=1)) < 0.1
+
+
+def test_neighbourhood_price_ignores_own_building():
+    import pandas as pd
+    from src.features.build import NeighbourhoodPrice
+    train = pd.DataFrame({
+        "project_name": ["A", "A", "B", "C"], "zone_no": [1, 1, 1, 1],
+        "latitude": [13.70, 13.70, 13.71, 13.90], "longitude": [100.50, 100.50, 100.50, 100.50],
+        "price_per_sqm": [200000.0, 200000.0, 100000.0, 50000.0],
+    })
+    level = NeighbourhoodPrice.fit(train, k=1).transform(train)["neighbourhood_log_price_per_sqm"]
+    # A's nearest other building is B, never A itself
+    assert level.iloc[0] == pytest.approx(np.log(100000.0))
+    assert level.iloc[2] == pytest.approx(np.log(200000.0))
