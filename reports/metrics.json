@@ -674,19 +674,19 @@
       "project_relative_error_pct": 30.27396736971421
     },
     "Random Forest (K-Means tiers, reference)": {
-      "price_per_sqm_r2": 0.2604942559843688,
-      "project_price_per_sqm_r2": 0.31862366400541564,
-      "project_relative_error_pct": 34.75464226088173
+      "price_per_sqm_r2": 0.2604942559843698,
+      "project_price_per_sqm_r2": 0.3186236640054171,
+      "project_relative_error_pct": 34.75464226088174
     },
     "Random Forest + building features (reference)": {
-      "price_per_sqm_r2": 0.5622034551457806,
-      "project_price_per_sqm_r2": 0.6062170118557049,
-      "project_relative_error_pct": 26.26936200945477
+      "price_per_sqm_r2": 0.5622034551457802,
+      "project_price_per_sqm_r2": 0.606217011855704,
+      "project_relative_error_pct": 26.269362009454824
     },
     "Random Forest + project price level (reference)": {
-      "price_per_sqm_r2": 0.27789972035877997,
-      "project_price_per_sqm_r2": 0.28879070547613694,
-      "project_relative_error_pct": 33.03061426968181
+      "price_per_sqm_r2": 0.27789972035877986,
+      "project_price_per_sqm_r2": 0.28879070547613583,
+      "project_relative_error_pct": 33.030614269681784
     },
     "Website filter: same zone, bedrooms, area +-10%": {
       "price_per_sqm_r2": 0.16176345676583903,
@@ -801,19 +801,19 @@
       "project_relative_error_pct": 16.439709688694258
     },
     "Random Forest (K-Means tiers, reference)": {
-      "price_per_sqm_r2": 0.5941458074416691,
+      "price_per_sqm_r2": 0.5941458074416686,
       "project_price_per_sqm_r2": 0.5985599158786932,
-      "project_relative_error_pct": 28.78176895937082
+      "project_relative_error_pct": 28.78176895937081
     },
     "Random Forest + building features (reference)": {
-      "price_per_sqm_r2": 0.7948037588635988,
-      "project_price_per_sqm_r2": 0.8035517864582241,
-      "project_relative_error_pct": 18.09091445626363
+      "price_per_sqm_r2": 0.7948037588635989,
+      "project_price_per_sqm_r2": 0.803551786458224,
+      "project_relative_error_pct": 18.090914456263622
     },
     "Random Forest + project price level (reference)": {
-      "price_per_sqm_r2": 0.8501607968983236,
-      "project_price_per_sqm_r2": 0.8334681309771708,
-      "project_relative_error_pct": 17.598643286274314
+      "price_per_sqm_r2": 0.8501607968983242,
+      "project_price_per_sqm_r2": 0.8334681309771713,
+      "project_relative_error_pct": 17.598643286274307
     },
     "Website filter: same zone, bedrooms, area +-10%": {
       "price_per_sqm_r2": 0.5246681962452582,
@@ -1012,29 +1012,29 @@
       "within_20pct": 39.721792890262755
     },
     "Random Forest (K-Means tiers, reference)": {
-      "mae_thb": 2406432.691720709,
-      "mape_pct": 32.62567402067671,
+      "mae_thb": 2406432.6917207083,
+      "mape_pct": 32.62567402067672,
       "median_ape_pct": 24.254334764635523,
-      "r2": 0.6352421181531376,
-      "rmse_thb": 5937495.606576104,
+      "r2": 0.6352421181531385,
+      "rmse_thb": 5937495.606576095,
       "within_10pct": 20.247295208655334,
       "within_20pct": 41.42194744976816
     },
     "Random Forest + building features (reference)": {
       "mae_thb": 1886906.1355886206,
-      "mape_pct": 25.909054438523526,
-      "median_ape_pct": 18.125107184072732,
-      "r2": 0.808955237345972,
-      "rmse_thb": 4297031.396592051,
+      "mape_pct": 25.909054438523544,
+      "median_ape_pct": 18.1251071840723,
+      "r2": 0.8089552373459719,
+      "rmse_thb": 4297031.396592053,
       "within_10pct": 28.438948995363216,
       "within_20pct": 52.7047913446677
     },
     "Random Forest + project price level (reference)": {
-      "mae_thb": 2324790.8208258087,
-      "mape_pct": 31.15357483120274,
+      "mae_thb": 2324790.820825808,
+      "mape_pct": 31.153574831202718,
       "median_ape_pct": 25.327017348377666,
-      "r2": 0.6940793239540535,
-      "rmse_thb": 5437576.423699639,
+      "r2": 0.6940793239540539,
+      "rmse_thb": 5437576.423699636,
       "within_10pct": 20.401854714064914,
       "within_20pct": 40.34003091190108
     },
@@ -1239,29 +1239,29 @@
       "within_20pct": 76.33587786259542
     },
     "Random Forest (K-Means tiers, reference)": {
-      "mae_thb": 2221222.4211116848,
-      "mape_pct": 29.064763443427594,
-      "median_ape_pct": 21.073259986966132,
+      "mae_thb": 2221222.421111686,
+      "mape_pct": 29.064763443427587,
+      "median_ape_pct": 21.07325998696676,
       "r2": 0.752341661629055,
-      "rmse_thb": 5614312.761081235,
+      "rmse_thb": 5614312.761081234,
       "within_10pct": 26.717557251908396,
       "within_20pct": 48.2442748091603
     },
     "Random Forest + building features (reference)": {
-      "mae_thb": 1492138.9873929594,
-      "mape_pct": 18.190375787548362,
-      "median_ape_pct": 11.718944915971917,
+      "mae_thb": 1492138.9873929603,
+      "mape_pct": 18.190375787548344,
+      "median_ape_pct": 11.718944915972115,
       "r2": 0.8583045314769651,
-      "rmse_thb": 4246666.008476142,
+      "rmse_thb": 4246666.008476143,
       "within_10pct": 43.358778625954194,
       "within_20pct": 69.61832061068702
     },
     "Random Forest + project price level (reference)": {
-      "mae_thb": 1308573.1645693623,
-      "mape_pct": 16.51407268709808,
-      "median_ape_pct": 10.660139693637577,
-      "r2": 0.8733766323893619,
-      "rmse_thb": 4014459.260727134,
+      "mae_thb": 1308573.1645693614,
+      "mape_pct": 16.514072687098075,
+      "median_ape_pct": 10.660139693637266,
+      "r2": 0.8733766323893626,
+      "rmse_thb": 4014459.2607271234,
       "within_10pct": 47.48091603053435,
       "within_20pct": 73.2824427480916
     },
@@ -1273,6 +1273,18 @@
       "rmse_thb": 7281962.311718584,
       "within_10pct": 29.770992366412212,
       "within_20pct": 52.213740458015266
+    }
+  },
+  "web_reliability": {
+    "blend_unseen": {
+      "mape_pct": 20.972033135874632,
+      "test_units": 647,
+      "within_20pct": 64.60587326120556
+    },
+    "project_level": {
+      "mape_pct": 13.144539933944252,
+      "test_units": 570,
+      "within_20pct": 81.22807017543859
     }
   },
   "website_filter_match_pct": {

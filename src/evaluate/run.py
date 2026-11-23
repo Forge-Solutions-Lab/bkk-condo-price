@@ -66,6 +66,9 @@ FILTER_AREA_TOLERANCE = 0.10
 METRICS = ["euclidean", "manhattan"]
 WEIGHTS = ["uniform", "distance"]
 NEIGHBOUR_COUNTS = [5, 10, 20]
+# bands of the predicted price, the value the web app knows before the real price
+PRICE_BANDS = [0, 3e6, 5e6, 8e6, 15e6, np.inf]
+PRICE_BAND_LABELS = ["< 3 ล้าน", "3-5 ล้าน", "5-8 ล้าน", "8-15 ล้าน", "> 15 ล้าน"]
 FFBP_SETTINGS = [{"H": H, "epochs": epochs} for H in (4, 8, 16) for epochs in (3000, 10000)]
 GOLD = "#FFC000"
 WHITE = "#FFFFFF"
@@ -76,6 +79,7 @@ MAIN_LR = "Linear Regression (K-Means tiers)"
 MAIN_KNN = "KNN Regression (K-Means tiers)"
 PROJECT_LR = "Linear Regression + project price level"
 BUILDING_LR = "Linear Regression + building features"
+BUILDING_PROJECT_LR = "Linear Regression + building + project price level"
 BUILDING_KNN = "KNN Regression + building features"
 MAIN_FFBP = "FFBP neural network (K-Means tiers)"
 BUILDING_FFBP = "FFBP neural network + building features"
@@ -369,7 +373,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         BUILDING_FFBP: network_building.predict(xb_test),
         "Random Forest + building features (reference)": np.exp(forest_building.predict(xb_test)),
         "Gradient Boosting + building features (reference)": np.exp(boosting_building.predict(xb_test)),
-        "Linear Regression + building + project price level": np.exp(lr.predict(xbp_test, W_building_project)),
+        BUILDING_PROJECT_LR: np.exp(lr.predict(xbp_test, W_building_project)),
         "Gradient Boosting + building + project price level (reference)": np.exp(boosting_building_project.predict(xbp_test)),
     }
     knn_experiment = [
@@ -548,6 +552,31 @@ def zone_errors(test: pd.DataFrame, predicted: np.ndarray) -> pd.DataFrame:
     ).reset_index()
 
 
+def price_band_errors(predicted: np.ndarray, actual: np.ndarray) -> pd.DataFrame:
+    error = (predicted - actual) / actual
+    band = pd.cut(predicted, PRICE_BANDS, labels=PRICE_BAND_LABELS, right=False)
+    return pd.DataFrame({"price_band": band, "error": error}).groupby("price_band", observed=False).agg(
+        test_units=("error", "size"),
+        median_signed_error_pct=("error", lambda e: float(100 * np.median(e)) if len(e) else np.nan),
+        mape_pct=("error", lambda e: float(100 * np.mean(np.abs(e))) if len(e) else np.nan),
+        within_20pct=("error", lambda e: float(100 * np.mean(np.abs(e) <= 0.2)) if len(e) else np.nan),
+    ).reset_index()
+
+
+def reliability(test: pd.DataFrame, predicted: np.ndarray) -> dict[str, object]:
+    """Test-set accuracy of one model, overall, per zone and per predicted price band, so the web
+    app can say how often a price like this one landed within 20% of the real price."""
+    actual = test["price_thb"].to_numpy()
+    error = np.abs(predicted - actual) / actual
+    return {
+        "test_units": len(test),
+        "mape_pct": float(100 * error.mean()),
+        "within_20pct": float(100 * np.mean(error <= 0.2)),
+        "zones": zone_errors(test, predicted),
+        "bands": price_band_errors(predicted, actual),
+    }
+
+
 def fuzzy_summary(memberships: pd.DataFrame, clustering: ZoneClustering) -> dict[str, object]:
     columns = [column for column in memberships.columns if column.startswith("member_")]
     strongest = memberships[columns].max(axis=1)
@@ -650,7 +679,6 @@ def main() -> None:
         "learning_curve": curve,
     }
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    (REPORTS_DIR / "metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True), encoding="utf-8")
     clustering.zone_table.to_csv(REPORTS_DIR / "zone_clusters.csv", index=False)
     memberships = main_run["memberships"].merge(clustering.zone_table[["zone_no", "tier"]], on="zone_no")
     memberships.sort_values("median_price_per_sqm").to_csv(REPORTS_DIR / "zone_fuzzy_memberships.csv", index=False)
@@ -658,6 +686,21 @@ def main() -> None:
     for split_name, run in (("random_split", main_run), ("project_split", project_run)):
         errors = zone_errors(run["test"], run["predictions"][run["blend"]["name"]])
         errors.to_csv(REPORTS_DIR / f"zone_errors_{split_name}.csv", index=False)
+    blend_name = main_run["blend"]["name"]
+    # the web app uses the project-level model only for a building that has other listings in the
+    # data, so its accuracy is measured on those test units only
+    known = main_run["levels"].transform(main_run["test"], leave_one_out=False)["has_project_history"].to_numpy() > 0
+    web_reliability = {
+        "project_level": reliability(main_run["test"][known], main_run["predictions"][BUILDING_PROJECT_LR][known]),
+        # a building the app cannot price from its own listings is an unseen building: the
+        # by-project split measures exactly that case
+        "blend_unseen": reliability(project_run["test"], project_run["predictions"][blend_name]),
+    }
+    for name, table in web_reliability.items():
+        table["bands"].to_csv(REPORTS_DIR / f"price_band_errors_{name}.csv", index=False)
+    metrics["web_reliability"] = {name: {key: value for key, value in table.items() if key not in ("zones", "bands")}
+                                  for name, table in web_reliability.items()}
+    (REPORTS_DIR / "metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True), encoding="utf-8")
 
     plot_cluster_scan(clustering)
     plot_zone_tiers(clustering)
@@ -680,7 +723,7 @@ def main() -> None:
         # plain values, not the FittedKnn object: run.py executes as __main__, so a pickled
         # instance of its class could not be loaded by the web app
         "knn": {"X": knn.X, "y": knn.y, "scaler": knn.scaler, "k": knn.k, "metric": knn.metric, "weight": knn.weight},
-        # main web model: Linear Regression with building features (lowest error on unseen buildings)
+        # earlier main web model (building features only), kept for reference
         "W_building": main_run["W_building"],
         "W_building_project": main_run["W_building_project"],
         "building_features": main_run["buildings"],
@@ -688,6 +731,17 @@ def main() -> None:
         "building_project_feature_names": main_run["building_project_feature_names"],
         "residual_std_log_building": main_run["residual_std_log_building"],
         "residual_std_log_building_project": main_run["residual_std_log_building_project"],
+        "blend": {
+            "name": blend_name,
+            "partner": main_run["blend"]["partner"],
+            "neighbourhood": main_run["neighbourhood"],
+            "W_neighbour": main_run["W_neighbour"],
+            "feature_names": main_run["neighbour_feature_names"],
+            "boosting": main_run["boosting_neighbour"],
+            # plain values for the same reason as knn below
+            "ffbp": {key: getattr(main_run["network_neighbour"], key) for key in ("W0", "W1", "scaler", "y_mean", "y_std")},
+        },
+        "reliability": web_reliability,
         "knn_building": {key: getattr(main_run["knn_building"], key) for key in ("X", "y", "scaler", "k", "metric", "weight")},
         "projects": projects,
         "reference_rows": reference_rows,
