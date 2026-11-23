@@ -15,7 +15,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 # the pickled models are instances of classes in src/, so the project root must be importable
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.features.build import BASE_YEAR, ZoneClustering, attach_buildings, feature_frame  # noqa: E402
+from src.features.build import BASE_YEAR, ZoneClustering, attach_buildings, feature_frame, project_key  # noqa: E402
 from src.models import ffbp  # noqa: E402
 from src.models import linear_regression as lr  # noqa: E402
 from src.models.knn_regression import knn, neighbors  # noqa: E402
@@ -34,6 +34,8 @@ WEAK_BAND_WITHIN_20 = 60.0
 ZONE_BIAS_PCT = 10.0
 # "new unit" in a building finished this many years ago or more is unusual
 NEW_UNIT_MAX_BUILDING_AGE = 3
+# zones with prominent 30-year leasehold luxury condos (priced well below neighbouring freehold)
+LEASEHOLD_ADVISORY_ZONES = {5}
 
 
 @st.cache_resource
@@ -53,23 +55,42 @@ def zone_label(row: pd.Series) -> str:
 def build_input(
     bundle: dict, zone_no: int, area: float, bedrooms: int, bathrooms: int, floor: int, is_new: bool,
     project: str | None, complete_year: int, rail_km: float,
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, tuple[int, int] | None]:
+    zone_mismatch: tuple[int, int] | None = None
+    effective_zone = zone_no
+    if project:
+        expected_zone = bundle.get("project_zones", {}).get(project_key(pd.Series([project])).iloc[0])
+        if expected_zone is not None and int(expected_zone) != int(zone_no):
+            zone_mismatch = (int(zone_no), int(expected_zone))
+            effective_zone = int(expected_zone)
     listing = pd.DataFrame([{
-        "zone_no": zone_no, "area_sqm": area, "bedrooms": bedrooms, "bathrooms": bathrooms,
+        "zone_no": effective_zone, "area_sqm": area, "bedrooms": bedrooms, "bathrooms": bathrooms,
         "floor": floor, "is_new_unit": is_new, "project_name": project or "",
     }])
     listing = attach_buildings(listing, bundle["projects"])
     if not listing["has_building_info"].iloc[0]:
-        # no saved project page: use what the user typed; other building fields fall back
-        # to the training medians inside BuildingFeatures
+        # no saved project page: use what the user typed; other building fields (including mall_km)
+        # fall back to the training medians via manual_building_input=True instead of 3 km cap
         listing[["complete_year", "nearest_rail_km"]] = [complete_year, rail_km]
         listing["has_building_info"] = True
-    return listing
+        listing["manual_building_input"] = True
+    else:
+        listing["manual_building_input"] = False
+    return listing, zone_mismatch
 
 
-def input_warnings(listing: pd.DataFrame) -> list[str]:
+def input_warnings(
+    listing: pd.DataFrame,
+    zone_labels: dict[int, str] | None = None,
+    zone_mismatch: tuple[int, int] | None = None,
+) -> list[str]:
     row = listing.iloc[0]
     warnings = []
+    if zone_mismatch is not None:
+        chosen, actual = zone_mismatch
+        chosen_name = zone_labels.get(chosen, f"โซน {chosen}") if zone_labels else f"โซน {chosen}"
+        actual_name = zone_labels.get(actual, f"โซน {actual}") if zone_labels else f"โซน {actual}"
+        warnings.append(f"โครงการที่เลือกอยู่ใน '{actual_name}' (ไม่ใช่ '{chosen_name}') ระบบจึงปรับใช้โซนจริงของโครงการให้อัตโนมัติ")
     if row["bedrooms"] >= 2 and row["area_sqm"] < 40:
         warnings.append("พื้นที่น้อยมากสำหรับจำนวนห้องนอนนี้ ผลอาจคลาดเคลื่อนสูง")
     if row["bathrooms"] > row["bedrooms"] + 2:
@@ -77,13 +98,29 @@ def input_warnings(listing: pd.DataFrame) -> list[str]:
     if row["is_new_unit"] and pd.notna(row["complete_year"]) and BASE_YEAR - row["complete_year"] >= NEW_UNIT_MAX_BUILDING_AGE:
         warnings.append(f"เลือกห้องมือ 1 แต่ตึกสร้างเสร็จปี {int(row['complete_year'])} ซึ่งไม่ค่อยพบ "
                         "ตรวจข้อมูลอีกครั้ง ถ้าเป็นห้องมือ 2 ให้เอาเครื่องหมายออก")
+    if int(row["zone_no"]) in LEASEHOLD_ADVISORY_ZONES:
+        warnings.append("ย่านวิทยุ-เพลินจิต-หลังสวน มีหลายโครงการเป็นสิทธิการเช่า (Leasehold 30 ปี) ซึ่งราคาต่ำกว่าแบบขายขาด "
+                        "(Freehold) ราว 30-50% โมเดลยังไม่ได้แยกประเภทกรรมสิทธิ์ หากเป็นห้อง Leasehold ควรเผื่อส่วนลดเพิ่ม")
     return warnings
 
 
 def blend_price(bundle: dict, listing: pd.DataFrame, clustering: ZoneClustering, buildings: pd.DataFrame) -> dict[str, float]:
-    """Geometric mean of Linear Regression and the CV-chosen partner, both with building data and
-    the price per sqm of nearby buildings (same steps as src/evaluate/run.py)."""
+    """Weighted geometric mean of Linear Regression and the CV-chosen partner, using extended
+    building features and multi-scale IDW neighbourhood price (matching src/evaluate/run.py)."""
     blend = bundle["blend"]
+    if blend.get("mode") == "extended_multiscale":
+        ext_buildings = blend["extended_buildings"].transform(listing)
+        neighbourhood = blend["multiscale_neighbourhood"].transform(listing)
+        features = feature_frame(listing, clustering, buildings=ext_buildings, neighbourhood=neighbourhood)
+        features = features[blend["feature_names"]].to_numpy()
+        log_linear = float(lr.predict(features, blend["W_extended"])[0])
+        log_partner = float(blend["gb_extended"].predict(features)[0]) + float(np.log(listing["area_sqm"].iloc[0]))
+        w_lr = float(blend["w_lr"])
+        return {
+            "blend": float(np.exp(w_lr * log_linear + (1.0 - w_lr) * log_partner)),
+            "linear": float(np.exp(log_linear)),
+            "partner": float(np.exp(log_partner)),
+        }
     neighbourhood = blend["neighbourhood"].transform(listing)
     features = feature_frame(listing, clustering, buildings=buildings, neighbourhood=neighbourhood)
     features = features[blend["feature_names"]].to_numpy()
@@ -166,11 +203,19 @@ def main_model_label(result: dict[str, object], bundle: dict) -> tuple[str, str]
     if result["main_model"] == "project_level":
         return ("Linear Regression + ราคาห้องอื่นในโครงการเดียวกัน",
                 "ตึกนี้มีประกาศห้องอื่นในข้อมูล ระบบจึงใช้ราคาต่อตร.ม. ของห้องเหล่านั้นเป็นหลัก")
-    k = bundle["blend"]["neighbourhood"].k
+    blend = bundle["blend"]
+    if blend.get("mode") == "extended_multiscale":
+        w_pct = int(round(100 * blend["w_lr"]))
+        basis = (f"ตึกนี้ไม่มีประกาศห้องอื่นในข้อมูล ระบบใช้ข้อมูลตึกแบบละเอียดและราคาย่านแบบถ่วงน้ำหนักระยะ "
+                 f"(5 และ 20 ตึกใกล้สุด) ถ่วงน้ำหนัก LR {w_pct}% + {blend['partner']} {100 - w_pct}%"
+                 if result["has_coordinates"] else
+                 "ไม่ระบุโครงการ ระบบไม่รู้ตำแหน่งตึก จึงใช้ราคากลางของโซนแทนราคาตึกใกล้เคียง")
+        return f"เฉลี่ย Linear Regression + {blend['partner']} (ข้อมูลตึกละเอียด + ราคาย่าน IDW)", basis
+    k = blend["neighbourhood"].k
     basis = (f"ตึกนี้ไม่มีประกาศห้องอื่นในข้อมูล ระบบใช้ราคาต่อตร.ม. ของ {k} ตึกที่อยู่ใกล้ที่สุดแทน"
              if result["has_coordinates"] else
              "ไม่ระบุโครงการ ระบบไม่รู้ตำแหน่งตึก จึงใช้ราคากลางของโซนแทนราคาตึกใกล้เคียง")
-    return f"เฉลี่ย Linear Regression + {bundle['blend']['partner']} (ข้อมูลตึก + ราคาย่าน)", basis
+    return f"เฉลี่ย Linear Regression + {blend['partner']} (ข้อมูลตึก + ราคาย่าน)", basis
 
 
 def render_reliability(result: dict[str, object]) -> list[str]:
@@ -333,9 +378,9 @@ def main() -> None:
         submitted = st.form_submit_button("ประเมินราคา")
     if submitted:
         project = None if project_choice == NO_PROJECT else project_choice
-        listing = build_input(bundle, zone_no, area, bedrooms, bathrooms, floor, is_new, project,
-                              complete_year, rail_km)
-        for warning in input_warnings(listing):
+        listing, zone_mismatch = build_input(bundle, zone_no, area, bedrooms, bathrooms, floor, is_new, project,
+                                             complete_year, rail_km)
+        for warning in input_warnings(listing, zone_labels=labels, zone_mismatch=zone_mismatch):
             st.warning(warning)
         result = predict(bundle, listing)
         render_result(result, area, bundle)
