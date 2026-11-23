@@ -2,7 +2,7 @@ import numpy as np
 
 
 def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
+    return 1 / (1 + np.exp(-np.clip(x, -30.0, 30.0)))
 
 
 def pad_one(x):
@@ -34,6 +34,31 @@ def ffbp(X, Y, H=8, lr=0.5, epochs=3000, seed=42):
         delta = input1 * (1 - input1) * (delta @ W1_old.T)
         delta = delta[:, :-1]  # drop the bias column
         W0 = W0 + lr * (input0.T @ delta) / len(X)
+    return W0, W1
+
+
+def ffbp_stable(X, Y, H=12, lr=0.35, epochs=2500, weight_decay=4e-3, grad_clip=1.5, lr_decay=5e-4, seed=42):
+    """Regularized FFBP with scaled init, decaying step size, L2 decay, and clipped residuals."""
+    rng = np.random.default_rng(seed)
+    n, d = X.shape
+    W0 = rng.normal(scale=1.0 / np.sqrt(d + 1), size=(d + 1, H))
+    W1 = rng.normal(scale=1.0 / np.sqrt(H + 1), size=(H + 1, 1))
+    ones = np.ones((n, 1))
+    input0 = np.hstack((X, ones))
+    for epoch in range(epochs):
+        step = lr / (1.0 + lr_decay * epoch)
+        hidden = sigmoid(input0 @ W0)
+        input1 = np.hstack((hidden, ones))
+        output = input1 @ W1
+        delta = np.clip(Y[:, None] - output, -grad_clip, grad_clip)
+        W1_old = W1.copy()
+        pen1 = weight_decay * W1
+        pen1[-1, :] = 0.0
+        W1 = W1 + step * ((input1.T @ delta) / n - pen1)
+        dh = hidden * (1.0 - hidden) * (delta @ W1_old[:-1].T)
+        pen0 = weight_decay * W0
+        pen0[-1, :] = 0.0
+        W0 = W0 + step * ((input0.T @ dh) / n - pen0)
     return W0, W1
 
 

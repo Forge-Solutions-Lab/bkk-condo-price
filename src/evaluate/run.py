@@ -26,19 +26,23 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import HistGradientBoostingRegressor, RandomForestRegressor
-from sklearn.model_selection import KFold
+from sklearn.ensemble import ExtraTreesRegressor, HistGradientBoostingRegressor, RandomForestRegressor
+from sklearn.linear_model import HuberRegressor
+from sklearn.model_selection import GroupKFold, KFold
 
 from src.features.build import (
     SEED,
     BuildingFeatures,
     ProjectPriceLevels,
+    RichFeatureBuilder,
     Standardizer,
     ZoneClustering,
-    attach_buildings,
+    attach_rich_buildings,
     choose_zone_clustering,
+    cluster_zones,
     feature_frame,
     fuzzy_zone_memberships,
+    mean_absolute_percentage_error,
     membership_frame,
     split_by_project,
     split_random,
@@ -79,6 +83,23 @@ MAIN_FFBP = "FFBP neural network (K-Means tiers)"
 BUILDING_FFBP = "FFBP neural network + building features"
 FUZZY_LR = "Linear Regression (Fuzzy C-Means memberships)"
 FUZZY_BUILDING_LR = "Linear Regression + building features (Fuzzy C-Means memberships)"
+STABLE_RIDGE = "Ridge Regression + rich spatial/building (NumPy)"
+STABLE_HUBER = "Huber Regression + rich spatial/building"
+STABLE_FFBP = "FFBP Stabilized Ensemble + rich spatial/building (NumPy)"
+STABLE_HGB = "Gradient Boosting (L1, 5-seed) + rich spatial/building"
+STABLE_ENSEMBLE = "Stabilized Ensemble (CV-weighted, log price/sqm)"
+
+RIDGE_ALPHAS = (5.0, 15.0, 40.0, 80.0, 150.0)
+STABILITY_SEEDS = (42, 7, 13, 21, 99)
+STABLE_HGB_CONFIG = {
+    "max_iter": 350,
+    "learning_rate": 0.035,
+    "max_leaf_nodes": 16,
+    "max_depth": 5,
+    "min_samples_leaf": 20,
+    "l2_regularization": 6.0,
+    "max_features": 0.75,
+}
 
 
 def price_metrics(actual: np.ndarray, predicted: np.ndarray) -> dict[str, float]:
@@ -227,6 +248,202 @@ def best_knn(features: np.ndarray, log_price: np.ndarray) -> tuple[FittedKnn, li
     return min(candidates, key=lambda model: model.cv_mape_pct), candidates
 
 
+def price_from_log_pps(log_pps: np.ndarray, area_sqm: np.ndarray) -> np.ndarray:
+    return np.exp(log_pps) * area_sqm
+
+
+def fit_stabilized_suite(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    clustering: ZoneClustering,
+    n_seeds: int = 5,
+) -> dict[str, object]:
+    """Train stabilized models on log(price_per_sqm) using leak-free GroupKFold CV on train."""
+    LOG.info("fitting stabilized suite (%d train rows, %d test rows)...", len(train), len(test))
+    y_train_pps = np.log(train["price_per_sqm"].to_numpy(dtype=float))
+    area_train = train["area_sqm"].to_numpy(dtype=float)
+    price_train = train["price_thb"].to_numpy(dtype=float)
+    area_test = test["area_sqm"].to_numpy(dtype=float)
+
+    folds = list(GroupKFold(n_splits=CV_FOLDS).split(train, groups=train["project_name"]))
+    fold_data = []
+    for train_index, valid_index in folds:
+        f_tr = train.iloc[train_index].reset_index(drop=True)
+        f_va = train.iloc[valid_index].reset_index(drop=True)
+        f_cl, _, _ = cluster_zones(zone_statistics(f_tr), clustering.n_clusters, metric=clustering.metric)
+        fb = RichFeatureBuilder.fit(f_tr, f_cl)
+        X_tr = fb.transform(f_tr, leave_one_project_out=True).to_numpy()
+        X_va = fb.transform(f_va, leave_one_project_out=False).to_numpy()
+        sc = Standardizer.fit(X_tr)
+        fold_data.append((train_index, valid_index, X_tr, X_va, sc.transform(X_tr), sc.transform(X_va)))
+
+    best_alpha, best_alpha_mape = RIDGE_ALPHAS[0], float("inf")
+    for alpha in RIDGE_ALPHAS:
+        fold_errors = [
+            mean_absolute_percentage_error(
+                price_train[va],
+                price_from_log_pps(lr.predict(X_va_s, lr.fit_ridge(X_tr_s, y_train_pps[tr], alpha=alpha)), area_train[va]),
+            )
+            for tr, va, _, _, X_tr_s, X_va_s in fold_data
+        ]
+        score = float(np.mean(fold_errors))
+        if score < best_alpha_mape:
+            best_alpha, best_alpha_mape = float(alpha), score
+
+    model_names = ["ridge", "huber", "ffbp", "hgb_l1", "hgb_l2", "et"]
+    oofs = {name: np.zeros(len(train)) for name in model_names}
+    for tr, va, X_tr, X_va, X_tr_s, X_va_s in fold_data:
+        yt = y_train_pps[tr]
+        ym, ys = float(yt.mean()), float(yt.std())
+        oofs["ridge"][va] = lr.predict(X_va_s, lr.fit_ridge(X_tr_s, yt, alpha=best_alpha))
+        oofs["huber"][va] = HuberRegressor(alpha=best_alpha, max_iter=500).fit(X_tr_s, yt).predict(X_va_s)
+        oofs["ffbp"][va] = np.mean([
+            ffbp.predict(X_va_s, *ffbp.ffbp_stable(X_tr_s, (yt - ym) / ys, H=12, epochs=2200, seed=SEED + s)) * ys + ym
+            for s in range(3)
+        ], axis=0)
+        oofs["hgb_l1"][va] = HistGradientBoostingRegressor(
+            loss="absolute_error", random_state=SEED, **STABLE_HGB_CONFIG
+        ).fit(X_tr, yt).predict(X_va)
+        oofs["hgb_l2"][va] = HistGradientBoostingRegressor(
+            loss="squared_error", random_state=SEED, **STABLE_HGB_CONFIG
+        ).fit(X_tr, yt).predict(X_va)
+        oofs["et"][va] = ExtraTreesRegressor(
+            n_estimators=200, min_samples_leaf=3, max_features=0.7, random_state=SEED, n_jobs=-1
+        ).fit(X_tr, yt).predict(X_va)
+
+    oof_matrix = np.column_stack([oofs[name] for name in model_names])
+    weights_vec = np.ones(len(model_names)) / len(model_names)
+    best_obj = mean_absolute_percentage_error(price_train, price_from_log_pps(oof_matrix @ weights_vec, area_train))
+    rng = np.random.default_rng(SEED)
+    for step_size in (0.15, 0.08, 0.03):
+        for _ in range(400):
+            candidate = np.clip(weights_vec + rng.normal(0.0, step_size, size=len(model_names)), 0.0, None)
+            if candidate.sum() == 0:
+                continue
+            candidate /= candidate.sum()
+            # Mild L2 weight diversity penalty reduces ensemble variance across splits
+            obj = (
+                mean_absolute_percentage_error(price_train, price_from_log_pps(oof_matrix @ candidate, area_train))
+                + 0.15 * float(np.sum(candidate**2))
+            )
+            if obj < best_obj:
+                best_obj, weights_vec = obj, candidate
+
+    oof_blend_log_pps = oof_matrix @ weights_vec
+    oof_mape_pct = mean_absolute_percentage_error(price_train, price_from_log_pps(oof_blend_log_pps, area_train))
+    residual_std_log = float(np.std(y_train_pps - oof_blend_log_pps))
+    weights = {name: float(weight) for name, weight in zip(model_names, weights_vec)}
+
+    rich_builder = RichFeatureBuilder.fit(train, clustering)
+    X_tr = rich_builder.transform(train, leave_one_project_out=True).to_numpy()
+    X_te = rich_builder.transform(test, leave_one_project_out=False).to_numpy()
+    scaler = Standardizer.fit(X_tr)
+    X_tr_s, X_te_s = scaler.transform(X_tr), scaler.transform(X_te)
+    ffbp_y_mean, ffbp_y_std = float(y_train_pps.mean()), float(y_train_pps.std())
+
+    ridge_W = lr.fit_ridge(X_tr_s, y_train_pps, alpha=best_alpha)
+    huber_model = HuberRegressor(alpha=best_alpha, max_iter=500).fit(X_tr_s, y_train_pps)
+    ffbp_models = [
+        ffbp.ffbp_stable(X_tr_s, (y_train_pps - ffbp_y_mean) / ffbp_y_std, H=12, epochs=2500, seed=SEED + s)
+        for s in range(n_seeds)
+    ]
+    hgb_l1_models = [
+        HistGradientBoostingRegressor(loss="absolute_error", random_state=SEED + s, **STABLE_HGB_CONFIG).fit(X_tr, y_train_pps)
+        for s in range(n_seeds)
+    ]
+    hgb_l2_models = [
+        HistGradientBoostingRegressor(loss="squared_error", random_state=SEED + s, **STABLE_HGB_CONFIG).fit(X_tr, y_train_pps)
+        for s in range(n_seeds)
+    ]
+    et_model = ExtraTreesRegressor(
+        n_estimators=300, min_samples_leaf=3, max_features=0.7, random_state=SEED, n_jobs=-1
+    ).fit(X_tr, y_train_pps)
+
+    test_log_pps = {
+        "ridge": lr.predict(X_te_s, ridge_W),
+        "huber": huber_model.predict(X_te_s),
+        "ffbp": np.mean([ffbp.predict(X_te_s, W0, W1) * ffbp_y_std + ffbp_y_mean for W0, W1 in ffbp_models], axis=0),
+        "hgb_l1": np.mean([model.predict(X_te) for model in hgb_l1_models], axis=0),
+        "hgb_l2": np.mean([model.predict(X_te) for model in hgb_l2_models], axis=0),
+        "et": et_model.predict(X_te),
+    }
+    blend_log_pps = sum(weights[name] * test_log_pps[name] for name in model_names)
+
+    return {
+        "predictions": {
+            STABLE_RIDGE: price_from_log_pps(test_log_pps["ridge"], area_test),
+            STABLE_HUBER: price_from_log_pps(test_log_pps["huber"], area_test),
+            STABLE_FFBP: price_from_log_pps(test_log_pps["ffbp"], area_test),
+            STABLE_HGB: price_from_log_pps(test_log_pps["hgb_l1"], area_test),
+            STABLE_ENSEMBLE: price_from_log_pps(blend_log_pps, area_test),
+        },
+        "meta": {
+            "ridge_alpha": best_alpha,
+            "oof_group_cv_mape_pct": oof_mape_pct,
+            "residual_std_log": residual_std_log,
+            "weights": weights,
+            "n_seeds": n_seeds,
+            "n_features": int(X_tr.shape[1]),
+        },
+        "bundle": {
+            "rich_builder": rich_builder,
+            "scaler": scaler,
+            "ridge_W": ridge_W,
+            "huber": huber_model,
+            "ffbp_models": ffbp_models,
+            "ffbp_y_mean": ffbp_y_mean,
+            "ffbp_y_std": ffbp_y_std,
+            "hgb_l1_models": hgb_l1_models,
+            "hgb_l2_models": hgb_l2_models,
+            "et_model": et_model,
+            "weights": weights,
+            "model_names": model_names,
+            "alpha": best_alpha,
+            "oof_mape_pct": oof_mape_pct,
+            "residual_std_log": residual_std_log,
+        },
+    }
+
+
+def plot_stability_benchmark(report: dict[str, object]) -> None:
+    models = [
+        BUILDING_LR,
+        "Gradient Boosting + building features (reference)",
+        STABLE_RIDGE,
+        STABLE_FFBP,
+        STABLE_HGB,
+        STABLE_ENSEMBLE,
+    ]
+    short_labels = [
+        "Baseline LR + bldg",
+        "Baseline HGB + bldg",
+        "Ridge + rich (NumPy)",
+        "FFBP Stable + rich (NumPy)",
+        "HGB L1 5-seed + rich",
+        "Stabilized Ensemble",
+    ]
+    figure, axes_list = plt.subplots(1, 2, figsize=(12, 4.8), facecolor="#000000", sharey=True)
+    panels = [
+        (axes_list[0], report["random_split"], "Random split (5 seeds)"),
+        (axes_list[1], report["project_split"], "Unseen buildings (5 seeds)"),
+    ]
+    positions = np.arange(len(models))
+    for axes, summary, title in panels:
+        means = [summary[m]["mean_mape_pct"] for m in models]
+        stds = [summary[m]["std_mape_pct"] for m in models]
+        colors = [ASH, ASH, WHITE, WHITE, WHITE, GOLD]
+        axes.barh(positions, means, xerr=stds, color=colors, height=0.58,
+                  error_kw={"ecolor": "#FF6B6B", "elinewidth": 1.6, "capsize": 4})
+        for pos, mean_v, std_v in zip(positions, means, stds):
+            axes.text(mean_v + std_v + 0.35, pos, f"{mean_v:.1f}% ± {std_v:.2f}%", va="center", color=WHITE, fontsize=8)
+        axes.set_yticks(positions, short_labels, fontsize=8.5)
+        axes.invert_yaxis()
+        axes.set_xlim(0, max(m + s for m, s in zip(means, stds)) + 6.5)
+        style_axes(axes, f"Stability & accuracy: {title}")
+        axes.set_xlabel("MAPE (%) — mean ± std across 5 splits (lower is better)")
+    save_figure(figure, "model_stability.png")
+
+
 def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]:
     clustering, kmeans_experiment = best_zone_clustering(train)
     test = test[test["zone_no"].isin(clustering.zone_table["zone_no"])].reset_index(drop=True)
@@ -279,6 +496,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
     forest_project = RandomForestRegressor(n_estimators=300, random_state=SEED, n_jobs=-1).fit(xp_train, y_train_log)
     zone_price = train.groupby("zone_no")["price_per_sqm"].median()
     filter_price, filter_match_pct = website_filter_prediction(train, test)
+    stabilized = fit_stabilized_suite(train, test, clustering, n_seeds=5)
 
     predictions = {
         "Website filter: same zone, bedrooms, area +-10%": filter_price,
@@ -302,6 +520,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         "Gradient Boosting + building features (reference)": np.exp(boosting_building.predict(xb_test)),
         "Linear Regression + building + project price level": np.exp(lr.predict(xbp_test, W_building_project)),
         "Gradient Boosting + building + project price level (reference)": np.exp(boosting_building_project.predict(xbp_test)),
+        **stabilized["predictions"],
     }
     knn_experiment = [
         {"metric": model.metric, "weight": model.weight, "k": model.k, "cv_mape_pct": model.cv_mape_pct,
@@ -331,6 +550,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame) -> dict[str, object]
         "y_test": y_test,
         "residual_std_log": float(np.std(y_train_log - lr.predict(x_train, W))),
         "residual_std_log_project": float(np.std(y_train_log - lr.predict(xp_train, W_project))),
+        "stabilized": stabilized,
     }
 
 
@@ -509,7 +729,7 @@ def main() -> None:
     # Same collection rule for every zone: zone 01 was saved to 38 pages, others to 2,
     # so without this cap one zone would dominate the training data.
     listings = all_listings[all_listings["page"] <= MAX_PAGES_PER_ZONE].reset_index(drop=True)
-    listings = attach_buildings(listings, projects)
+    listings = attach_rich_buildings(listings, projects)
     LOG.info("building data found for %.1f%% of listings", 100 * listings["has_building_info"].mean())
     LOG.info("using %s of %s clean listings (pages <= %s per zone)", len(listings), len(all_listings), MAX_PAGES_PER_ZONE)
 
@@ -557,6 +777,10 @@ def main() -> None:
         "sota_style_project_split": project_run["sota_style"],
         "website_filter_match_pct": {"random_split": main_run["filter_match_pct"],
                                      "project_split": project_run["filter_match_pct"]},
+        "stabilized_ensemble": {
+            "random_split": main_run["stabilized"]["meta"],
+            "project_split": project_run["stabilized"]["meta"],
+        },
         "learning_curve": curve,
     }
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -603,6 +827,7 @@ def main() -> None:
         "test_results_project_split": project_run["results"],
         "residual_std_log": main_run["residual_std_log"],
         "residual_std_log_project": main_run["residual_std_log_project"],
+        "stabilized_ensemble": main_run["stabilized"]["bundle"],
     }
     BUNDLE_PATH.parent.mkdir(parents=True, exist_ok=True)
     with BUNDLE_PATH.open("wb") as handle:

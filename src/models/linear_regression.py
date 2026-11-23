@@ -10,5 +10,12 @@ def fit(X, y):
     return W
 
 
+def fit_ridge(X, y, alpha=1.0):
+    Xp = pad_one(X)
+    reg = np.eye(Xp.shape[1]) * float(alpha)
+    reg[-1, -1] = 0.0  # do not penalize the intercept
+    return np.linalg.solve(Xp.T @ Xp + reg, Xp.T @ y)
+
+
 def predict(X, W):
     return pad_one(X) @ W

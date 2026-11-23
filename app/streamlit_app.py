@@ -15,7 +15,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 # the pickled models are instances of classes in src/, so the project root must be importable
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.features.build import ZoneClustering, attach_buildings, feature_frame  # noqa: E402
+from src.features.build import ZoneClustering, attach_rich_buildings, feature_frame  # noqa: E402
+from src.models import ffbp  # noqa: E402
 from src.models import linear_regression as lr  # noqa: E402
 from src.models.knn_regression import knn, neighbors  # noqa: E402
 
@@ -49,13 +50,33 @@ def build_input(
         "zone_no": zone_no, "area_sqm": area, "bedrooms": bedrooms, "bathrooms": bathrooms,
         "floor": floor, "is_new_unit": is_new, "project_name": project or "",
     }])
-    listing = attach_buildings(listing, bundle["projects"])
+    listing = attach_rich_buildings(listing, bundle["projects"])
     if not listing["has_building_info"].iloc[0]:
-        # no saved project page: use what the user typed; other building fields fall back
-        # to the training medians inside BuildingFeatures
+        # no saved project page: use what the user typed; other building fields keep
+        # training medians instead of being treated as > 3 km away
         listing[["complete_year", "nearest_rail_km"]] = [complete_year, rail_km]
+        listing["nearest_mall_km"] = bundle["building_features"].medians["mall_km"]
+        if "stabilized_ensemble" in bundle:
+            listing["nearest_hospital_km"] = bundle["stabilized_ensemble"]["rich_builder"].hosp_median
         listing["has_building_info"] = True
     return listing
+
+
+def predict_stabilized_log_pps(ens: dict, listing: pd.DataFrame) -> float:
+    x = ens["rich_builder"].transform(listing, leave_one_project_out=False).to_numpy()
+    xs = ens["scaler"].transform(x)
+    preds = {
+        "ridge": float(lr.predict(xs, ens["ridge_W"])[0]),
+        "huber": float(ens["huber"].predict(xs)[0]),
+        "ffbp": float(np.mean([
+            ffbp.predict(xs, W0, W1)[0] * ens["ffbp_y_std"] + ens["ffbp_y_mean"]
+            for W0, W1 in ens["ffbp_models"]
+        ])),
+        "hgb_l1": float(np.mean([model.predict(x)[0] for model in ens["hgb_l1_models"]])),
+        "hgb_l2": float(np.mean([model.predict(x)[0] for model in ens["hgb_l2_models"]])),
+        "et": float(ens["et_model"].predict(x)[0]),
+    }
+    return float(sum(ens["weights"][name] * preds[name] for name in ens["model_names"]))
 
 
 def input_warnings(area: float, bedrooms: int, bathrooms: int) -> list[str]:
@@ -87,8 +108,20 @@ def predict(bundle: dict, listing: pd.DataFrame) -> dict[str, object]:
         "tier": int(clustering.tier_of(listing["zone_no"]).iloc[0]),
         "neighbours": bundle["reference_rows"].iloc[neighbour_index],
         "project": None,
+        "ensemble": None,
         "building": listing.iloc[0],
     }
+    if "stabilized_ensemble" in bundle:
+        ens = bundle["stabilized_ensemble"]
+        log_pps = predict_stabilized_log_pps(ens, listing)
+        area = float(listing["area_sqm"].iloc[0])
+        ens_spread = ens["residual_std_log"]
+        result["ensemble"] = {
+            "price": float(np.exp(log_pps) * area),
+            "low": float(np.exp(log_pps - ens_spread) * area),
+            "high": float(np.exp(log_pps + ens_spread) * area),
+            "oof_mape_pct": float(ens["oof_mape_pct"]),
+        }
     if listing["project_name"].iloc[0]:
         levels = bundle["project_levels"].transform(listing, leave_one_out=False)
         project_features = feature_frame(listing, clustering, project_levels=levels, buildings=buildings)
@@ -114,19 +147,34 @@ def render_header() -> None:
 
 
 def render_result(result: dict[str, object], area: float, n_clusters: int) -> None:
+    ensemble = result["ensemble"]
+    primary_price = ensemble["price"] if ensemble else result["linear"]
+    primary_low = ensemble["low"] if ensemble else result["low"]
+    primary_high = ensemble["high"] if ensemble else result["high"]
+    primary_label = (
+        "Stabilized Ensemble + ข้อมูลตึกและทำเลรอบข้าง (โมเดลหลัก)"
+        if ensemble
+        else "Linear Regression + ข้อมูลตึก (โมเดลหลัก)"
+    )
     left, right = st.columns([3, 2])
     with left:
         st.markdown(
-            '<div class="panel"><div class="micro-label">Linear Regression + ข้อมูลตึก (โมเดลหลัก)</div>'
-            f'<div class="price-main">{format_baht(result["linear"])}</div>'
-            f'<div class="value-note">ช่วงที่น่าจะเป็น {format_baht(result["low"])} - {format_baht(result["high"])}'
-            f' | {result["linear"] / area:,.0f} บาท/ตร.ม.</div></div>',
+            f'<div class="panel"><div class="micro-label">{primary_label}</div>'
+            f'<div class="price-main">{format_baht(primary_price)}</div>'
+            f'<div class="value-note">ช่วงที่น่าจะเป็น {format_baht(primary_low)} - {format_baht(primary_high)}'
+            f' | {primary_price / area:,.0f} บาท/ตร.ม.</div></div>',
             unsafe_allow_html=True,
         )
     with right:
+        compare_line = (
+            f'<div class="value-note">Linear Regression + ตึก: {format_baht(result["linear"])}</div>'
+            if ensemble
+            else ""
+        )
         st.markdown(
             '<div class="panel"><div class="micro-label">KNN Regression (เปรียบเทียบ)</div>'
             f'<div class="price-second">{format_baht(result["knn"])}</div>'
+            f'{compare_line}'
             f'<div class="value-note">ระยะ {result["knn_setting"]}</div>'
             f'<div class="value-note"><span class="tier-badge">ระดับทำเล {result["tier"]} / {n_clusters}</span>'
             ' จาก K-Means (1 = ราคาต่อตร.ม. ต่ำสุด)</div></div>',
@@ -157,7 +205,7 @@ def render_result(result: dict[str, object], area: float, n_clusters: int) -> No
         "project_name": "โครงการ", "zone_name_th": "โซน", "district_th": "เขต", "room_type": "ประเภท",
         "bedrooms": "ห้องนอน", "bathrooms": "ห้องน้ำ", "floor": "ชั้น", "area_sqm": "ตร.ม.", "price_thb": "ราคา (บาท)",
     })
-    st.dataframe(neighbours, hide_index=True, use_container_width=True,
+    st.dataframe(neighbours, hide_index=True, width="stretch",
                  column_config={"ราคา (บาท)": st.column_config.NumberColumn(format="%,.0f")})
 
 
@@ -196,7 +244,7 @@ def render_model_quality(bundle: dict) -> None:
          "คลาดเคลื่อนไม่เกิน 10% (%)": round(values["within_10pct"], 1)}
         for name, values in bundle["test_results"].items()
     ]
-    st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
 
 
 def main() -> None:
@@ -238,7 +286,8 @@ def main() -> None:
         result = predict(bundle, listing)
         render_result(result, area, bundle["n_clusters"])
         if year > 2026:
-            render_future_price(result["linear"], year, forecast)
+            base_price = result["ensemble"]["price"] if result["ensemble"] else result["linear"]
+            render_future_price(base_price, year, forecast)
     render_model_quality(bundle)
     st.markdown(
         '<div class="value-note">ข้อมูล: ประกาศขายคอนโดบน Livinginsider ที่บันทึกด้วยมือเมื่อ 23 พ.ย. 2569 '

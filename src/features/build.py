@@ -31,6 +31,15 @@ ZONE_STAT_COLUMNS = ["median_log_price_per_sqm", "median_area_sqm", "share_new_u
 K_RANGE = range(2, 9)
 BASE_YEAR = 2026  # year the listings were collected
 NEARBY_LIMIT_KM = 3.0
+BKK_LAT_BOUNDS = (13.45, 14.00)
+BKK_LON_BOUNDS = (100.30, 100.95)
+CBD_POINTS = (
+    (13.7466, 100.5347),  # Siam
+    (13.7367, 100.5603),  # Asoke
+    (13.7209, 100.5293),  # Sathorn / Silom
+)
+KM_PER_DEG_LAT = 111.0
+KM_PER_DEG_LON = float(111.0 * np.cos(np.radians(13.75)))
 
 
 def split_random(listings: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -251,3 +260,235 @@ class Standardizer:
 
     def transform(self, values: np.ndarray) -> np.ndarray:
         return (values - self.mean) / self.std
+
+
+def compute_cbd_km(lat: np.ndarray, lon: np.ndarray) -> np.ndarray:
+    """Minimum Euclidean km distance to Bangkok CBD hubs (Siam, Asoke, Sathorn)."""
+    dists = [
+        np.sqrt(((lat - clat) * KM_PER_DEG_LAT) ** 2 + ((lon - clon) * KM_PER_DEG_LON) ** 2)
+        for clat, clon in CBD_POINTS
+    ]
+    return np.min(np.vstack(dists), axis=0)
+
+
+def attach_rich_buildings(listings: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
+    """Attach full building metadata including sanitized Bangkok coordinates and rail lines."""
+    table = projects.assign(key=project_key(projects["project_name"])).drop_duplicates("key").copy()
+    valid_coord = table["latitude"].between(*BKK_LAT_BOUNDS) & table["longitude"].between(*BKK_LON_BOUNDS)
+    table.loc[~valid_coord, ["latitude", "longitude"]] = np.nan
+    columns = [
+        "latitude", "longitude", "complete_year", "total_unit", "total_floor",
+        "total_building", "facility_count", "has_pool", "has_gym", "has_parking",
+        "nearest_rail_km", "nearest_rail_line", "nearest_mall_km", "nearest_hospital_km",
+    ]
+    available = [column for column in columns if column in table.columns]
+    merged = listings.assign(key=project_key(listings["project_name"])).merge(
+        table[["key", *available]], on="key", how="left"
+    )
+    for column in columns:
+        if column not in merged.columns:
+            merged[column] = np.nan
+    merged["has_building_info"] = merged["key"].isin(table["key"])
+    return merged.drop(columns="key")
+
+
+@dataclass
+class SpatialPriceEncoder:
+    """Leave-one-building-out inverse-distance spatial price/sqm and smoothed zone price/sqm.
+
+    Every row's own building is strictly excluded when querying nearby buildings, and
+    leave-one-project-out smoothing is used on training rows so no target leaks into features.
+    """
+
+    k_neighbors: int
+    power: float
+    dist_floor_km: float
+    zone_smooth: float
+    global_mean: float
+    zone_sum: pd.Series
+    zone_cnt: pd.Series
+    zone_smoothed: pd.Series
+    proj_zone_sum: dict[tuple[int, str], float]
+    proj_zone_cnt: dict[tuple[int, str], int]
+    proj_xy: np.ndarray
+    proj_lp: np.ndarray
+    proj_cnt: np.ndarray
+    proj_keys: np.ndarray
+    cbd_median: float
+
+    @classmethod
+    def fit(
+        cls,
+        train: pd.DataFrame,
+        k_neighbors: int = 8,
+        power: float = 1.5,
+        dist_floor_km: float = 0.25,
+        zone_smooth: float = 10.0,
+    ) -> SpatialPriceEncoder:
+        log_pps = np.log(train["price_per_sqm"].to_numpy(dtype=float))
+        global_mean = float(np.mean(log_pps))
+        tmp = train.assign(key=project_key(train["project_name"]), lp=log_pps)
+        z_stats = tmp.groupby("zone_no")["lp"].agg(["sum", "count"])
+        zone_smoothed = (z_stats["sum"] + zone_smooth * global_mean) / (z_stats["count"] + zone_smooth)
+        pz = tmp.groupby(["zone_no", "key"])["lp"].agg(["sum", "count"])
+        proj_zone_sum = {(int(z), str(k)): float(v) for (z, k), v in pz["sum"].items()}
+        proj_zone_cnt = {(int(z), str(k)): int(v) for (z, k), v in pz["count"].items()}
+
+        proj_df = tmp.groupby("key").agg(
+            lat=("latitude", "first"),
+            lon=("longitude", "first"),
+            lp_mean=("lp", "mean"),
+            lp_count=("lp", "count"),
+        ).reset_index()
+        valid = proj_df["lat"].notna() & proj_df["lon"].notna()
+        proj_df = proj_df[valid].reset_index(drop=True)
+        proj_xy = np.column_stack([
+            proj_df["lat"].to_numpy(dtype=float) * KM_PER_DEG_LAT,
+            proj_df["lon"].to_numpy(dtype=float) * KM_PER_DEG_LON,
+        ]) if len(proj_df) else np.zeros((0, 2), dtype=float)
+        cbd_tr = compute_cbd_km(train["latitude"].to_numpy(dtype=float), train["longitude"].to_numpy(dtype=float))
+        cbd_median = float(np.nanmedian(cbd_tr)) if np.any(~np.isnan(cbd_tr)) else 8.0
+        return cls(
+            k_neighbors=k_neighbors,
+            power=power,
+            dist_floor_km=dist_floor_km,
+            zone_smooth=zone_smooth,
+            global_mean=global_mean,
+            zone_sum=z_stats["sum"],
+            zone_cnt=z_stats["count"],
+            zone_smoothed=zone_smoothed,
+            proj_zone_sum=proj_zone_sum,
+            proj_zone_cnt=proj_zone_cnt,
+            proj_xy=proj_xy,
+            proj_lp=proj_df["lp_mean"].to_numpy(dtype=float),
+            proj_cnt=proj_df["lp_count"].to_numpy(dtype=float),
+            proj_keys=proj_df["key"].to_numpy(),
+            cbd_median=cbd_median,
+        )
+
+    def transform(self, listings: pd.DataFrame, leave_one_project_out: bool = False) -> pd.DataFrame:
+        keys = project_key(listings["project_name"]).to_numpy()
+        zones = listings["zone_no"].to_numpy()
+        if leave_one_project_out:
+            z_sum = pd.Series(zones).map(self.zone_sum).fillna(0.0).to_numpy(dtype=float)
+            z_cnt = pd.Series(zones).map(self.zone_cnt).fillna(0.0).to_numpy(dtype=float)
+            p_sum = np.array([self.proj_zone_sum.get((int(z), str(k)), 0.0) for z, k in zip(zones, keys)], dtype=float)
+            p_cnt = np.array([self.proj_zone_cnt.get((int(z), str(k)), 0) for z, k in zip(zones, keys)], dtype=float)
+            zone_lp = ((z_sum - p_sum) + self.zone_smooth * self.global_mean) / (
+                np.maximum(z_cnt - p_cnt, 0.0) + self.zone_smooth
+            )
+        else:
+            zone_lp = listings["zone_no"].map(self.zone_smoothed).fillna(self.global_mean).to_numpy(dtype=float)
+
+        lat = listings["latitude"].to_numpy(dtype=float)
+        lon = listings["longitude"].to_numpy(dtype=float)
+        n = len(listings)
+        local_lp = zone_lp.copy()
+        local_lp_near = zone_lp.copy()
+        local_lp_std = np.full(n, 0.20)
+        nearest_bldg_km = np.full(n, 2.0)
+
+        if len(self.proj_xy) > 0:
+            for i in range(n):
+                if np.isnan(lat[i]) or np.isnan(lon[i]):
+                    continue
+                xy = np.array([lat[i] * KM_PER_DEG_LAT, lon[i] * KM_PER_DEG_LON])
+                d = np.sqrt(np.sum((self.proj_xy - xy) ** 2, axis=1))
+                d = np.where(self.proj_keys == keys[i], np.inf, d)
+                idx = np.argsort(d)[:self.k_neighbors]
+                dk = d[idx]
+                valid = np.isfinite(dk)
+                if not np.any(valid):
+                    continue
+                idx, dk = idx[valid], dk[valid]
+                nearest_bldg_km[i] = float(dk[0])
+                w = (1.0 / np.maximum(dk, self.dist_floor_km) ** self.power) * np.sqrt(np.minimum(self.proj_cnt[idx], 5.0))
+                mean_lp = float(np.sum(w * self.proj_lp[idx]) / np.sum(w))
+                local_lp[i] = mean_lp
+                local_lp_std[i] = float(np.sqrt(np.sum(w * (self.proj_lp[idx] - mean_lp) ** 2) / np.sum(w)))
+                k3 = min(3, len(idx))
+                w3 = w[:k3]
+                local_lp_near[i] = float(np.sum(w3 * self.proj_lp[idx[:k3]]) / np.sum(w3))
+
+        cbd_km = compute_cbd_km(lat, lon)
+        cbd_km = np.where(np.isnan(cbd_km), self.cbd_median, cbd_km)
+        return pd.DataFrame({
+            "zone_log_pps": zone_lp,
+            "local_log_pps_k8": local_lp,
+            "local_log_pps_k3": local_lp_near,
+            "local_log_pps_std": local_lp_std,
+            "log_cbd_km": np.log1p(cbd_km),
+            "log_nearest_bldg_km": np.log1p(nearest_bldg_km),
+        })
+
+
+@dataclass
+class RichFeatureBuilder:
+    """Engineered unit, building, rail-line, and leak-free spatial features fitted on train only."""
+
+    clustering: ZoneClustering
+    building_features: BuildingFeatures
+    spatial_encoder: SpatialPriceEncoder
+    hosp_median: float
+    total_building_median: float
+    fallback_tier: int
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame, clustering: ZoneClustering, k_neighbors: int = 8) -> RichFeatureBuilder:
+        bldg = BuildingFeatures.fit(train)
+        spatial = SpatialPriceEncoder.fit(train, k_neighbors=k_neighbors)
+        hosp = train["nearest_hospital_km"].where(
+            ~train["has_building_info"], train["nearest_hospital_km"].fillna(NEARBY_LIMIT_KM)
+        )
+        hosp_med = float(hosp.median()) if hosp.notna().any() else NEARBY_LIMIT_KM
+        tb = train["total_building"].where(train["total_building"] > 0)
+        tb_med = float(tb.median()) if tb.notna().any() else 1.0
+        fallback_tier = int(clustering.zone_table["tier"].median())
+        return cls(
+            clustering=clustering,
+            building_features=bldg,
+            spatial_encoder=spatial,
+            hosp_median=hosp_med,
+            total_building_median=tb_med,
+            fallback_tier=fallback_tier,
+        )
+
+    def transform(self, listings: pd.DataFrame, leave_one_project_out: bool = False) -> pd.DataFrame:
+        bf = self.building_features.transform(listings)
+        base = feature_frame(listings, self.clustering, use_location=False, buildings=bf)
+        tier_map = self.clustering.zone_table.set_index("zone_no")["tier"]
+        tiers = listings["zone_no"].map(tier_map).fillna(self.fallback_tier).astype(int).to_numpy()
+        for tier in range(2, self.clustering.n_clusters + 1):
+            base[f"tier_{tier}"] = (tiers == tier).astype(float)
+
+        sp = self.spatial_encoder.transform(listings, leave_one_project_out=leave_one_project_out)
+        out = pd.concat([base.reset_index(drop=True), sp.reset_index(drop=True)], axis=1)
+
+        out["log1p_building_age"] = np.log1p(bf["building_age"].to_numpy())
+        out["log1p_rail_km"] = np.log1p(bf["rail_km"].to_numpy())
+        out["log1p_mall_km"] = np.log1p(bf["mall_km"].to_numpy())
+        total_floor = np.maximum(bf["total_floor"].to_numpy(), 1.0)
+        total_unit = np.exp(bf["log_total_unit"].to_numpy())
+        floor = listings["floor"].to_numpy(dtype=float)
+        area = listings["area_sqm"].to_numpy(dtype=float)
+        beds = listings["bedrooms"].to_numpy(dtype=float)
+
+        out["floor_ratio"] = np.clip(floor / total_floor, 0.0, 1.0)
+        out["is_high_rise"] = (total_floor > 8).astype(float)
+        out["log_units_per_floor"] = np.log(np.maximum(total_unit / total_floor, 1.0))
+        out["log_area_per_room"] = np.log(area / (beds + 1.0))
+
+        hosp = listings["nearest_hospital_km"].where(
+            ~listings["has_building_info"], listings["nearest_hospital_km"].fillna(NEARBY_LIMIT_KM)
+        ).fillna(self.hosp_median)
+        out["log1p_hospital_km"] = np.log1p(hosp.to_numpy(dtype=float))
+        tb = listings["total_building"].where(listings["total_building"] > 0).fillna(self.total_building_median)
+        out["log_total_building"] = np.log1p(tb.to_numpy(dtype=float))
+        out["has_pool"] = listings["has_pool"].fillna(1.0).to_numpy(dtype=float)
+        out["has_gym"] = listings["has_gym"].fillna(1.0).to_numpy(dtype=float)
+
+        line = listings["nearest_rail_line"].fillna("none").astype(str)
+        out["rail_is_bts"] = (line == "bts").astype(float)
+        out["rail_is_mrt"] = (line == "mrt").astype(float)
+        out["rail_is_outer"] = line.isin(["mrt_yellow", "mrt_pink", "mrt_purple", "srt", "brt"]).astype(float)
+        return out
