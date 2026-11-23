@@ -338,6 +338,59 @@ class KnownBuildingPrice:
         return np.where(has, np.exp(log_ppsqm) * listings["area_sqm"].to_numpy(), np.nan)
 
 
+# words that start many project names without naming the developer's series
+GENERIC_NAME_WORDS = frozenset({"เดอะ", "เดอ", "เลอ", "ดิ", "the", "บ้าน", "คอนโด"})
+# how many buildings' worth of weight the "no premium" prior gets (chosen by grouped CV from 1 and 3)
+BRAND_PRIOR_BUILDINGS = 3.0
+
+
+def project_brand(names: pd.Series) -> pd.Series:
+    """Developer series from the project name: its first word ("ไอดีโอ", "ลุมพินี"), or the first two
+    when the first is generic ("เดอะ ไลน์")."""
+    def first_words(name: str) -> str:
+        words = [word for word in str(name).replace("-", " ").split() if word]
+        if not words:
+            return ""
+        return " ".join(words[:2]) if words[0].lower() in GENERIC_NAME_WORDS and len(words) > 1 else words[0]
+    return names.fillna("").map(first_words)
+
+
+@dataclass
+class BrandPremium:
+    """How much a developer series sells above or below its neighbourhood: for each other building
+    of the same brand, its log price per sqm minus its neighbourhood level, averaged and shrunk
+    toward 0 by `prior_buildings`. A building never sees its own premium, so a new project of a known
+    series gets the series' premium and nothing from its own price."""
+
+    buildings: pd.DataFrame  # brand, key, residual per training building
+    prior_buildings: float = BRAND_PRIOR_BUILDINGS
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame, neighbourhood_level: np.ndarray,
+            prior_buildings: float = BRAND_PRIOR_BUILDINGS) -> BrandPremium:
+        frame = pd.DataFrame({
+            "key": project_key(train["project_name"]).to_numpy(),
+            "brand": project_brand(train["project_name"]).to_numpy(),
+            "residual": np.log(train["price_per_sqm"].to_numpy()) - neighbourhood_level,
+        })
+        frame = frame[(frame["key"] != "") & (frame["brand"] != "")]
+        return cls(buildings=frame.groupby(["brand", "key"], as_index=False)["residual"].mean(),
+                   prior_buildings=prior_buildings)
+
+    def transform(self, listings: pd.DataFrame) -> np.ndarray:
+        keys = project_key(listings["project_name"]).reset_index(drop=True)
+        brands = project_brand(listings["project_name"]).reset_index(drop=True)
+        grouped = self.buildings.groupby("brand")["residual"]
+        sums = brands.map(grouped.sum()).fillna(0.0).to_numpy()
+        counts = brands.map(grouped.size()).fillna(0).to_numpy()
+        own = keys.map(self.buildings.set_index("key")["residual"]).to_numpy()
+        has_own = ~np.isnan(own)
+        sums = np.where(has_own, sums - np.nan_to_num(own), sums)
+        counts = np.where(has_own, counts - 1, counts)
+        weight = counts + self.prior_buildings
+        return np.where((brands.to_numpy() != "") & (weight > 0), sums / np.maximum(weight, 1e-12), 0.0)
+
+
 def attach_buildings(listings: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
     """Add each listing's building data (from its project page) by project name, cleaning
     out-of-Bangkok coordinates so geocoding errors do not corrupt distance features."""

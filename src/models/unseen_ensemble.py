@@ -8,6 +8,9 @@ Tree models cannot predict above the prices they were trained on, so they pull l
 units down; Linear Regression extrapolates. The weight of Linear Regression therefore grows with
 the unit's size, from LR_WEIGHT at 80 sqm to LR_WEIGHT_LARGE at 150 sqm and above.
 
+Features also include the developer series' price premium over its neighbourhood
+(BrandPremium in src/features/build.py), learnt only from other buildings of the same series.
+
 Weights and the size ramp were chosen by grouped CV on the development rows in
 src/evaluate/benchmark.py, never on the locked holdout.
 """
@@ -20,7 +23,9 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor, HistGradientBoostingRegressor
 
-from src.features.build import SEED, ExtendedBuildingFeatures, MultiScaleNeighbourhood, ZoneClustering, feature_frame
+from src.features.build import (
+    SEED, BrandPremium, ExtendedBuildingFeatures, MultiScaleNeighbourhood, ZoneClustering, feature_frame,
+)
 from src.models import linear_regression as lr
 
 LR_WEIGHT, GB_WEIGHT, ET_WEIGHT = 0.40, 0.35, 0.25
@@ -55,31 +60,35 @@ class UnseenBuildingEnsemble:
     et: ExtraTreesRegressor
     l2: float
     feature_names: list[str]
+    brand: BrandPremium | None = None
 
     @staticmethod
     def _frame(listings: pd.DataFrame, clustering: ZoneClustering, extended_buildings: ExtendedBuildingFeatures,
-               neighbourhood: MultiScaleNeighbourhood) -> pd.DataFrame:
+               neighbourhood: MultiScaleNeighbourhood, brand: BrandPremium | None = None) -> pd.DataFrame:
         frame = feature_frame(listings, clustering, buildings=extended_buildings.transform(listings),
                               neighbourhood=neighbourhood.transform(listings))
         frame["large_area_hinge"] = np.maximum(0.0, frame["log_area_sqm"] - np.log(LARGE_AREA_HINGE_SQM))
+        if brand is not None:
+            frame["brand_premium"] = brand.transform(listings)
         return frame
 
     @classmethod
     def fit(cls, train: pd.DataFrame, clustering: ZoneClustering, l2: float = 5.0) -> UnseenBuildingEnsemble:
         extended_buildings = ExtendedBuildingFeatures.fit(train)
         neighbourhood = MultiScaleNeighbourhood.fit(train)
-        frame = cls._frame(train, clustering, extended_buildings, neighbourhood)
+        brand = BrandPremium.fit(train, neighbourhood.transform(train)["nb_idw_k5"].to_numpy())
+        frame = cls._frame(train, clustering, extended_buildings, neighbourhood, brand)
         x = frame.to_numpy()
         log_ppsqm = np.log(train["price_per_sqm"].to_numpy())
         return cls(
             extended_buildings=extended_buildings, neighbourhood=neighbourhood,
             W_lr=lr.fit(x, np.log(train["price_thb"].to_numpy()), l2=l2),
             gb=make_gb().fit(x, log_ppsqm), et=make_et().fit(x, log_ppsqm),
-            l2=float(l2), feature_names=list(frame.columns),
+            l2=float(l2), feature_names=list(frame.columns), brand=brand,
         )
 
     def features(self, listings: pd.DataFrame, clustering: ZoneClustering) -> np.ndarray:
-        frame = self._frame(listings, clustering, self.extended_buildings, self.neighbourhood)
+        frame = self._frame(listings, clustering, self.extended_buildings, self.neighbourhood, self.brand)
         return frame[self.feature_names].to_numpy()
 
     def predict_parts(self, listings: pd.DataFrame, clustering: ZoneClustering) -> pd.DataFrame:
