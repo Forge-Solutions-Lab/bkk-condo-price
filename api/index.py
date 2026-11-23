@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
@@ -18,6 +18,8 @@ if str(PROJECT_ROOT) not in sys.path:
 from app.inference import (  # noqa: E402
     BUNDLE_PATH,
     FORECAST_PATH,
+    filter_projects,
+    list_zones,
     load_bundle_cached,
     load_forecast_cached,
     serialize_metadata,
@@ -81,6 +83,35 @@ def get_meta(response: Response) -> dict[str, Any]:
         "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate"
     )
     return serialize_metadata(bundle, forecast)
+
+
+@app.get("/api/zones")
+def get_zones(response: Response) -> dict[str, Any]:
+    bundle = _require_bundle()
+    zones = list_zones(bundle)
+    response.headers["Cache-Control"] = (
+        "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, must-revalidate"
+    )
+    return {"count": len(zones), "zones": zones}
+
+
+@app.get("/api/projects")
+def get_projects(
+    response: Response,
+    q: str = Query(default="", max_length=120),
+    limit: int = Query(default=50, ge=1, le=200),
+) -> dict[str, Any]:
+    bundle = _require_bundle()
+    matches = filter_projects(bundle, query=q, limit=limit)
+    response.headers["Cache-Control"] = (
+        "public, max-age=0, s-maxage=300, stale-while-revalidate=3600, must-revalidate"
+    )
+    return {
+        "query": q,
+        "count": len(matches),
+        "total_projects": len(bundle["project_names"]),
+        "projects": matches,
+    }
 
 
 @app.post("/api/predict")
