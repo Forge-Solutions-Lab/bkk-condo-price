@@ -106,6 +106,14 @@ def blend_price(bundle: dict, listing: pd.DataFrame, clustering: ZoneClustering,
     """Weighted geometric mean of Linear Regression and the CV-chosen partner, using extended
     building features and multi-scale IDW neighbourhood price (matching src/evaluate/run.py)."""
     blend = bundle["blend"]
+    if blend.get("mode") == "unseen_ensemble":
+        parts = blend["ensemble"].predict_parts(listing, clustering).iloc[0]
+        return {
+            "blend": float(np.exp(parts["log_blend"])),
+            "linear": float(np.exp(parts["log_lr"])),
+            "partner": float(np.exp(parts["log_trees"])),
+            "lr_weight": float(parts["lr_weight"]),
+        }
     if blend.get("mode") == "extended_multiscale":
         ext_buildings = blend["extended_buildings"].transform(listing)
         neighbourhood = blend["multiscale_neighbourhood"].transform(listing)
@@ -153,10 +161,16 @@ def predict(bundle: dict, listing: pd.DataFrame) -> dict[str, object]:
     clustering = ZoneClustering(zone_table=bundle["zone_table"], n_clusters=bundle["n_clusters"])
     buildings = bundle["building_features"].transform(listing)
     building_features = feature_frame(listing, clustering, buildings=buildings)[bundle["building_feature_names"]].to_numpy()
-    knn_model = bundle["knn_building"]
-    z = knn_model["scaler"].transform(building_features)[0]
+    if "knn_extended" in bundle:
+        # same features as the unseen-building ensemble; the vote is on log price per sqm
+        knn_model = bundle["knn_extended"]
+        knn_features = bundle["blend"]["ensemble"].features(listing, clustering)
+        log_area = float(np.log(listing["area_sqm"].iloc[0]))
+    else:
+        knn_model, knn_features, log_area = bundle["knn_building"], building_features, 0.0
+    z = knn_model["scaler"].transform(knn_features)[0]
     neighbour_index, _ = neighbors(knn_model["X"], z, SIMILAR_COUNT, knn_model["metric"])
-    log_knn = knn(knn_model["X"], knn_model["y"], z, knn_model["k"], knn_model["metric"], knn_model["weight"])
+    log_knn = knn(knn_model["X"], knn_model["y"], z, knn_model["k"], knn_model["metric"], knn_model["weight"]) + log_area
     vote = "ถ่วงน้ำหนักตามระยะ" if knn_model["weight"] == "distance" else "โหวตเท่ากัน"
     blended = blend_price(bundle, listing, clustering, buildings)
     # building's own listings, shrunk toward the unseen-building blend (src/features/build.py)
@@ -203,6 +217,14 @@ def main_model_label(result: dict[str, object], bundle: dict) -> tuple[str, str]
                 f"ตึกนี้มีประกาศห้องอื่นในข้อมูล {count} ห้อง ระบบใช้ราคาต่อตร.ม. ของห้องเหล่านั้นเป็นหลัก "
                 "(ตึกที่มีประกาศน้อยจะถูกดึงเข้าหาราคาประเมินจากย่านมากขึ้น) แล้วปรับตามชั้นและขนาดห้อง")
     blend = bundle["blend"]
+    if blend.get("mode") == "unseen_ensemble":
+        w_pct = int(round(100 * result["blend"].get("lr_weight", blend["w_lr"])))
+        basis = (f"ตึกนี้ไม่มีประกาศห้องอื่นในข้อมูล ระบบใช้ข้อมูลตึกแบบละเอียดและราคาย่านแบบถ่วงน้ำหนักระยะ "
+                 f"(5 และ 20 ตึกใกล้สุด ปรับตามอายุ/ความสูงตึก และนับตึกฝั่งตรงข้ามแม่น้ำเจ้าพระยาเป็นระยะไกลขึ้น) "
+                 f"ถ่วงน้ำหนัก LR {w_pct}% + {blend['partner']} {100 - w_pct}% (ห้องยิ่งใหญ่ ยิ่งให้น้ำหนัก LR มาก)"
+                 if result["has_coordinates"] else
+                 "ไม่ระบุโครงการ ระบบไม่รู้ตำแหน่งตึก จึงใช้ราคากลางของโซนแทนราคาตึกใกล้เคียง")
+        return f"เฉลี่ย Linear Regression + {blend['partner']} (ข้อมูลตึกละเอียด + ราคาย่าน IDW)", basis
     if blend.get("mode") == "extended_multiscale":
         w_pct = int(round(100 * blend["w_lr"]))
         basis = (f"ตึกนี้ไม่มีประกาศห้องอื่นในข้อมูล ระบบใช้ข้อมูลตึกแบบละเอียดและราคาย่านแบบถ่วงน้ำหนักระยะ "
@@ -294,7 +316,7 @@ def render_result(result: dict[str, object], area: float, bundle: dict) -> None:
     ]
     if result["project_price"] is not None:
         rows.append({"โมเดล": "ราคาห้องอื่นในโครงการ + shrinkage", "ราคา (บาท)": result["project_price"]})
-    rows.append({"โมเดล": "KNN Regression + ข้อมูลตึก", "ราคา (บาท)": result["knn"]})
+    rows.append({"โมเดล": "KNN Regression + ข้อมูลตึก + ราคาย่าน (ราคาต่อ ตร.ม.)", "ราคา (บาท)": result["knn"]})
     st.markdown("### ราคาจากแต่ละโมเดล")
     st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True,
                  column_config={"ราคา (บาท)": st.column_config.NumberColumn(format="%,.0f")})

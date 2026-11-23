@@ -15,7 +15,7 @@ import pytest
 
 from src.clean.clean import unlink_area_names
 from src.evaluate import benchmark as bm
-from src.features.build import KnownBuildingPrice, ProjectPriceLevels, drop_building_outliers
+from src.features.build import BrandPremium, KnownBuildingPrice, ProjectPriceLevels, drop_building_outliers, project_brand
 
 ROOT = Path(__file__).resolve().parents[1]
 BENCHMARK = ROOT / "reports" / "benchmark.json"
@@ -140,6 +140,22 @@ def test_unknown_building_gets_no_known_price():
     model = KnownBuildingPrice.fit(rows, np.log(rows["price_per_sqm"].to_numpy()))
     unit = pd.DataFrame([listing("C", 30, 5, 1), listing("", 30, 5, 1)])
     assert np.isnan(model.predict(unit, np.zeros(2))).all()
+
+
+def test_brand_is_the_developer_series():
+    names = pd.Series(["ไอดีโอ คิว สุขุมวิท 36", "เดอะ ไลน์ สุขุมวิท 101", "ลุมพินี เพลส พระราม 8", "", None])
+    assert project_brand(names).tolist() == ["ไอดีโอ", "เดอะ ไลน์", "ลุมพินี", "", ""]
+
+
+def test_brand_premium_never_uses_the_buildings_own_price():
+    rows = pd.DataFrame([listing("ไอดีโอ A", 30, 5, 6_000_000), listing("ไอดีโอ B", 30, 5, 3_000_000),
+                         listing("ลุมพินี C", 30, 5, 3_000_000)])
+    neighbourhood = np.log(np.full(3, 100_000.0))
+    premium = BrandPremium.fit(rows, neighbourhood, prior_buildings=0.0).transform(rows)
+    # A sees only B (100k/sqm, premium 0); B sees only A (200k/sqm, premium log 2); C has no other building
+    assert np.allclose(premium, [0.0, np.log(2.0), 0.0])
+    unseen = pd.DataFrame([listing("ไอดีโอ D", 30, 5, 1)])
+    assert np.isclose(BrandPremium.fit(rows, neighbourhood, prior_buildings=0.0).transform(unseen)[0], np.log(2.0) / 2)
 
 
 def test_unseen_building_has_no_project_history(listings):

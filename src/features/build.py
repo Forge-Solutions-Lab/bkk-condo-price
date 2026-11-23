@@ -38,6 +38,22 @@ BKK_LON_BOUNDS = (100.3, 100.95)
 KM_PER_LAT_DEG = 111.0
 LONGITUDE_SCALE = float(np.cos(np.radians(13.75)))
 IDW_EPS_KM = 0.25
+# Thonburi zones (west bank of the Chao Phraya). Prices differ sharply across the river even a
+# kilometre apart (Rat Burana vs Rama 3, Charoen Nakhon vs Silom), so in the neighbourhood price
+# a building on the other bank counts as if it were this much farther away.
+WEST_BANK_ZONES = frozenset({32, 33, 34, 35, 36, 37, 38})
+# Extra distance for a neighbour on the other bank of the Chao Phraya. Off: the bank is taken from
+# the zone, and zones such as 29 (Rama 8) have buildings on both banks, so the penalty pushed real
+# neighbours away. Grouped CV (3 seeds) with 0 km: zone bias 17.5% vs 27.9% at 5 km, same MAPE.
+RIVER_CROSSING_KM = 0.0
+# Before averaging, each neighbour's price level is moved to the unit's building: newer, taller
+# and larger-unit buildings sell for more per sqm within the same area. Slopes in log price per
+# sqm, close to a within-zone building regression on the development rows and chosen by grouped
+# CV in src/evaluate/benchmark.py (never on the locked holdout).
+NB_AGE_SLOPE = 0.025        # per year of building age
+NB_FLOORS_SLOPE = 0.08      # per log(1 + total floors)
+NB_LARGE_AREA_SLOPE = 0.08  # per log area above the neighbour's median unit
+NB_ADJUST_CAP = 0.45
 # Ploenchit / Siam / Asok central business district reference point
 CBD_LAT = 13.743
 CBD_LON = 100.549
@@ -322,6 +338,105 @@ class KnownBuildingPrice:
         return np.where(has, np.exp(log_ppsqm) * listings["area_sqm"].to_numpy(), np.nan)
 
 
+# a building completed in this year or later counts as a recent launch
+RECENT_BUILDING_YEAR = 2013
+RECENT_NEIGHBOURS = 5
+
+
+@dataclass
+class RecentNeighbourLevel:
+    """Inverse-distance level of log price per sqm of the nearest other buildings completed since
+    RECENT_BUILDING_YEAR. A new project is priced against recent launches nearby more than against
+    old stock, which the age-adjusted all-building level understates in mixed old/new areas."""
+
+    keys: np.ndarray
+    coordinates: np.ndarray
+    levels: np.ndarray
+    k: int = RECENT_NEIGHBOURS
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame) -> RecentNeighbourLevel:
+        located = clean_coordinates(train).dropna(subset=["latitude", "longitude"])
+        located = located[_column(located, "complete_year") >= RECENT_BUILDING_YEAR]
+        grouped = located.groupby(project_key(located["project_name"]))
+        buildings = grouped.agg(latitude=("latitude", "first"), longitude=("longitude", "first"))
+        buildings["level"] = grouped["price_per_sqm"].apply(lambda prices: float(np.median(np.log(prices))))
+        return cls(keys=buildings.index.to_numpy(),
+                   coordinates=buildings[["latitude", "longitude"]].to_numpy() * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE],
+                   levels=buildings["level"].to_numpy())
+
+    def transform(self, listings: pd.DataFrame) -> np.ndarray:
+        """NaN where the unit has no coordinates or no recent building is known."""
+        cleaned = clean_coordinates(listings)
+        keys = project_key(cleaned["project_name"]).to_numpy()
+        points = cleaned[["latitude", "longitude"]].to_numpy(dtype=float) * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE]
+        out = np.full(len(cleaned), np.nan)
+        for row, (key, point) in enumerate(zip(keys, points)):
+            if np.isnan(point).any() or len(self.levels) == 0:
+                continue
+            distance = np.sqrt(np.sum((self.coordinates - point) ** 2, axis=1))
+            distance[self.keys == key] = np.inf
+            nearest = np.argsort(distance)[: self.k]
+            nearest = nearest[np.isfinite(distance[nearest])]
+            if len(nearest):
+                weight = 1.0 / (distance[nearest] + IDW_EPS_KM)
+                out[row] = float(np.sum(weight * self.levels[nearest]) / np.sum(weight))
+        return out
+
+
+# words that start many project names without naming the developer's series
+GENERIC_NAME_WORDS = frozenset({"เดอะ", "เดอ", "เลอ", "ดิ", "the", "บ้าน", "คอนโด"})
+# how many buildings' worth of weight the "no premium" prior gets (chosen by grouped CV from 1 and 3)
+BRAND_PRIOR_BUILDINGS = 3.0
+
+
+def project_brand(names: pd.Series) -> pd.Series:
+    """Developer series from the project name: its first word ("ไอดีโอ", "ลุมพินี"), or the first two
+    when the first is generic ("เดอะ ไลน์")."""
+    def first_words(name: str) -> str:
+        words = [word for word in str(name).replace("-", " ").split() if word]
+        if not words:
+            return ""
+        return " ".join(words[:2]) if words[0].lower() in GENERIC_NAME_WORDS and len(words) > 1 else words[0]
+    return names.fillna("").map(first_words)
+
+
+@dataclass
+class BrandPremium:
+    """How much a developer series sells above or below its neighbourhood: for each other building
+    of the same brand, its log price per sqm minus its neighbourhood level, averaged and shrunk
+    toward 0 by `prior_buildings`. A building never sees its own premium, so a new project of a known
+    series gets the series' premium and nothing from its own price."""
+
+    buildings: pd.DataFrame  # brand, key, residual per training building
+    prior_buildings: float = BRAND_PRIOR_BUILDINGS
+
+    @classmethod
+    def fit(cls, train: pd.DataFrame, neighbourhood_level: np.ndarray,
+            prior_buildings: float = BRAND_PRIOR_BUILDINGS) -> BrandPremium:
+        frame = pd.DataFrame({
+            "key": project_key(train["project_name"]).to_numpy(),
+            "brand": project_brand(train["project_name"]).to_numpy(),
+            "residual": np.log(train["price_per_sqm"].to_numpy()) - neighbourhood_level,
+        })
+        frame = frame[(frame["key"] != "") & (frame["brand"] != "")]
+        return cls(buildings=frame.groupby(["brand", "key"], as_index=False)["residual"].mean(),
+                   prior_buildings=prior_buildings)
+
+    def transform(self, listings: pd.DataFrame) -> np.ndarray:
+        keys = project_key(listings["project_name"]).reset_index(drop=True)
+        brands = project_brand(listings["project_name"]).reset_index(drop=True)
+        grouped = self.buildings.groupby("brand")["residual"]
+        sums = brands.map(grouped.sum()).fillna(0.0).to_numpy()
+        counts = brands.map(grouped.size()).fillna(0).to_numpy()
+        own = keys.map(self.buildings.set_index("key")["residual"]).to_numpy()
+        has_own = ~np.isnan(own)
+        sums = np.where(has_own, sums - np.nan_to_num(own), sums)
+        counts = np.where(has_own, counts - 1, counts)
+        weight = counts + self.prior_buildings
+        return np.where((brands.to_numpy() != "") & (weight > 0), sums / np.maximum(weight, 1e-12), 0.0)
+
+
 def attach_buildings(listings: pd.DataFrame, projects: pd.DataFrame) -> pd.DataFrame:
     """Add each listing's building data (from its project page) by project name, cleaning
     out-of-Bangkok coordinates so geocoding errors do not corrupt distance features."""
@@ -334,7 +449,22 @@ def attach_buildings(listings: pd.DataFrame, projects: pd.DataFrame) -> pd.DataF
     columns = [col for col in candidate_columns if col in table.columns]
     merged = listings.assign(key=project_key(listings["project_name"])).merge(table[["key", *columns]], on="key", how="left")
     merged["has_building_info"] = merged["key"].isin(table["key"])
+    if "total_floor" in merged.columns and "floor" in merged.columns:
+        merged["total_floor"] = infer_total_floor(merged)
     return merged.drop(columns="key")
+
+
+def infer_total_floor(listings: pd.DataFrame) -> pd.Series:
+    """Project pages of new towers often give 0 floors. A listed unit on floor 35 shows the building
+    has at least 35, so the highest unit floor seen in the building replaces a missing or smaller
+    count (only unit floors are used, never prices)."""
+    keys = project_key(listings["project_name"])
+    unit_floor = listings["floor"].astype(float)
+    highest = unit_floor.groupby(keys).transform("max").where(keys != "", unit_floor)
+    highest = np.ceil(np.fmax(highest, unit_floor))
+    reported = listings["total_floor"].astype(float)
+    use_highest = highest.notna() & (reported.isna() | (reported <= 0) | (highest > reported))
+    return reported.where(~use_highest, highest)
 
 
 def _nearby_checked_mask(listings: pd.DataFrame) -> pd.Series:
@@ -501,12 +631,20 @@ class NeighbourhoodPrice:
         return pd.DataFrame({"neighbourhood_log_price_per_sqm": np.where(np.isnan(levels), fallback, levels)})
 
 
+def _column(frame: pd.DataFrame, name: str) -> pd.Series:
+    return frame[name].astype(float) if name in frame.columns else pd.Series(np.nan, index=frame.index)
+
+
 @dataclass
 class MultiScaleNeighbourhood:
     """Multi-scale IDW neighbourhood context from validated Bangkok coordinates:
     - nb_idw_k5: hyper-local price level (5 nearest other buildings)
     - nb_idw_k20: broader corridor price level (20 nearest other buildings)
-    - nb_age_diff: building age minus IDW age of 10 nearest other buildings."""
+    - nb_age_diff: building age minus IDW age of 10 nearest other buildings.
+
+    Each neighbour's level (half mean, half median log price per sqm, so one odd listing moves it
+    less) is first adjusted to the unit's building for age, height and unit size, and a neighbour
+    across the Chao Phraya counts as `river_km` farther away."""
 
     keys: np.ndarray
     coordinates: np.ndarray
@@ -516,34 +654,74 @@ class MultiScaleNeighbourhood:
     k_local: int = 5
     k_broad: int = 20
     k_age: int = 10
+    west_bank: np.ndarray | None = None
+    log_floors: np.ndarray | None = None
+    log_areas: np.ndarray | None = None
+    river_km: float = RIVER_CROSSING_KM
+    age_slope: float = NB_AGE_SLOPE
+    floors_slope: float = NB_FLOORS_SLOPE
+    area_slope: float = NB_LARGE_AREA_SLOPE
 
     @classmethod
-    def fit(cls, train: pd.DataFrame, k_local: int = 5, k_broad: int = 20, k_age: int = 10) -> MultiScaleNeighbourhood:
+    def fit(cls, train: pd.DataFrame, k_local: int = 5, k_broad: int = 20, k_age: int = 10,
+            river_km: float = RIVER_CROSSING_KM, age_slope: float = NB_AGE_SLOPE,
+            floors_slope: float = NB_FLOORS_SLOPE, area_slope: float = NB_LARGE_AREA_SLOPE) -> MultiScaleNeighbourhood:
         located = clean_coordinates(train).dropna(subset=["latitude", "longitude"])
-        age_series = (BASE_YEAR - located["complete_year"]).clip(lower=0) if "complete_year" in located.columns else pd.Series(np.nan, index=located.index)
-        located = located.assign(_age=age_series)
+        total_floor = _column(located, "total_floor")
+        located = located.assign(
+            _age=(BASE_YEAR - _column(located, "complete_year")).clip(lower=0),
+            _log_floors=np.log1p(total_floor.where(total_floor > 0)),
+            _log_area=np.log(_column(located, "area_sqm")),
+            _log_ppsqm=np.log(located["price_per_sqm"].astype(float)),
+        )
         buildings = located.groupby(project_key(located["project_name"])).agg(
             latitude=("latitude", "first"),
             longitude=("longitude", "first"),
-            level=("price_per_sqm", lambda prices: float(np.log(prices).mean())),
+            zone_no=("zone_no", "first"),
+            level_mean=("_log_ppsqm", "mean"),
+            level_median=("_log_ppsqm", "median"),
             age=("_age", "first"),
+            log_floors=("_log_floors", "first"),
+            log_area=("_log_area", "median"),
         )
         return cls(
             keys=buildings.index.to_numpy(),
             coordinates=buildings[["latitude", "longitude"]].to_numpy() * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE],
-            levels=buildings["level"].to_numpy(),
+            levels=(0.5 * buildings["level_mean"] + 0.5 * buildings["level_median"]).to_numpy(),
             ages=buildings["age"].to_numpy(dtype=float),
             zone_fallback=np.log(train["price_per_sqm"]).groupby(train["zone_no"]).median(),
             k_local=k_local,
             k_broad=k_broad,
             k_age=k_age,
+            west_bank=buildings["zone_no"].isin(WEST_BANK_ZONES).to_numpy(),
+            log_floors=buildings["log_floors"].to_numpy(dtype=float),
+            log_areas=buildings["log_area"].to_numpy(dtype=float),
+            river_km=river_km,
+            age_slope=age_slope,
+            floors_slope=floors_slope,
+            area_slope=area_slope,
         )
+
+    def _adjustment(self, age: float, log_floors: float, log_area: float) -> np.ndarray:
+        """Log price per sqm to add to each neighbour's level so it describes the unit's building."""
+        adjust = np.zeros(len(self.levels))
+        if not np.isnan(age):
+            adjust += self.age_slope * np.nan_to_num(self.ages - age)
+        if self.log_floors is not None and not np.isnan(log_floors):
+            adjust += self.floors_slope * np.nan_to_num(log_floors - self.log_floors)
+        if self.log_areas is not None and not np.isnan(log_area):
+            adjust += self.area_slope * np.nan_to_num(np.maximum(0.0, log_area - self.log_areas))
+        return np.clip(adjust, -NB_ADJUST_CAP, NB_ADJUST_CAP)
 
     def transform(self, listings: pd.DataFrame) -> pd.DataFrame:
         cleaned = clean_coordinates(listings)
         keys = project_key(cleaned["project_name"]).to_numpy()
         points = cleaned[["latitude", "longitude"]].to_numpy(dtype=float) * [KM_PER_LAT_DEG, KM_PER_LAT_DEG * LONGITUDE_SCALE]
-        listing_age = (BASE_YEAR - cleaned["complete_year"]).clip(lower=0).to_numpy(dtype=float) if "complete_year" in cleaned.columns else np.full(len(cleaned), np.nan)
+        listing_age = (BASE_YEAR - _column(cleaned, "complete_year")).clip(lower=0).to_numpy(dtype=float)
+        total_floor = _column(cleaned, "total_floor")
+        listing_log_floors = np.log1p(total_floor.where(total_floor > 0)).to_numpy(dtype=float)
+        listing_log_area = np.log(_column(cleaned, "area_sqm")).to_numpy(dtype=float)
+        listing_west = cleaned["zone_no"].isin(WEST_BANK_ZONES).to_numpy()
 
         local_level = np.full(len(cleaned), np.nan)
         broad_level = np.full(len(cleaned), np.nan)
@@ -553,15 +731,18 @@ class MultiScaleNeighbourhood:
             if np.isnan(point).any() or len(self.coordinates) == 0:
                 continue
             distance = np.sqrt(np.sum((self.coordinates - point) ** 2, axis=1))
+            if self.west_bank is not None:
+                distance = distance + self.river_km * (self.west_bank != listing_west[row])
             distance[self.keys == key] = np.inf
             order = np.argsort(distance)
+            levels = self.levels + self._adjustment(listing_age[row], listing_log_floors[row], listing_log_area[row])
 
             for k, target in ((self.k_local, local_level), (self.k_broad, broad_level)):
                 idx = order[:k]
                 idx = idx[np.isfinite(distance[idx])]
                 if len(idx):
                     w = 1.0 / (distance[idx] + IDW_EPS_KM)
-                    target[row] = float(np.sum(w * self.levels[idx]) / np.sum(w))
+                    target[row] = float(np.sum(w * levels[idx]) / np.sum(w))
 
             if not np.isnan(listing_age[row]):
                 idx_age = order[: self.k_age]

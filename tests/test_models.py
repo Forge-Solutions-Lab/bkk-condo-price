@@ -159,7 +159,7 @@ def test_manual_building_input_uses_median_for_mall_km():
 
 def test_multiscale_neighbourhood_ignores_own_building_and_bad_coords():
     import pandas as pd
-    from src.features.build import MultiScaleNeighbourhood
+    from src.features.build import NB_AGE_SLOPE, MultiScaleNeighbourhood
 
     train = pd.DataFrame({
         "project_name": ["A", "A", "B", "C", "Bad"],
@@ -171,9 +171,44 @@ def test_multiscale_neighbourhood_ignores_own_building_and_bad_coords():
     })
     nb = MultiScaleNeighbourhood.fit(train, k_local=1, k_broad=2, k_age=1)
     out = nb.transform(train)
-    # A ignores itself and Bad (corrupt lat=100.55), so its nearest building is B
-    assert out["nb_idw_k5"].iloc[0] == pytest.approx(np.log(100000.0))
+    # A ignores itself and Bad (corrupt lat=100.55), so its nearest building is B; B is 5 years
+    # older than A, so its level is raised by the age slope before it is used for A
+    assert out["nb_idw_k5"].iloc[0] == pytest.approx(np.log(100000.0) + 5 * NB_AGE_SLOPE)
     # A (age 6) minus B (age 11) = -5 years newer than neighbor
     assert out["nb_age_diff"].iloc[0] == pytest.approx(-5.0)
     # Bad falls back to zone median price/sqm and 0.0 age diff
     assert out["nb_age_diff"].iloc[4] == pytest.approx(0.0)
+
+
+def test_multiscale_neighbourhood_counts_other_river_bank_as_farther():
+    import pandas as pd
+    from src.features.build import MultiScaleNeighbourhood
+
+    # T (Rat Burana, west bank) is 1 km from R (Rama 3, east bank) and 2 km from W (west bank)
+    train = pd.DataFrame({
+        "project_name": ["R", "W"],
+        "zone_no": [31, 35],
+        "latitude": [13.69, 13.69],
+        "longitude": [100.52 + 1 / (111 * np.cos(np.radians(13.75))), 100.52 - 2 / (111 * np.cos(np.radians(13.75)))],
+        "complete_year": [2015.0, 2015.0],
+        "price_per_sqm": [150000.0, 60000.0],
+    })
+    target = pd.DataFrame({"project_name": ["T"], "zone_no": [35], "latitude": [13.69], "longitude": [100.52],
+                           "complete_year": [2015.0], "price_per_sqm": [1.0]})
+    near_only = MultiScaleNeighbourhood.fit(train, k_local=1, k_broad=2, k_age=1, river_km=0.0).transform(target)
+    # the penalty is off by default (RIVER_CROSSING_KM = 0); the option still works when set
+    with_river = MultiScaleNeighbourhood.fit(train, k_local=1, k_broad=2, k_age=1, river_km=5.0).transform(target)
+    assert near_only["nb_idw_k5"].iloc[0] == pytest.approx(np.log(150000.0))
+    assert with_river["nb_idw_k5"].iloc[0] == pytest.approx(np.log(60000.0))
+
+
+def test_attach_buildings_infers_missing_total_floor_from_unit_floors():
+    import pandas as pd
+    from src.features.build import attach_buildings
+
+    projects = pd.DataFrame({"project_name": ["New Tower", "Old"], "total_floor": [0, 8],
+                             "latitude": [13.75, 13.76], "longitude": [100.55, 100.56]})
+    listings = pd.DataFrame({"project_name": ["New Tower", "New Tower", "Old"], "floor": [12.0, 34.5, 5.0]})
+    out = attach_buildings(listings, projects)
+    # page says 0 floors, but a unit is on floor 34.5: the tower has at least 35
+    assert out["total_floor"].tolist() == [35.0, 35.0, 8.0]

@@ -52,6 +52,7 @@ from src.features.build import (
 from src.models import ffbp
 from src.models import linear_regression as lr
 from src.models.knn_regression import knn_predict
+from src.models.unseen_ensemble import LR_WEIGHT, LR_WEIGHT_LARGE, UnseenBuildingEnsemble, make_gb
 
 LOG = logging.getLogger(__name__)
 
@@ -98,7 +99,8 @@ FUZZY_BUILDING_LR = "Linear Regression + building features (Fuzzy C-Means member
 EXTENDED_LR = "Linear Regression + extended building + multi-scale IDW"
 EXTENDED_GB = "Gradient Boosting (log price/sqm) + extended + IDW (reference)"
 EXTENDED_RF = "Random Forest (log price/sqm) + extended + IDW (reference)"
-EXTENDED_BLEND = "Blend: LR + GB (extended + IDW, CV-weighted)"
+EXTENDED_BLEND = "Blend: LR + GB + ExtraTrees (extended + IDW, size-weighted)"
+EXTENDED_KNN = "KNN Regression (extended building + IDW + brand, price per sqm)"
 EXTENDED_PROJECT_LR = "Linear Regression + extended + project price level"
 
 
@@ -289,15 +291,7 @@ def mape_pct(actual: np.ndarray, predicted: np.ndarray) -> float:
 
 
 def make_extended_gb() -> HistGradientBoostingRegressor:
-    return HistGradientBoostingRegressor(
-        loss="absolute_error",
-        max_depth=5,
-        min_samples_leaf=20,
-        l2_regularization=2.0,
-        learning_rate=0.05,
-        max_iter=250,
-        random_state=SEED,
-    )
+    return make_gb()
 
 
 def choose_neighbour_count(
@@ -518,8 +512,17 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame, group_cv: bool = Fal
     log_lr_extended = lr.predict(xe_test, W_extended)
     log_gb_extended = gb_extended.predict(xe_test) + log_area_test
     log_rf_extended = rf_extended.predict(xe_test) + log_area_test
-    w_lr = ext_settings["w_lr"]
-    log_blend_extended = w_lr * log_lr_extended + (1.0 - w_lr) * log_gb_extended
+    # unseen-building ensemble deployed in the app (src/models/unseen_ensemble.py)
+    unseen_ensemble = UnseenBuildingEnsemble.fit(train, clustering, l2=ext_settings["l2"])
+    log_blend_extended = unseen_ensemble.predict_parts(test, clustering)["log_blend"].to_numpy()
+    # KNN on the same features as the ensemble, voting on log price per sqm: neighbours are then
+    # comparable however large they are, and the price is per sqm x the unit's area
+    xk_train, xk_test = unseen_ensemble.features(train, clustering), unseen_ensemble.features(test, clustering)
+    knn_extended = min(
+        (FittedKnn.fit(xk_train, np.log(train["price_per_sqm"].to_numpy()), metric, weight, groups=groups)
+         for metric in METRICS for weight in WEIGHTS),
+        key=lambda model: model.cv_mape_pct,
+    )
 
     xep_train_frame = feature_frame(train, clustering, project_levels=levels.transform(train, leave_one_out=True),
                                     buildings=ext_buildings.transform(train),
@@ -562,6 +565,7 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame, group_cv: bool = Fal
         EXTENDED_GB: np.exp(log_gb_extended),
         EXTENDED_RF: np.exp(log_rf_extended),
         EXTENDED_BLEND: np.exp(log_blend_extended),
+        EXTENDED_KNN: knn_extended.predict(xk_test) * test["area_sqm"].to_numpy(),
         BUILDING_KNN: knn_building.predict(xb_test),
         BUILDING_FFBP: network_building.predict(xb_test),
         "Random Forest + building features (reference)": np.exp(forest_building.predict(xb_test)),
@@ -591,6 +595,8 @@ def evaluate_split(train: pd.DataFrame, test: pd.DataFrame, group_cv: bool = Fal
         "extended_feature_names": list(xe_train_frame.columns),
         "W_extended": W_extended, "gb_extended": gb_extended,
         "extended_blend": ext_settings,
+        "unseen_ensemble": unseen_ensemble,
+        "knn_extended": knn_extended,
         "W_extended_project": W_extended_project,
         "extended_project_feature_names": list(xep_train_frame.columns),
         "building_project_feature_names": list(xbp_train_frame.columns),
@@ -910,23 +916,13 @@ def main() -> None:
     # Fit the unseen-building extended blend on main_run["train"] with the GroupCV-selected
     # hyperparameters from project_run so deployed weights and web_reliability match 100%.
     unseen_l2 = project_run["extended_blend"]["l2"]
-    unseen_w_lr = project_run["extended_blend"]["w_lr"]
-    xe_web_frame = feature_frame(
-        main_run["train"], clustering,
-        buildings=main_run["extended_buildings"].transform(main_run["train"]),
-        neighbourhood=main_run["multiscale_neighbourhood"].transform(main_run["train"]),
-    )
-    W_unseen_web = lr.fit(xe_web_frame.to_numpy(), np.log(main_run["train"]["price_thb"].to_numpy()), l2=unseen_l2)
-    gb_unseen_web = make_extended_gb().fit(xe_web_frame.to_numpy(), np.log(main_run["train"]["price_per_sqm"].to_numpy()))
+    unseen_web = UnseenBuildingEnsemble.fit(main_run["train"], clustering, l2=unseen_l2)
 
     # Known-building model for the web app: the building's own listings (including pages beyond
     # the per-zone cap, which only move their own building's level), shrunk toward the
     # unseen-building blend above and adjusted for floor and size within the building.
     def unseen_log_ppsqm(frame: pd.DataFrame) -> np.ndarray:
-        x = feature_frame(frame, clustering, buildings=main_run["extended_buildings"].transform(frame),
-                          neighbourhood=main_run["multiscale_neighbourhood"].transform(frame))[xe_web_frame.columns].to_numpy()
-        log_lr = lr.predict(x, W_unseen_web) - np.log(frame["area_sqm"].to_numpy())
-        return unseen_w_lr * log_lr + (1.0 - unseen_w_lr) * gb_unseen_web.predict(x)
+        return np.log(unseen_web.predict(frame, clustering) / frame["area_sqm"].to_numpy())
 
     extra_history = attach_buildings(all_listings[all_listings["page"] > MAX_PAGES_PER_ZONE].reset_index(drop=True), projects)
     extra_history = extra_history[~extra_history["listing_id"].isin(main_run["test"]["listing_id"])]
@@ -983,21 +979,21 @@ def main() -> None:
         "residual_std_log_building_project": main_run["residual_std_log_building_project"],
         "blend": {
             "name": EXTENDED_BLEND,
-            "partner": "Gradient Boosting",
-            "mode": "extended_multiscale",
-            "w_lr": unseen_w_lr,
+            "partner": "Gradient Boosting + ExtraTrees",
+            "mode": "unseen_ensemble",
+            "ensemble": unseen_web,
+            "w_lr": LR_WEIGHT,
+            "w_lr_large": LR_WEIGHT_LARGE,
             "l2": unseen_l2,
-            "extended_buildings": main_run["extended_buildings"],
-            "multiscale_neighbourhood": main_run["multiscale_neighbourhood"],
-            "W_extended": W_unseen_web,
-            "gb_extended": gb_unseen_web,
-            "feature_names": list(xe_web_frame.columns),
+            "feature_names": unseen_web.feature_names,
             # keep legacy single-scale neighbourhood object for reference / backward compatibility
             "neighbourhood": main_run["neighbourhood"],
         },
         "known_building": known_model,
         "reliability": web_reliability,
         "knn_building": {key: getattr(main_run["knn_building"], key) for key in ("X", "y", "scaler", "k", "metric", "weight")},
+        # KNN on the unseen-ensemble features, voting on log price per sqm (shown in the app)
+        "knn_extended": {key: getattr(main_run["knn_extended"], key) for key in ("X", "y", "scaler", "k", "metric", "weight")},
         "projects": projects,
         "project_zones": project_zones,
         "reference_rows": reference_rows,
